@@ -4,8 +4,8 @@
   "provincia": "Ourense",
   "comunidad": "Galicia",
   "pais": "España",
-  "lat": 42.395275,
-  "lon": -7.114165,
+  "lat": 42.401887,
+  "lon": -7.110961,
   "fechas_visita": [
     "2026-10-24"
   ],
@@ -95,5 +95,5 @@
   "publicar": true,
   "estado": "visitado",
   "creado": "2026-10-24 19:39",
-  "modificado": "2026-10-24 20:46"
+  "modificado": "2026-10-24 20:47"
 }
