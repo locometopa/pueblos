@@ -410,6 +410,9 @@ JS_VISOR = r"""
 """
 
 
+_VERSION_RECURSOS = "1"   # cambia cuando cambian estilos o mapa: así el navegador no usa copias viejas
+
+
 def _pagina(titulo: str, cuerpo: str, raiz: str, descripcion: str = "", js: str = "", scripts=()) -> str:
     return f"""<!doctype html>
 <html lang="es">
@@ -421,11 +424,11 @@ def _pagina(titulo: str, cuerpo: str, raiz: str, descripcion: str = "", js: str 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{raiz}estilo.css">
+<link rel="stylesheet" href="{raiz}estilo.css?v={_VERSION_RECURSOS}">
 </head>
 <body>
 {cuerpo}
-{''.join(f'<script src="{raiz}{x}"></script>' for x in scripts)}
+{''.join(f'<script src="{raiz}{x}?v={_VERSION_RECURSOS}"></script>' for x in scripts)}
 {f'<script>{js}</script>' if js else ''}
 </body>
 </html>
@@ -767,6 +770,9 @@ def generar(almacen: Almacen, cfg, destino: Path, avisar=print) -> int:
         contenido += "\nwindow.VECINOS_ES=" + vecinos.read_text(encoding="utf-8") + ";"
     if not geo_js.exists() or geo_js.read_text(encoding="utf-8") != contenido:
         geo_js.write_text(contenido, encoding="utf-8")
+    import hashlib
+    global _VERSION_RECURSOS
+    _VERSION_RECURSOS = hashlib.md5((CSS + contenido).encode("utf-8")).hexdigest()[:10]
 
     (destino / "estilo.css").write_text(CSS.strip() + "\n", encoding="utf-8")
     (destino / ".nojekyll").write_text("", encoding="utf-8")
