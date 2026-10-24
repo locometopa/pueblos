@@ -1,12 +1,14 @@
 {
   "slug": "a-rua",
-  "nombre": "A rua de valdeorras",
+  "nombre": "A Rua de Valdeorras",
   "provincia": "Ourense",
   "comunidad": "Galicia",
   "pais": "España",
-  "lat": 42.416505,
-  "lon": -7.120939,
-  "fechas_visita": [],
+  "lat": 42.395275,
+  "lon": -7.114165,
+  "fechas_visita": [
+    "2026-10-24"
+  ],
   "wiki": {
     "titulo": "Vilela (Rúa)",
     "url": "https://es.wikipedia.org/wiki/Vilela_(R%C3%BAa)",
@@ -35,11 +37,23 @@
       "fecha": "",
       "pie": "",
       "original": "1000086703.jpg|331912"
+    },
+    {
+      "archivo": "0004.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "https://commons.wikimedia.org/wiki/File:Capela_de_San_Roque_da_R%C3%BAa,_A_R%C3%BAa_de_Valdeorras_-_cruceiro.jpg",
+      "credito": {
+        "autor": "Estevoaei",
+        "licencia": "CC BY-SA 4.0",
+        "url_licencia": "https://creativecommons.org/licenses/by-sa/4.0",
+        "fuente": "https://commons.wikimedia.org/wiki/File:Capela_de_San_Roque_da_R%C3%BAa,_A_R%C3%BAa_de_Valdeorras_-_cruceiro.jpg"
+      }
     }
   ],
   "portada": "wmvmop2ug000.jpg",
   "publicar": true,
   "estado": "visitado",
   "creado": "2026-10-24 19:39",
-  "modificado": "2026-10-24 19:43"
+  "modificado": "2026-10-24 19:58"
 }
