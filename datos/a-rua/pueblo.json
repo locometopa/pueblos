@@ -50,11 +50,50 @@
         "url_licencia": "https://creativecommons.org/licenses/by-sa/4.0",
         "fuente": "https://commons.wikimedia.org/wiki/File:Capela_de_San_Roque_da_R%C3%BAa,_A_R%C3%BAa_de_Valdeorras_-_cruceiro.jpg"
       }
+    },
+    {
+      "archivo": "0005.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "https://commons.wikimedia.org/wiki/File:Igrexa_de_Santo_Estevo_da_R%C3%BAa_de_Valdeorras.jpg",
+      "credito": {
+        "autor": "Estevoaei",
+        "licencia": "CC BY-SA 4.0",
+        "url_licencia": "https://creativecommons.org/licenses/by-sa/4.0",
+        "fuente": "https://commons.wikimedia.org/wiki/File:Igrexa_de_Santo_Estevo_da_R%C3%BAa_de_Valdeorras.jpg",
+        "origen": "Wikimedia Commons"
+      }
+    },
+    {
+      "archivo": "0006.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "https://commons.wikimedia.org/wiki/File:Placa_funeraria_de_Pompeio_Reburro_na_R%C3%BAa_de_Valdeorras.jpg",
+      "credito": {
+        "autor": "Estevoaei",
+        "licencia": "CC BY-SA 4.0",
+        "url_licencia": "https://creativecommons.org/licenses/by-sa/4.0",
+        "fuente": "https://commons.wikimedia.org/wiki/File:Placa_funeraria_de_Pompeio_Reburro_na_R%C3%BAa_de_Valdeorras.jpg",
+        "origen": "Wikimedia Commons"
+      }
+    },
+    {
+      "archivo": "0007.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "https://commons.wikimedia.org/wiki/File:San_Xuli%C3%A1n,_A_R%C3%BAa.jpg",
+      "credito": {
+        "autor": "loisrua + 1.250.000 visitas",
+        "licencia": "CC BY-SA 2.0",
+        "url_licencia": "https://creativecommons.org/licenses/by-sa/2.0",
+        "fuente": "https://commons.wikimedia.org/wiki/File:San_Xuli%C3%A1n,_A_R%C3%BAa.jpg",
+        "origen": "Wikimedia Commons"
+      }
     }
   ],
-  "portada": "wmvmop2ug000.jpg",
+  "portada": "0005.jpg",
   "publicar": true,
   "estado": "visitado",
   "creado": "2026-10-24 19:39",
-  "modificado": "2026-10-24 20:12"
+  "modificado": "2026-10-24 20:39"
 }
