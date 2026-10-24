@@ -489,7 +489,7 @@ def _script_previa(raiz: str) -> str:
 
 
 def _pagina(titulo: str, cuerpo: str, raiz: str, descripcion: str = "", js: str = "", scripts=(),
-            ruta: str = "", imagen: str = "") -> str:
+            ruta: str = "", imagen: str = "", cabeza: str = "") -> str:
     icono_ios = "icono-192.png" if _ICONOS else ("logo.png" if _LOGO else "favicon.svg")
     extra = ""
     if _DISENO["compartir"]:
@@ -512,6 +512,7 @@ def _pagina(titulo: str, cuerpo: str, raiz: str, descripcion: str = "", js: str 
 <link rel="apple-touch-icon" href="{raiz}{icono_ios}?v={_VERSION_RECURSOS}">
 {extra}
 {D.enlace_fuentes(_DISENO)}
+{cabeza}
 <link rel="stylesheet" href="{raiz}estilo.css?v={_VERSION_RECURSOS}">
 </head>
 <body>
@@ -715,6 +716,8 @@ def _indice(pueblos: list, cfg, pendientes=()) -> str:
 </main>"""
     if not _DISENO["mostrar_mapa"]:
         seccion_mapa = ""
+    if _DISENO["fiestas"]:
+        lista_pueblos = X.seccion_proximas(pueblos + list(pendientes)) + lista_pueblos
     partes = [seccion_mapa, lista_pueblos] if _DISENO["mapa_primero"] else [lista_pueblos, seccion_mapa]
     if _DISENO["cronologia"]:
         partes.append(X.cronologia(pueblos))
@@ -726,7 +729,7 @@ def _indice(pueblos: list, cfg, pendientes=()) -> str:
     resumen = f"{len(pueblos)} {'pueblo' if len(pueblos) == 1 else 'pueblos'} en {len(prov_visitadas)} " \
               f"{'provincia' if len(prov_visitadas) == 1 else 'provincias'}"
     return _pagina(cfg.get("titulo_web"), cuerpo, "", f"{desc} · {resumen}" if desc else resumen,
-                   JS_INDICE + JS_MAPA + JS_CABECERA,
+                   JS_INDICE + JS_MAPA + JS_CABECERA + (X.JS_FIESTAS if _DISENO["fiestas"] else ""),
                    scripts=("js/d3.min.js", "js/d3-composite-projections.min.js", "js/provincias.js"),
                    ruta="", imagen="compartir.jpg" if (_IMG_PORTADA) else "")
 
@@ -764,7 +767,7 @@ def _pagina_pueblo(p: dict, anterior, siguiente, cfg) -> str:
 
     principal = []
     if p.get("notas", "").strip():
-        principal.append(f'<section class="notas"><h2>Mis notas</h2>{parrafos(p["notas"])}</section>')
+        principal.append(X.bloque_notas(p, cfg.get("autor") or "", txt_visitas, _DISENO["notas_a_mano"]))
     if p.get("texto_ia", "").strip():
         principal.append(f'<section><h2>Sobre {e(p["nombre"])}</h2>{parrafos(p["texto_ia"])}'
                          f'<p class="nota-ia">Texto redactado con ayuda de IA a partir de Wikipedia.</p></section>')
@@ -772,6 +775,9 @@ def _pagina_pueblo(p: dict, anterior, siguiente, cfg) -> str:
         fuente = (f'<p class="fuente">Fuente: <a href="{e(w.get("url"))}">«{e(w.get("titulo"))}» en Wikipedia</a> '
                   f'(CC BY-SA 4.0)</p>') if w.get("url") else ""
         principal.append(f'<section class="wiki"><h2>Según Wikipedia</h2>{parrafos(w["extracto"])}{fuente}</section>')
+    if _DISENO["fiestas"]:
+        from .fiestas import del_pueblo
+        principal.append(X.bloque_fiestas(del_pueblo(p), p["nombre"]))
     if w.get("que_ver") and _DISENO["mostrar_extra"]:
         tarjetas = []
         for lugar in w["que_ver"]:
@@ -823,8 +829,15 @@ def _pagina_pueblo(p: dict, anterior, siguiente, cfg) -> str:
     if w.get("url"):
         enlaces.append(f'<a href="{e(w["url"])}">Artículo en Wikipedia</a>')
     escudo = f'<img class="escudo" src="{e(w["escudo"])}" alt="Escudo de {e(p["nombre"])}" loading="lazy">' if w.get("escudo") else ""
-    aside = (f'<aside class="datos">{escudo}<dl>{dl}</dl>'
-             f'<div class="enlaces">{"".join(enlaces)}</div></aside>')
+    extra_lateral = ""
+    if _DISENO["tiempo"]:
+        extra_lateral += X.bloque_tiempo(p.get("lat"), p.get("lon"))
+    if _DISENO["mapa_pueblo"]:
+        extra_lateral += X.bloque_mapa(p.get("lat"), p.get("lon"), p["nombre"])
+    if _DISENO["cercanos"]:
+        extra_lateral += X.bloque_cercanos(p.get("_cerca"))
+    aside = (f'<div class="lateral"><aside class="datos">{escudo}<dl>{dl}</dl>'
+             f'<div class="enlaces">{"".join(enlaces)}</div></aside>{extra_lateral}</div>')
 
     galeria = ""
     if p.get("fotos"):
@@ -857,7 +870,9 @@ def _pagina_pueblo(p: dict, anterior, siguiente, cfg) -> str:
     desc = (w.get("extracto") or p.get("texto_ia") or "")[:160]
     imagen = f'pueblos/{p["slug"]}/compartir.jpg' if p.get("_img_compartir") else (
         f'pueblos/{p["slug"]}/fotos/{p["portada"]}' if p.get("portada") else "")
-    return _pagina(f'{p["nombre"]} · {cfg.get("titulo_web")}', cuerpo, "../../", desc, JS_VISOR,
+    return _pagina(f'{p["nombre"]} · {cfg.get("titulo_web")}', cuerpo, "../../", desc,
+                   JS_VISOR + (X.JS_TIEMPO if _DISENO["tiempo"] else "") + (X.JS_FIESTAS if _DISENO["fiestas"] else ""),
+                   cabeza=X.FUENTE_MANO if p.get("notas", "").strip() else "",
                    ruta=f'pueblos/{p["slug"]}/', imagen=imagen)
 
 
@@ -909,7 +924,9 @@ def generar(almacen: Almacen, cfg, destino: Path, avisar=print) -> int:
         _copiar_si_cambia(Path(logo), destino / "logo.png")
     elif (destino / "logo.png").exists():
         (destino / "logo.png").unlink()
-    estilo = D.css_final(CSS.strip() + X.CSS, _DISENO)
+    estilo = D.css_final(CSS.strip() + X.CSS + X.CSS_FICHA + X.CSS_FIESTAS + X.CSS_NOTAS, _DISENO)
+    for p in pueblos:
+        p["_cerca"] = X.cercanos(p, pueblos)
     # web instalable: iconos, manifiesto y service worker (o uno que se borra si la opción está apagada)
     _ICONOS = False
     if _DISENO["instalable"]:

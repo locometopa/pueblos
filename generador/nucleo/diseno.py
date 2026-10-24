@@ -15,6 +15,11 @@ DEFECTO = {
     "cronologia": True,          # línea del tiempo de viajes en la portada
     "compartir": True,           # foto y título al compartir por WhatsApp, Telegram…
     "instalable": True,          # se puede instalar en el móvil como una app
+    "tiempo": True,              # el tiempo que hace en la ficha de cada pueblo
+    "mapa_pueblo": True,         # mapa pequeño y «Cómo llegar» en cada pueblo
+    "cercanos": True,            # «Cerca de aquí»: tus otros pueblos cercanos
+    "fiestas": True,             # fiestas de cada pueblo y «Próximas fiestas» en la portada
+    "notas_a_mano": True,        # «Mi cuaderno» con letra manuscrita
 }
 
 CABECERAS = {

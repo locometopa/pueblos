@@ -1,5 +1,5 @@
 {
-  "version": "0.7",
-  "notas": "Novedades: foto y título al compartir por WhatsApp, web instalable en el móvil y línea del tiempo de tus viajes (cada una se puede activar o desactivar en «Diseño»).",
+  "version": "0.9.1",
+  "notas": "Novedades: fiestas de cada pueblo (sin IA) con «Próximas fiestas» en la portada, notas rediseñadas como un cuaderno, varias IAs, el tiempo y mapa en cada pueblo, WhatsApp, web y panel instalables.",
   "archivo": "PUEBLOS.zip"
 }
