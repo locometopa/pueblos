@@ -5,6 +5,7 @@ import shutil
 import time
 from pathlib import Path
 
+from . import diseno as D
 from . import mapa
 from .datos import Almacen, normalizar, slugify
 
@@ -138,6 +139,34 @@ a{color:var(--acento)}
   .paisaje .nubes{animation:nubes 60s linear infinite alternate}
   @keyframes nubes{to{transform:translateX(60px)}}
 }
+
+/* ---- cabecera: foto grande ---- */
+.cabecera.con-foto{position:relative;min-height:clamp(320px,48vh,520px);display:flex;align-items:flex-end;color:#fff;
+  border-bottom:0;padding:0;overflow:hidden;background:#3a332b}
+.con-foto>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.con-foto::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35),rgba(0,0,0,0) 35%,rgba(0,0,0,.72))}
+.con-foto .envoltorio{position:relative;z-index:2;width:100%;padding-top:40px;padding-bottom:34px}
+.con-foto .sello{color:#ffd9c2}.con-foto p,.con-foto .cifras span{color:rgba(255,255,255,.85)}
+.con-foto h1{font-size:clamp(36px,6vw,64px)}
+.con-foto .pie-foto{position:absolute;right:14px;bottom:10px;z-index:2;font-size:13px;color:rgba(255,255,255,.85)}
+.con-foto .pie-foto a{color:#fff}
+/* ---- cabecera: collage ---- */
+.cabecera.con-collage{position:relative;overflow:hidden;padding:44px 0 40px}
+.con-collage .envoltorio{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:20px;align-items:center}
+.collage{position:relative;height:300px}
+.collage figure{position:absolute;margin:0;background:#fff;padding:7px 7px 24px;box-shadow:0 8px 24px rgba(40,25,10,.2);width:46%}
+.collage figure img{width:100%;aspect-ratio:4/3;object-fit:cover}
+.collage figcaption{font:500 13px var(--f-texto);color:#555;text-align:center;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.collage figure:nth-child(1){left:2%;top:4%;transform:rotate(-6deg)}
+.collage figure:nth-child(2){left:48%;top:0;transform:rotate(5deg)}
+.collage figure:nth-child(3){left:20%;top:44%;transform:rotate(3deg)}
+.collage figure:nth-child(4){left:58%;top:48%;transform:rotate(-4deg)}
+.collage figure:nth-child(5){left:6%;top:60%;transform:rotate(-9deg);width:34%}
+@media (max-width:760px){.con-collage .envoltorio{grid-template-columns:1fr}.collage{height:200px}.collage figure{width:40%}}
+.cabecera.sencilla{padding:40px 0 30px}
+/* ---- logo ---- */
+.marca{display:flex;align-items:center;gap:12px}
+.marca img{width:44px;height:44px;border-radius:12px;object-fit:cover;box-shadow:var(--sombra)}
 
 /* ---- filtros ---- */
 .filtros{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--papel) 92%,transparent);
@@ -395,6 +424,12 @@ JS_MAPA = r"""
 })();
 """
 
+JS_CABECERA = r"""
+(function(){var d=document.getElementById('fotos-cab');if(!d)return;var f=JSON.parse(d.textContent);if(f.length<2)return;
+  var x=f[Math.floor(Math.random()*f.length)],img=document.getElementById('foto-cab'),a=document.getElementById('foto-cab-enlace');
+  img.src=x.src;a.href=x.url;a.textContent=x.nombre;})();
+"""
+
 JS_VISOR = r"""
 (function(){
   var enlaces=[].slice.call(document.querySelectorAll('.mosaico a.ampliar')); if(!enlaces.length) return;
@@ -411,6 +446,17 @@ JS_VISOR = r"""
 
 
 _VERSION_RECURSOS = "1"   # cambia cuando cambian estilos o mapa: así el navegador no usa copias viejas
+_DISENO = D.normalizar({})
+_LOGO = False
+_PREVIA = False
+
+
+def _script_previa(raiz: str) -> str:
+    """Solo en la vista previa del programa: la página se recarga sola cuando cambias el diseño."""
+    return ("<script>(function(){var v=null;function mirar(){var s=document.createElement('script');"
+            f"s.src='{raiz}_previa_v.js?t='+Date.now();s.onload=function(){{if(v===null)v=window.__PREVIA_V;"
+            "else if(window.__PREVIA_V!==v){location.reload();}s.remove();};s.onerror=function(){s.remove();};"
+            "document.head.appendChild(s);}setInterval(mirar,1200);mirar();})();</script>")
 
 
 def _pagina(titulo: str, cuerpo: str, raiz: str, descripcion: str = "", js: str = "", scripts=()) -> str:
@@ -421,15 +467,18 @@ def _pagina(titulo: str, cuerpo: str, raiz: str, descripcion: str = "", js: str 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{e(titulo)}</title>
 <meta name="description" content="{e(descripcion)}">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<meta name="theme-color" content="{D.color_tema(_DISENO)}">
+<meta name="color-scheme" content="{ {'claro': 'light', 'oscuro': 'dark'}.get(_DISENO['modo'], 'light dark') }">
+<link rel="icon" href="{raiz}{'logo.png' if _LOGO else 'favicon.svg'}?v={_VERSION_RECURSOS}">
+<link rel="apple-touch-icon" href="{raiz}{'logo.png' if _LOGO else 'favicon.svg'}?v={_VERSION_RECURSOS}">
+{D.enlace_fuentes(_DISENO)}
 <link rel="stylesheet" href="{raiz}estilo.css?v={_VERSION_RECURSOS}">
 </head>
 <body>
 {cuerpo}
 {''.join(f'<script src="{raiz}{x}?v={_VERSION_RECURSOS}"></script>' for x in scripts)}
 {f'<script>{js}</script>' if js else ''}
+{_script_previa(raiz) if _PREVIA else ''}
 </body>
 </html>
 """
@@ -553,9 +602,8 @@ def _indice(pueblos: list, cfg, pendientes=()) -> str:
                         f'<p>{len(pendientes)} {"pueblo" if len(pendientes) == 1 else "pueblos"} en mi lista de pendientes.</p>'
                         f'<div class="rejilla">{fichas}</div></section>')
 
-    cuerpo = f"""
-<header class="cabecera con-dibujo"><div class="envoltorio">
-  <div class="sello">Cuaderno de viaje</div>
+    textos = f"""
+  <div class="marca">{'<img src="logo.png" alt="">' if _LOGO else ''}<div class="sello">Cuaderno de viaje</div></div>
   <h1>{e(cfg.get('titulo_web'))}</h1>
   <p>{e(cfg.get('subtitulo_web'))}</p>
   <div class="cifras">
@@ -563,7 +611,28 @@ def _indice(pueblos: list, cfg, pendientes=()) -> str:
     <div>{len(prov_visitadas)}<span>de {total_prov} provincias</span></div>
     <div>{len(por_com)}<span>{'comunidad' if len(por_com) == 1 else 'comunidades'}</span></div>
     {f'<div>{len(pendientes)}<span>por visitar</span></div>' if pendientes else ''}
-  </div>
+  </div>"""
+    con_foto = [p for p in sorted(pueblos, key=lambda x: (x.get("fechas_visita") or [""])[-1], reverse=True) if p.get("portada")]
+    estilo = _DISENO["cabecera"]
+    if estilo in ("foto", "collage") and not con_foto:
+        estilo = "dibujo"
+    if estilo == "foto":
+        fotos = [{"src": f"pueblos/{p['slug']}/fotos/{p['portada']}", "nombre": p["nombre"],
+                  "url": f"pueblos/{p['slug']}/index.html"} for p in con_foto[:40]]
+        lista = json.dumps(fotos, ensure_ascii=False).replace("</", "<\\/")
+        cabecera = (f'<header class="cabecera con-foto"><img id="foto-cab" src="{e(fotos[0]["src"])}" alt="">'
+                    f'<div class="envoltorio">{textos}</div>'
+                    f'<div class="pie-foto">En la foto: <a id="foto-cab-enlace" href="{e(fotos[0]["url"])}">{e(fotos[0]["nombre"])}</a></div>'
+                    f'<script type="application/json" id="fotos-cab">{lista}</script></header>')
+    elif estilo == "collage":
+        figuras = "".join(f'<figure><img src="pueblos/{e(p["slug"])}/mini/{e(p["portada"])}" alt="" loading="lazy">'
+                          f'<figcaption>{e(p["nombre"])}</figcaption></figure>' for p in con_foto[:5])
+        cabecera = (f'<header class="cabecera con-collage"><div class="envoltorio"><div>{textos}</div>'
+                    f'<div class="collage" aria-hidden="true">{figuras}</div></div></header>')
+    elif estilo == "sencilla":
+        cabecera = f'<header class="cabecera sencilla"><div class="envoltorio">{textos}</div></header>'
+    else:
+        cabecera = f"""<header class="cabecera con-dibujo"><div class="envoltorio">{textos}
 </div>
   <div class="paisaje" aria-hidden="true"><svg viewBox="0 88 1440 212" preserveAspectRatio="xMidYMax meet">
     <g class="estrellas"><circle cx="140" cy="100" r="1.6"/><circle cx="260" cy="130" r="1.2"/><circle cx="420" cy="96" r="1.4"/><circle cx="610" cy="112" r="1.1"/>
@@ -592,9 +661,8 @@ def _indice(pueblos: list, cfg, pendientes=()) -> str:
     <path class="camino" d="M700 300 C720 270 690 255 740 238"/>
     <path class="suelo" d="M0 300 V285 C300 270 600 292 900 280 C1150 270 1300 288 1440 282 V300Z"/>
   </svg></div>
-</header>
-{seccion_mapa}
-<nav class="filtros" aria-label="Filtros"><div class="envoltorio">
+</header>"""
+    lista_pueblos = f"""<nav class="filtros" aria-label="Filtros"><div class="envoltorio">
   <input id="buscar" type="search" placeholder="Buscar un pueblo, provincia…" aria-label="Buscar">
   <div class="chips">{''.join(chips)}</div>
 </div></nav>
@@ -602,9 +670,15 @@ def _indice(pueblos: list, cfg, pendientes=()) -> str:
 {''.join(secciones) or '<p class="vacio">Todavía no hay pueblos visitados.</p>'}
 <p class="vacio" id="nada" hidden>No hay pueblos que coincidan.</p>
 {seccion_pend}
-</main>
+</main>"""
+    if not _DISENO["mostrar_mapa"]:
+        seccion_mapa = ""
+    partes = [seccion_mapa, lista_pueblos] if _DISENO["mapa_primero"] else [lista_pueblos, seccion_mapa]
+    cuerpo = f"""
+{cabecera}
+{''.join(partes)}
 {_pie(cfg)}"""
-    return _pagina(cfg.get("titulo_web"), cuerpo, "", cfg.get("subtitulo_web"), JS_INDICE + JS_MAPA,
+    return _pagina(cfg.get("titulo_web"), cuerpo, "", cfg.get("subtitulo_web"), JS_INDICE + JS_MAPA + JS_CABECERA,
                    scripts=("js/d3.min.js", "js/d3-composite-projections.min.js", "js/provincias.js"))
 
 
@@ -649,7 +723,7 @@ def _pagina_pueblo(p: dict, anterior, siguiente, cfg) -> str:
         fuente = (f'<p class="fuente">Fuente: <a href="{e(w.get("url"))}">«{e(w.get("titulo"))}» en Wikipedia</a> '
                   f'(CC BY-SA 4.0)</p>') if w.get("url") else ""
         principal.append(f'<section class="wiki"><h2>Según Wikipedia</h2>{parrafos(w["extracto"])}{fuente}</section>')
-    if w.get("que_ver"):
+    if w.get("que_ver") and _DISENO["mostrar_extra"]:
         tarjetas = []
         for lugar in w["que_ver"]:
             img = ""
@@ -661,7 +735,7 @@ def _pagina_pueblo(p: dict, anterior, siguiente, cfg) -> str:
                             f'{img}<b>{e(lugar["nombre"])}</b></a>')
         principal.append(f'<section class="que-ver"><h2>Qué ver</h2><div class="lugares">{"".join(tarjetas)}</div>'
                          '<p class="fuente">Lugares de interés de Wikidata; fotos de Wikimedia Commons.</p></section>')
-    if w.get("secciones"):
+    if w.get("secciones") and _DISENO["mostrar_extra"]:
         iconos = {"historia": "📜", "patrimonio": "🏛", "fiestas": "🎉", "gastronomia": "🍲", "cultura": "🎭",
                   "leyendas": "🗝", "naturaleza": "🌿", "personajes": "👤"}
         bloques = "".join(
@@ -771,10 +845,21 @@ def generar(almacen: Almacen, cfg, destino: Path, avisar=print) -> int:
     if not geo_js.exists() or geo_js.read_text(encoding="utf-8") != contenido:
         geo_js.write_text(contenido, encoding="utf-8")
     import hashlib
-    global _VERSION_RECURSOS
-    _VERSION_RECURSOS = hashlib.md5((CSS + contenido).encode("utf-8")).hexdigest()[:10]
+    global _VERSION_RECURSOS, _DISENO, _LOGO, _PREVIA
+    _DISENO = D.normalizar(cfg.get("diseno"))
+    _PREVIA = bool(cfg.get("_previa"))
+    logo = cfg.get("logo_ruta")
+    _LOGO = bool(logo and Path(logo).exists())
+    if _LOGO:
+        _copiar_si_cambia(Path(logo), destino / "logo.png")
+    elif (destino / "logo.png").exists():
+        (destino / "logo.png").unlink()
+    estilo = D.css_final(CSS.strip(), _DISENO)
+    (destino / "favicon.svg").write_text(D.favicon_svg(_DISENO), encoding="utf-8")
+    huella = estilo + contenido + (str(Path(logo).stat().st_mtime) if _LOGO else "")
+    _VERSION_RECURSOS = hashlib.md5(huella.encode("utf-8")).hexdigest()[:10]
 
-    (destino / "estilo.css").write_text(CSS.strip() + "\n", encoding="utf-8")
+    (destino / "estilo.css").write_text(estilo + "\n", encoding="utf-8")
     (destino / ".nojekyll").write_text("", encoding="utf-8")
     (destino / "index.html").write_text(_indice(visitados, cfg, pendientes), encoding="utf-8")
 
@@ -802,6 +887,11 @@ def generar(almacen: Almacen, cfg, destino: Path, avisar=print) -> int:
         cp.mkdir(parents=True, exist_ok=True)
         (cp / "index.html").write_text(_pagina_pueblo(p, anterior, siguiente, cfg), encoding="utf-8")
 
+    if _PREVIA:   # avisa a la vista previa abierta de que hay cambios
+        import time as _t
+        (destino / "_previa_v.js").write_text(f"window.__PREVIA_V={_t.time()!r};", encoding="utf-8")
+    elif (destino / "_previa_v.js").exists():
+        (destino / "_previa_v.js").unlink()
     # Pueblos borrados o despublicados: se quitan de la web (solo dentro de sitio/pueblos)
     publicados = {p["slug"] for p in pueblos}
     for c in carpeta_pueblos.iterdir():
