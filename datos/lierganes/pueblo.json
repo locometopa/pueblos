@@ -1,0 +1,81 @@
+{
+  "slug": "lierganes",
+  "nombre": "Lierganes",
+  "provincia": "Cantabria",
+  "comunidad": "Cantabria",
+  "pais": "España",
+  "lat": 43.345733,
+  "lon": -3.743218,
+  "fechas_visita": [
+    "2026-10-24"
+  ],
+  "wiki": {
+    "titulo": "Liérganes",
+    "url": "https://es.wikipedia.org/wiki/Li%C3%A9rganes",
+    "extracto": "Liérganes es un municipio y localidad de la comunidad autónoma de Cantabria (España) situado en la comarca de Trasmiera. Limita al norte con Medio Cudeyo, al este con Riotuerto, al sur con Miera y al oeste con Penagos. Por su territorio discurre el río Miera, caudal que alimenta al balneario de Liérganes. Asimismo, dispone de un servicio de cercanías operado por Renfe Cercanías que le une a Santander, mediante la red de Adif. Está nombrado como uno de los pueblos más bonitos de España.\nLos principales núcleos de población son Liérganes (capital municipal) y Pámanes. El primero tiene más del doble de población que el segundo. El núcleo de Pámanes integra las localidades de Bucarrero, Casa del Monte, El Condado, La Herrán, Somarriba y Tarriba.",
+    "desambiguacion": false,
+    "wikidata": "Q377115",
+    "poblacion": 2365,
+    "poblacion_anio": "2025",
+    "altitud": 110,
+    "superficie": 36.73,
+    "escudo": "https://commons.wikimedia.org/wiki/Special:FilePath/Escudo_de_Liérganes.svg?width=160",
+    "web": "http://www.aytolierganes.com/"
+  },
+  "texto_ia": "",
+  "notas": "",
+  "fotos": [
+    {
+      "archivo": "0001.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "https://commons.wikimedia.org/wiki/File:Iglesia_de_Rucandio.jpg",
+      "credito": {
+        "autor": "Emilio Gómez Fernández",
+        "licencia": "CC BY-SA 3.0",
+        "url_licencia": "https://creativecommons.org/licenses/by-sa/3.0",
+        "fuente": "https://commons.wikimedia.org/wiki/File:Iglesia_de_Rucandio.jpg"
+      }
+    },
+    {
+      "archivo": "0002.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "https://commons.wikimedia.org/wiki/File:Las_Tetas_de_Lierganes.jpg",
+      "credito": {
+        "autor": "Emilio Gómez Fernández",
+        "licencia": "CC BY-SA 3.0",
+        "url_licencia": "https://creativecommons.org/licenses/by-sa/3.0",
+        "fuente": "https://commons.wikimedia.org/wiki/File:Las_Tetas_de_Lierganes.jpg"
+      }
+    },
+    {
+      "archivo": "0003.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "https://commons.wikimedia.org/wiki/File:Rubalcaba_Lierganes.JPG",
+      "credito": {
+        "autor": "Jesús Gómez Fernández",
+        "licencia": "CC BY-SA 3.0",
+        "url_licencia": "https://creativecommons.org/licenses/by-sa/3.0",
+        "fuente": "https://commons.wikimedia.org/wiki/File:Rubalcaba_Lierganes.JPG"
+      }
+    },
+    {
+      "archivo": "0004.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "https://commons.wikimedia.org/wiki/File:LI%C3%89RGANES_3.jpg",
+      "credito": {
+        "autor": "Pacodonderis",
+        "licencia": "CC BY-SA 4.0",
+        "url_licencia": "https://creativecommons.org/licenses/by-sa/4.0",
+        "fuente": "https://commons.wikimedia.org/wiki/File:LI%C3%89RGANES_3.jpg"
+      }
+    }
+  ],
+  "portada": "0004.jpg",
+  "publicar": true,
+  "creado": "2026-10-24 16:10",
+  "modificado": "2026-10-24 17:47"
+}
