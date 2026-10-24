@@ -331,3 +331,116 @@ CSS = """
 .ayuda-ios{margin:10px 0 0;max-width:420px}
 @media (max-width:600px){.anio ol{grid-template-columns:1fr}.cronologia>h2{font-size:28px}}
 """
+
+
+# ---------------------------------------------------------------------------- ficha del pueblo: tiempo, mapa, cerca
+def bloque_tiempo(lat, lon) -> str:
+    if lat is None or lon is None:
+        return ""
+    return (f'<section class="caja tiempo" data-lat="{lat}" data-lon="{lon}" hidden><h3>El tiempo ahora</h3>'
+            '<div class="t-ahora"></div><ol class="t-dias"></ol><p class="t-sol"></p>'
+            '<p class="fuente">Previsión de <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a></p></section>')
+
+
+def bloque_mapa(lat, lon, nombre) -> str:
+    if lat is None or lon is None:
+        return ""
+    d = 0.035
+    bbox = f"{lon - d * 1.4},{lat - d},{lon + d * 1.4},{lat + d}"
+    return (f'<section class="caja mapa-pueblo"><h3>Dónde está</h3>'
+            f'<iframe title="Mapa de {e(nombre)}" loading="lazy" referrerpolicy="no-referrer" '
+            f'src="https://www.openstreetmap.org/export/embed.html?bbox={bbox}&amp;layer=mapnik&amp;marker={lat},{lon}"></iframe>'
+            f'<div class="fila-botones"><a class="boton" target="_blank" rel="noopener" '
+            f'href="https://www.google.com/maps/dir/?api=1&amp;destination={lat},{lon}">🚗 Cómo llegar</a>'
+            f'<a class="boton sec" target="_blank" rel="noopener" '
+            f'href="https://www.openstreetmap.org/?mlat={lat}&amp;mlon={lon}#map=14/{lat}/{lon}">Mapa grande</a></div></section>')
+
+
+def distancia_km(a, b) -> float:
+    from math import radians, sin, cos, asin, sqrt
+    la1, lo1, la2, lo2 = map(radians, (a[0], a[1], b[0], b[1]))
+    h = sin((la2 - la1) / 2) ** 2 + cos(la1) * cos(la2) * sin((lo2 - lo1) / 2) ** 2
+    return 2 * 6371 * asin(sqrt(h))
+
+
+def cercanos(p: dict, todos: list, maximo=5, radio=80) -> list:
+    if p.get("lat") is None or p.get("lon") is None:
+        return []
+    res = []
+    for q in todos:
+        if q is p or q.get("slug") == p.get("slug") or q.get("lat") is None or q.get("lon") is None:
+            continue
+        km = distancia_km((p["lat"], p["lon"]), (q["lat"], q["lon"]))
+        if km <= radio:
+            res.append((km, q))
+    res.sort(key=lambda x: x[0])
+    return res[:maximo]
+
+
+def bloque_cercanos(lista) -> str:
+    if not lista:
+        return ""
+    items = "".join(
+        f'<li><a href="../{e(q["slug"])}/index.html"><b>{e(q["nombre"])}</b>'
+        f'<small>{round(km) if km >= 1 else "< 1"} km{" · por visitar" if q.get("estado") == "pendiente" else ""}</small></a></li>'
+        for km, q in lista)
+    return f'<section class="caja cerca"><h3>Cerca de aquí</h3><ul>{items}</ul></section>'
+
+
+JS_TIEMPO = r"""
+(function(){
+  var c=document.querySelector('.caja.tiempo'); if(!c) return;
+  var W={0:['☀️','Despejado'],1:['🌤','Casi despejado'],2:['⛅','Nubes y claros'],3:['☁️','Nublado'],45:['🌫','Niebla'],48:['🌫','Niebla'],
+    51:['🌦','Llovizna'],53:['🌦','Llovizna'],55:['🌧','Llovizna fuerte'],56:['🌧','Llovizna helada'],57:['🌧','Llovizna helada'],
+    61:['🌦','Lluvia débil'],63:['🌧','Lluvia'],65:['🌧','Lluvia fuerte'],66:['🌧','Lluvia helada'],67:['🌧','Lluvia helada'],
+    71:['🌨','Nieve débil'],73:['🌨','Nieve'],75:['❄️','Nieve fuerte'],77:['🌨','Granizo fino'],80:['🌦','Chubascos'],81:['🌧','Chubascos'],
+    82:['⛈','Chubascos fuertes'],85:['🌨','Chubascos de nieve'],86:['❄️','Chubascos de nieve'],95:['⛈','Tormenta'],96:['⛈','Tormenta con granizo'],99:['⛈','Tormenta con granizo']};
+  function w(n,dia){var x=W[n]||['🌡','—']; if(!dia&&(n===0||n===1)) x=[n===0?'🌙':'🌙',x[1]]; return x;}
+  var DS=['dom','lun','mar','mié','jue','vie','sáb'];
+  var url='https://api.open-meteo.com/v1/forecast?latitude='+c.dataset.lat+'&longitude='+c.dataset.lon+
+    '&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,is_day'+
+    '&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset&timezone=auto&forecast_days=5';
+  fetch(url).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){
+    var a=d.current, x=w(a.weather_code,a.is_day);
+    c.querySelector('.t-ahora').innerHTML='<span class="t-icono">'+x[0]+'</span><span class="t-grados">'+Math.round(a.temperature_2m)+
+      '°</span><span class="t-txt">'+x[1]+'<small>Sensación '+Math.round(a.apparent_temperature)+'° · viento '+Math.round(a.wind_speed_10m)+' km/h</small></span>';
+    var D=d.daily, h='';
+    for(var i=0;i<D.time.length;i++){var f=new Date(D.time[i]+'T12:00:00'), y=w(D.weather_code[i],1);
+      var lluvia=D.precipitation_probability_max&&D.precipitation_probability_max[i]>=30?'<em>💧'+D.precipitation_probability_max[i]+'%</em>':'<em></em>';
+      h+='<li><b>'+(i===0?'Hoy':i===1?'Mañana':DS[f.getDay()])+'</b><span title="'+y[1]+'">'+y[0]+'</span>'+lluvia+
+         '<span>'+Math.round(D.temperature_2m_max[i])+'° <small>'+Math.round(D.temperature_2m_min[i])+'°</small></span></li>';}
+    c.querySelector('.t-dias').innerHTML=h;
+    var hora=function(s){return s?s.slice(11,16):'';};
+    c.querySelector('.t-sol').textContent='🌅 '+hora(D.sunrise[0])+'   🌇 '+hora(D.sunset[0]);
+    c.hidden=false;
+  }).catch(function(){});
+})();
+"""
+
+CSS_FICHA = """
+.lateral{align-self:start;min-width:0}
+.lateral .datos{position:static}
+.caja{margin-top:18px;padding:16px;border-radius:14px;background:var(--tarjeta);box-shadow:var(--sombra)}
+.caja h3{font:600 19px var(--f-titulo);margin:0 0 10px}
+.caja .fuente{margin:10px 0 0;font-size:12px;color:var(--tinta-2)}
+.t-ahora{display:flex;align-items:center;gap:10px}
+.t-icono{font-size:40px;line-height:1}
+.t-grados{font:600 40px/1 var(--f-titulo)}
+.t-txt{display:flex;flex-direction:column;font-weight:600}
+.t-txt small{font-weight:400;color:var(--tinta-2);font-size:13px}
+.t-dias{list-style:none;margin:14px 0 0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:4px;text-align:center;font-size:13px}
+.t-dias li{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;border-radius:10px;background:var(--papel-2)}
+.t-dias b{font-weight:600;text-transform:capitalize}
+.t-dias span:first-of-type{font-size:22px}
+.t-dias em{font-style:normal;font-size:11px;color:var(--pendiente);min-height:14px}
+.t-dias small{color:var(--tinta-2)}
+.t-sol{margin:10px 0 0;font-size:14px;color:var(--tinta-2);white-space:pre}
+.mapa-pueblo iframe{width:100%;height:220px;border:0;border-radius:10px;display:block;background:var(--papel-2)}
+.fila-botones{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.boton{display:inline-block;padding:8px 14px;border-radius:99px;background:var(--acento);color:#fff!important;text-decoration:none;font-size:14px;font-weight:600}
+.boton.sec{background:transparent;color:var(--tinta)!important;border:1px solid var(--linea)}
+.cerca ul{list-style:none;margin:0;padding:0}
+.cerca li a{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid var(--linea);text-decoration:none;color:var(--tinta)}
+.cerca li:first-child a{border-top:0}
+.cerca small{color:var(--tinta-2);white-space:nowrap}
+"""

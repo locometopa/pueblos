@@ -823,8 +823,15 @@ def _pagina_pueblo(p: dict, anterior, siguiente, cfg) -> str:
     if w.get("url"):
         enlaces.append(f'<a href="{e(w["url"])}">Artículo en Wikipedia</a>')
     escudo = f'<img class="escudo" src="{e(w["escudo"])}" alt="Escudo de {e(p["nombre"])}" loading="lazy">' if w.get("escudo") else ""
-    aside = (f'<aside class="datos">{escudo}<dl>{dl}</dl>'
-             f'<div class="enlaces">{"".join(enlaces)}</div></aside>')
+    extra_lateral = ""
+    if _DISENO["tiempo"]:
+        extra_lateral += X.bloque_tiempo(p.get("lat"), p.get("lon"))
+    if _DISENO["mapa_pueblo"]:
+        extra_lateral += X.bloque_mapa(p.get("lat"), p.get("lon"), p["nombre"])
+    if _DISENO["cercanos"]:
+        extra_lateral += X.bloque_cercanos(p.get("_cerca"))
+    aside = (f'<div class="lateral"><aside class="datos">{escudo}<dl>{dl}</dl>'
+             f'<div class="enlaces">{"".join(enlaces)}</div></aside>{extra_lateral}</div>')
 
     galeria = ""
     if p.get("fotos"):
@@ -857,7 +864,8 @@ def _pagina_pueblo(p: dict, anterior, siguiente, cfg) -> str:
     desc = (w.get("extracto") or p.get("texto_ia") or "")[:160]
     imagen = f'pueblos/{p["slug"]}/compartir.jpg' if p.get("_img_compartir") else (
         f'pueblos/{p["slug"]}/fotos/{p["portada"]}' if p.get("portada") else "")
-    return _pagina(f'{p["nombre"]} · {cfg.get("titulo_web")}', cuerpo, "../../", desc, JS_VISOR,
+    return _pagina(f'{p["nombre"]} · {cfg.get("titulo_web")}', cuerpo, "../../", desc,
+                   JS_VISOR + (X.JS_TIEMPO if _DISENO["tiempo"] else ""),
                    ruta=f'pueblos/{p["slug"]}/', imagen=imagen)
 
 
@@ -909,7 +917,9 @@ def generar(almacen: Almacen, cfg, destino: Path, avisar=print) -> int:
         _copiar_si_cambia(Path(logo), destino / "logo.png")
     elif (destino / "logo.png").exists():
         (destino / "logo.png").unlink()
-    estilo = D.css_final(CSS.strip() + X.CSS, _DISENO)
+    estilo = D.css_final(CSS.strip() + X.CSS + X.CSS_FICHA, _DISENO)
+    for p in pueblos:
+        p["_cerca"] = X.cercanos(p, pueblos)
     # web instalable: iconos, manifiesto y service worker (o uno que se borra si la opción está apagada)
     _ICONOS = False
     if _DISENO["instalable"]:

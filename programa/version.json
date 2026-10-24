@@ -1,5 +1,5 @@
 {
-  "version": "0.7.1",
-  "notas": "Novedades: foto y título al compartir por WhatsApp, web y panel de gestión instalables en el móvil, y línea del tiempo de tus viajes (se activan o desactivan en «Diseño»).",
+  "version": "0.8",
+  "notas": "Novedades: elige la IA (Claude, ChatGPT, Gemini u otra) y la ficha de cada pueblo muestra el tiempo, un mapa con «Cómo llegar» y tus pueblos cercanos. También incluye lo de la 0.7: WhatsApp, web y panel instalables, línea del tiempo.",
   "archivo": "PUEBLOS.zip"
 }
