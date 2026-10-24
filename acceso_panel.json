@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "kdf": "PBKDF2-SHA256",
+  "iteraciones": 600000,
+  "sal": "H3XHzm0O9i7QRk+Y8MzQBA==",
+  "iv": "O4ZYYYH/a9+b9BeC",
+  "datos": "q5WE1CPp7bqxWJjP+UK2kTOmSbS2KvxmpQj5SkOpAwqrJCjkqoKTYlLVEjFoNqDCa1H37rR98wlUB8QQvkoZNzjD7xTGlUdIuJymsytYwvavt5mj1h50HkmMQQQwWVDoO9iv5+tg4nPoYzZWe71Am9gOiq+6WHJ3XknURPfHEUI64BAX6/mvU1iiqKaFgvpsswTXvG0=",
+  "creado": "2026-10-24 18:44"
+}
