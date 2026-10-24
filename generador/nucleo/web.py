@@ -225,14 +225,14 @@ a{color:var(--acento)}
 .wiki{color:var(--tinta-2)}
 .wiki .fuente,.cuerpo .fuente{font-size:14px;color:var(--tinta-2)}
 .lugares{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;margin-bottom:8px}
-.lugar{display:flex;flex-direction:column;background:var(--tarjeta);border-radius:10px;overflow:hidden;box-shadow:var(--sombra);
+.lugares .lugar{display:flex;flex-direction:column;background:var(--tarjeta);border-radius:10px;overflow:hidden;box-shadow:var(--sombra);
   text-decoration:none;color:var(--tinta);transition:transform .2s}
-.lugar:hover{transform:translateY(-2px)}
-.lugar img{width:100%;aspect-ratio:4/3;object-fit:cover}
-.lugar .credito{padding:4px 10px 0;font-size:11px}
-.lugar b{padding:6px 10px 10px;font-size:15px;line-height:1.3}
-.lugar.sin-img{align-self:start}
-.lugar.sin-img b{padding:14px 12px;border-left:3px solid var(--acento)}
+.lugares .lugar:hover{transform:translateY(-2px)}
+.lugares .lugar img{width:100%;aspect-ratio:4/3;object-fit:cover}
+.lugares .lugar .credito{padding:4px 10px 0;font-size:11px}
+.lugares .lugar b{padding:6px 10px 10px;font-size:15px;line-height:1.3}
+.lugares .lugar.sin-img{align-self:start}
+.lugares .lugar.sin-img b{padding:14px 12px;border-left:3px solid var(--acento)}
 .saber-mas details{background:var(--tarjeta);border-radius:10px;margin-bottom:8px;box-shadow:var(--sombra);overflow:hidden}
 .saber-mas summary{cursor:pointer;padding:12px 16px;font:600 18px var(--f-titulo);list-style:none;display:flex;gap:10px;align-items:center}
 .saber-mas summary::-webkit-details-marker{display:none}
@@ -763,6 +763,7 @@ def _pagina_pueblo(p: dict, anterior, siguiente, cfg) -> str:
               f'<div class="lugar">{e(lugar)}</div><h1>{e(p["nombre"])}</h1>'
               f'<div class="visitas">{e(txt_visitas)}</div>'
               f'{"<span class=etiqueta-pend>Por visitar</span>" if p.get("estado") == "pendiente" else ""}'
+              f'{X.tiempo_mini(p.get("lat"), p.get("lon")) if _DISENO["tiempo"] else ""}'
               f'</div>{credito_portada}</header>')
 
     principal = []
@@ -771,10 +772,6 @@ def _pagina_pueblo(p: dict, anterior, siguiente, cfg) -> str:
     if p.get("texto_ia", "").strip():
         principal.append(f'<section><h2>Sobre {e(p["nombre"])}</h2>{parrafos(p["texto_ia"])}'
                          f'<p class="nota-ia">Texto redactado con ayuda de IA a partir de Wikipedia.</p></section>')
-    if w.get("extracto"):
-        fuente = (f'<p class="fuente">Fuente: <a href="{e(w.get("url"))}">«{e(w.get("titulo"))}» en Wikipedia</a> '
-                  f'(CC BY-SA 4.0)</p>') if w.get("url") else ""
-        principal.append(f'<section class="wiki"><h2>Según Wikipedia</h2>{parrafos(w["extracto"])}{fuente}</section>')
     if _DISENO["fiestas"]:
         from .fiestas import del_pueblo
         principal.append(X.bloque_fiestas(del_pueblo(p), p["nombre"]))
@@ -786,10 +783,10 @@ def _pagina_pueblo(p: dict, anterior, siguiente, cfg) -> str:
                 c = lugar.get("credito") or {}
                 img = (f'<img src="{e(lugar["imagen"])}" alt="" loading="lazy">'
                        f'<small class="credito">Foto: {e(c.get("autor"))} · {e(c.get("licencia"))}</small>')
-            tarjetas.append(f'<a class="lugar{" sin-img" if not img else ""}" href="{e(lugar.get("url"))}" target="_blank" rel="noopener">'
-                            f'{img}<b>{e(lugar["nombre"])}</b></a>')
+            tarjetas.append(f'<a class="lugar{" sin-img" if not img else ""}" href="{e(lugar.get("url"))}" target="_blank" '
+                            f'rel="noopener" data-ficha="1">{img}<b>{e(lugar["nombre"])}</b></a>')
         principal.append(f'<section class="que-ver"><h2>Qué ver</h2><div class="lugares">{"".join(tarjetas)}</div>'
-                         '<p class="fuente">Lugares de interés de Wikidata; fotos de Wikimedia Commons.</p></section>')
+                         '<p class="fuente">Lugares de interés de Wikidata; fotos de Wikimedia Commons. Pulsa uno para ver su ficha.</p></section>')
     if w.get("secciones") and _DISENO["mostrar_extra"]:
         iconos = {"historia": "📜", "patrimonio": "🏛", "fiestas": "🎉", "gastronomia": "🍲", "cultura": "🎭",
                   "leyendas": "🗝", "naturaleza": "🌿", "personajes": "👤"}
@@ -830,8 +827,6 @@ def _pagina_pueblo(p: dict, anterior, siguiente, cfg) -> str:
         enlaces.append(f'<a href="{e(w["url"])}">Artículo en Wikipedia</a>')
     escudo = f'<img class="escudo" src="{e(w["escudo"])}" alt="Escudo de {e(p["nombre"])}" loading="lazy">' if w.get("escudo") else ""
     extra_lateral = ""
-    if _DISENO["tiempo"]:
-        extra_lateral += X.bloque_tiempo(p.get("lat"), p.get("lon"))
     if _DISENO["mapa_pueblo"]:
         extra_lateral += X.bloque_mapa(p.get("lat"), p.get("lon"), p["nombre"])
     if _DISENO["cercanos"]:
@@ -871,7 +866,8 @@ def _pagina_pueblo(p: dict, anterior, siguiente, cfg) -> str:
     imagen = f'pueblos/{p["slug"]}/compartir.jpg' if p.get("_img_compartir") else (
         f'pueblos/{p["slug"]}/fotos/{p["portada"]}' if p.get("portada") else "")
     return _pagina(f'{p["nombre"]} · {cfg.get("titulo_web")}', cuerpo, "../../", desc,
-                   JS_VISOR + (X.JS_TIEMPO if _DISENO["tiempo"] else "") + (X.JS_FIESTAS if _DISENO["fiestas"] else ""),
+                   JS_VISOR + (X.JS_TIEMPO if _DISENO["tiempo"] else "") + (X.JS_FIESTAS if _DISENO["fiestas"] else "")
+                   + (X.JS_FICHA_LUGAR if w.get("que_ver") and _DISENO["mostrar_extra"] else ""),
                    cabeza=X.FUENTE_MANO if p.get("notas", "").strip() else "",
                    ruta=f'pueblos/{p["slug"]}/', imagen=imagen)
 
@@ -924,7 +920,7 @@ def generar(almacen: Almacen, cfg, destino: Path, avisar=print) -> int:
         _copiar_si_cambia(Path(logo), destino / "logo.png")
     elif (destino / "logo.png").exists():
         (destino / "logo.png").unlink()
-    estilo = D.css_final(CSS.strip() + X.CSS + X.CSS_FICHA + X.CSS_FIESTAS + X.CSS_NOTAS, _DISENO)
+    estilo = D.css_final(CSS.strip() + X.CSS + X.CSS_FICHA + X.CSS_FIESTAS + X.CSS_NOTAS + X.CSS_MINI, _DISENO)
     for p in pueblos:
         p["_cerca"] = X.cercanos(p, pueblos)
     # web instalable: iconos, manifiesto y service worker (o uno que se borra si la opción está apagada)
