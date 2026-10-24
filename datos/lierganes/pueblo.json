@@ -20,7 +20,82 @@
     "altitud": 110,
     "superficie": 36.73,
     "escudo": "https://commons.wikimedia.org/wiki/Special:FilePath/Escudo_de_Liérganes.svg?width=160",
-    "web": "http://www.aytolierganes.com/"
+    "web": "http://www.aytolierganes.com/",
+    "secciones": [
+      {
+        "clave": "patrimonio",
+        "titulo": "Patrimonio",
+        "texto": "Cinco son los bienes de interés cultural de este municipio:\n\nPalacio de Elsedo, en Pámanes, monumento\nPalacio de Cuesta Mercadillo, en La Rañada, monumento\nCruz de Rubalcaba, en Rubalcaba, monumento\nIglesia de San Pedro Ad Víncula, monumento\nEl casco antiguo de Liérganes, conjunto histórico-artístico\nAdemás, son de interés:\n\nIglesia de San Sebastián, bien de interés local\nIglesia de San Lorenzo Mártir en Pámanes, bien inventariado\nIglesia de San Pantaleón, del siglo XIII\nPortalada de la Casa de Vega en Pámanes, bien inventariado\nFluviarium de Liérganes\nEl Puente Romano, del año 1587\nLa presa de Regolgo, del año 1799"
+      }
+    ],
+    "que_ver": [
+      {
+        "nombre": "iglesia de San Pedro ad Víncula",
+        "url": "https://es.wikipedia.org/wiki/Iglesia_de_San_Pedro_ad_V%C3%ADncula_(Li%C3%A9rganes)",
+        "imagen": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/40/Li%C3%A9rganes_-_Iglesia_de_San_Pedro_ad_V%C3%ADncula_08.jpg/500px-Li%C3%A9rganes_-_Iglesia_de_San_Pedro_ad_V%C3%ADncula_08.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "credito": {
+          "autor": "Zarateman",
+          "licencia": "CC0",
+          "url_licencia": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+          "fuente": "https://commons.wikimedia.org/wiki/File:Li%C3%A9rganes_-_Iglesia_de_San_Pedro_ad_V%C3%ADncula_08.jpg"
+        }
+      },
+      {
+        "nombre": "Cruz de Rubalcaba",
+        "url": "https://es.wikipedia.org/wiki/Cruz_de_Rubalcaba",
+        "imagen": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d0/Cantabria_Rubalcaba_cruz_Rubalcaba_lou.jpg/500px-Cantabria_Rubalcaba_cruz_Rubalcaba_lou.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "credito": {
+          "autor": "Lourdes Cardenal",
+          "licencia": "CC BY-SA 4.0",
+          "url_licencia": "https://creativecommons.org/licenses/by-sa/4.0",
+          "fuente": "https://commons.wikimedia.org/wiki/File:Cantabria_Rubalcaba_cruz_Rubalcaba_lou.jpg"
+        }
+      },
+      {
+        "nombre": "iglesia de San Pantaleón",
+        "url": "https://es.wikipedia.org/wiki/Iglesia_de_San_Pantale%C3%B3n_(Li%C3%A9rganes)",
+        "imagen": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f9/Iglesia_de_San_Pantale%C3%B3n%2C_Li%C3%A9rganes%2C_Cantabria_%2839418%29.jpg/500px-Iglesia_de_San_Pantale%C3%B3n%2C_Li%C3%A9rganes%2C_Cantabria_%2839418%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "credito": {
+          "autor": "Ibai1984",
+          "licencia": "CC BY-SA 4.0",
+          "url_licencia": "https://creativecommons.org/licenses/by-sa/4.0",
+          "fuente": "https://commons.wikimedia.org/wiki/File:Iglesia_de_San_Pantale%C3%B3n,_Li%C3%A9rganes,_Cantabria_(39418).jpg"
+        }
+      },
+      {
+        "nombre": "puente de Liérganes",
+        "url": "https://es.wikipedia.org/wiki/Puente_de_Li%C3%A9rganes",
+        "imagen": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/39/Puente_de_Li%C3%A9rganes.jpg/500px-Puente_de_Li%C3%A9rganes.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "credito": {
+          "autor": "Dutch Uncle",
+          "licencia": "Public domain",
+          "url_licencia": "",
+          "fuente": "https://commons.wikimedia.org/wiki/File:Puente_de_Li%C3%A9rganes.jpg"
+        }
+      },
+      {
+        "nombre": "Palacio de Cuesta Mercadillo",
+        "url": "https://es.wikipedia.org/wiki/Palacio_de_Cuesta_Mercadillo",
+        "imagen": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bc/Palacio_de_La_Ra%C3%B1ada%2C_Li%C3%A9rganes%2C_2017-07-27%2C_Tripleca%C3%B1a.jpg/500px-Palacio_de_La_Ra%C3%B1ada%2C_Li%C3%A9rganes%2C_2017-07-27%2C_Tripleca%C3%B1a.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "credito": {
+          "autor": "Triplecaña",
+          "licencia": "CC BY-SA 4.0",
+          "url_licencia": "https://creativecommons.org/licenses/by-sa/4.0",
+          "fuente": "https://commons.wikimedia.org/wiki/File:Palacio_de_La_Ra%C3%B1ada,_Li%C3%A9rganes,_2017-07-27,_Tripleca%C3%B1a.jpg"
+        }
+      },
+      {
+        "nombre": "Localidad de Liérganes",
+        "url": "https://www.wikidata.org/wiki/Q43171323",
+        "imagen": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/89/Casona_-_Lierganes.jpg/500px-Casona_-_Lierganes.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "credito": {
+          "autor": "Tony Rotondas",
+          "licencia": "CC BY-SA 3.0",
+          "url_licencia": "https://creativecommons.org/licenses/by-sa/3.0",
+          "fuente": "https://commons.wikimedia.org/wiki/File:Casona_-_Lierganes.jpg"
+        }
+      }
+    ]
   },
   "texto_ia": "",
   "notas": "Con mi mujer",
@@ -78,5 +153,5 @@
   "publicar": true,
   "estado": "visitado",
   "creado": "2026-10-24 16:10",
-  "modificado": "2026-10-24 19:04"
+  "modificado": "2026-10-24 19:07"
 }
