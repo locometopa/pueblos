@@ -77,7 +77,15 @@ CSS = r"""
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--papel);color:var(--tinta);font:17px/1.6 var(--f-texto)}
+body{margin:0;color:var(--tinta);font:17px/1.6 var(--f-texto);background-color:var(--papel);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23a8472a' stroke-opacity='.09' stroke-width='1.3'%3E%3Cpath d='M32 8 L56 32 L32 56 L8 32Z'/%3E%3Ccircle cx='32' cy='32' r='7'/%3E%3Cpath d='M0 14 Q14 14 14 0 M50 0 Q50 14 64 14 M0 50 Q14 50 14 64 M64 50 Q50 50 50 64'/%3E%3C/g%3E%3Cg fill='%23a8472a' fill-opacity='.06'%3E%3Ccircle cx='32' cy='32' r='3'/%3E%3Ccircle cx='0' cy='0' r='5'/%3E%3Ccircle cx='64' cy='0' r='5'/%3E%3Ccircle cx='0' cy='64' r='5'/%3E%3Ccircle cx='64' cy='64' r='5'/%3E%3C/g%3E%3C/svg%3E")}
+@media (prefers-color-scheme:dark){
+  body{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23e0835f' stroke-opacity='.07' stroke-width='1.3'%3E%3Cpath d='M32 8 L56 32 L32 56 L8 32Z'/%3E%3Ccircle cx='32' cy='32' r='7'/%3E%3Cpath d='M0 14 Q14 14 14 0 M50 0 Q50 14 64 14 M0 50 Q14 50 14 64 M64 50 Q50 50 50 64'/%3E%3C/g%3E%3C/svg%3E")}
+}
+/* bandas de color a todo lo ancho */
+.banda{position:relative;background:var(--banda);box-shadow:0 0 0 100vmax var(--banda);clip-path:inset(0 -100vmax)}
+:root{--banda:#efe4cf}
+@media (prefers-color-scheme:dark){:root{--banda:#24211d}}
 img{max-width:100%;display:block}
 a{color:var(--acento)}
 .envoltorio{max-width:var(--ancho);margin:0 auto;padding:0 20px}
@@ -95,8 +103,22 @@ a{color:var(--acento)}
 .cabecera.con-dibujo{position:relative;overflow:hidden;padding-bottom:0;border-bottom:0;
   background:linear-gradient(180deg,var(--cielo-1),var(--cielo-2) 55%,var(--papel))}
 .con-dibujo .envoltorio{position:relative;z-index:2}
-.paisaje{position:relative;height:clamp(150px,21vw,300px);margin-top:-10px;overflow:hidden}
-.paisaje svg{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:max(100%,900px);height:auto}
+.cabecera.con-dibujo{padding-top:30px}
+.con-dibujo h1{font-size:clamp(34px,5.4vw,58px);margin:8px 0 6px}
+.con-dibujo p{font-size:17px}
+.con-dibujo .cifras{margin-top:14px;gap:24px}
+.con-dibujo .cifras div{font-size:24px}
+.con-dibujo .cifras span{font-size:11.5px;margin-top:4px}
+.paisaje{position:relative;overflow:hidden;margin-top:-34px;pointer-events:none}
+.paisaje svg{display:block;width:100%;height:auto}
+@media (max-width:700px){
+  .cabecera.con-dibujo{padding-top:22px}
+  .con-dibujo .cifras{display:grid;grid-template-columns:repeat(4,auto);justify-content:start;gap:14px}
+  .con-dibujo .cifras div{font-size:20px}
+  .con-dibujo .cifras span{font-size:10px;letter-spacing:.05em}
+  .paisaje{margin-top:-8px}
+  .paisaje svg{width:210%;margin-left:-55%}
+}
 :root{--cielo-1:#f7d9a8;--cielo-2:#f8ead2;--astro:#f3a65f;--nube:#fffaf0;--colina1:#d9b48a;--colina2:#b98a5e;--colina3:#8f6a45;
   --pared:#f2e6cf;--pared2:#e9d9bd;--tejado:#a8472a;--tejado2:#b8532f;--tejado3:#c2633a;--ventana:#6b4630;--arbol:#4f6b3a;--camino:#e8d3ae}
 .paisaje .astro{fill:var(--astro)}.paisaje .nubes{fill:var(--nube);opacity:.75}.paisaje .estrellas{fill:#fff;opacity:0}
@@ -220,7 +242,9 @@ a{color:var(--acento)}
 /* ---- mapa de rascar ---- */
 :root{--rasca:#cfc6b4;--rasca-2:#bdb29c;--pendiente:#2f6f6a}
 @media (prefers-color-scheme:dark){:root{--rasca:#3b3630;--rasca-2:#4a443c;--pendiente:#7fc4bb}}
-.mapa-sec{padding-top:40px;padding-bottom:10px}
+.mapa-sec{padding-top:26px;padding-bottom:28px}
+.comunidad:nth-of-type(odd){background:var(--banda);box-shadow:0 0 0 100vmax var(--banda);clip-path:inset(0 -100vmax);padding-bottom:30px}
+.pendientes{background:color-mix(in srgb,var(--pendiente) 10%,var(--papel));box-shadow:0 0 0 100vmax color-mix(in srgb,var(--pendiente) 10%,var(--papel));clip-path:inset(0 -100vmax);padding-bottom:30px}
 .mapa-cab{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:14px}
 .mapa-cab h2{font:600 34px/1.1 var(--f-titulo);margin:0}
 .mapa-cab p{margin:4px 0 0;color:var(--tinta-2)}
@@ -229,7 +253,11 @@ a{color:var(--acento)}
 .progreso .barra i{display:block;height:100%;width:0;background:var(--acento);border-radius:99px;transition:width 1.6s cubic-bezier(.2,.8,.2,1)}
 .progreso small{display:block;margin-top:6px;color:var(--tinta-2);font-size:14px;text-align:right}
 .mapa-marco{position:relative;background:var(--tarjeta);border-radius:16px;box-shadow:var(--sombra);overflow:hidden}
-.mapa-marco svg{display:block;width:100%;height:auto;touch-action:manipulation}
+.mapa-marco svg{display:block;width:100%;height:auto;max-height:min(76vh,700px);margin:0 auto;touch-action:manipulation;
+  background:var(--mar)}
+.vecino{fill:var(--vecino);stroke:var(--tarjeta);stroke-width:.6}
+:root{--mar:#eef1ec;--vecino:#e4dccd}
+@media (prefers-color-scheme:dark){:root{--mar:#1f2326;--vecino:#2c2924}}
 .prov{fill:var(--rasca);stroke:var(--papel);stroke-width:.8;transition:fill .2s}
 .prov.tapada{fill:url(#rascado)}
 .prov.tapada:hover{fill:var(--rasca-2)}
@@ -263,7 +291,7 @@ a{color:var(--acento)}
 .panel-prov li.pend a{background:transparent;border:1.5px dashed var(--pendiente);color:var(--pendiente)}
 .etiqueta-pend{display:inline-block;font:600 12px/1 var(--f-texto);letter-spacing:.12em;text-transform:uppercase;
   padding:6px 10px;border-radius:99px;border:1.5px dashed currentColor;margin-top:10px}
-.pendientes{padding-top:44px;padding-bottom:8px}
+.pendientes{padding-top:44px}
 .pendientes>h2{font:600 34px/1.1 var(--f-titulo);margin:0 0 4px}
 .pendientes>p{color:var(--tinta-2);margin:0 0 18px}
 .ficha.pend{background:transparent;border:2px dashed var(--linea);box-shadow:none}
@@ -312,6 +340,8 @@ JS_MAPA = r"""
 
   (function(geo){
     var proy=d3.geoConicConformalSpain().fitExtent([[10,10],[W-10,H-10]],geo), ruta=d3.geoPath(proy);
+    var capaVecinos=svg.append('g').attr('class','vecinos');
+    if(window.VECINOS_ES) window.VECINOS_ES.features.forEach(function(f){ capaVecinos.append('path').attr('class','vecino').attr('d',ruta(f)); });
     var capaFotos=svg.append('g'), capaProv=svg.append('g'), capaVelo=svg.append('g'), capaPins=svg.append('g');
     svg.append('path').attr('class','borde-canarias').attr('d',proy.getCompositionBorders());
     var orden=0;
@@ -345,6 +375,9 @@ JS_MAPA = r"""
       g.on('mousemove',function(ev){verGlobo(ev,'<b>'+p.nombre+'</b><br>'+(p.estado=='pendiente'?'Por visitar':(p.fecha||'Visitado')));})
        .on('mouseleave',ocultar).on('click',function(){location.href=p.url;});
     });
+    // encuadre justo (sin mar de sobra), así el mapa se ve grande también en el móvil
+    try{ var bb=capaProv.node().getBBox(), m=8;
+      if(bb.width>0) svg.attr('viewBox',[bb.x-m,bb.y-m,bb.width+2*m,bb.height+2*m].join(' ')); }catch(e){}
   })(window.PROVINCIAS_ES);
 
   function mostrarPanel(f){
@@ -491,7 +524,7 @@ def _indice(pueblos: list, cfg, pendientes=()) -> str:
     datos = json.dumps(_datos_mapa(pueblos, pendientes), ensure_ascii=False).replace("</", "<\\/")
     hay_pend = bool(pendientes)
     seccion_mapa = f"""
-<section class="mapa-sec envoltorio" id="mapa">
+<section class="mapa-sec envoltorio banda" id="mapa">
   <div class="mapa-cab">
     <div><h2>Mi mapa de España</h2>
       <p>Cada provincia se destapa con una foto cuando la visito.</p></div>
@@ -529,11 +562,11 @@ def _indice(pueblos: list, cfg, pendientes=()) -> str:
     {f'<div>{len(pendientes)}<span>por visitar</span></div>' if pendientes else ''}
   </div>
 </div>
-  <div class="paisaje" aria-hidden="true"><svg viewBox="0 0 1440 300" preserveAspectRatio="xMidYMax meet">
-    <g class="estrellas"><circle cx="140" cy="40" r="1.6"/><circle cx="260" cy="90" r="1.2"/><circle cx="420" cy="30" r="1.4"/><circle cx="610" cy="60" r="1.1"/>
-      <circle cx="760" cy="24" r="1.6"/><circle cx="930" cy="80" r="1.2"/><circle cx="1010" cy="34" r="1.4"/><circle cx="1290" cy="54" r="1.6"/><circle cx="1380" cy="110" r="1.1"/></g>
-    <circle class="astro" cx="1140" cy="70" r="46"/>
-    <g class="nubes"><ellipse cx="320" cy="60" rx="70" ry="14"/><ellipse cx="380" cy="50" rx="50" ry="12"/><ellipse cx="900" cy="40" rx="60" ry="11"/></g>
+  <div class="paisaje" aria-hidden="true"><svg viewBox="0 88 1440 212" preserveAspectRatio="xMidYMax meet">
+    <g class="estrellas"><circle cx="140" cy="100" r="1.6"/><circle cx="260" cy="130" r="1.2"/><circle cx="420" cy="96" r="1.4"/><circle cx="610" cy="112" r="1.1"/>
+      <circle cx="760" cy="98" r="1.6"/><circle cx="930" cy="126" r="1.2"/><circle cx="1010" cy="100" r="1.4"/><circle cx="1290" cy="104" r="1.6"/><circle cx="1380" cy="130" r="1.1"/></g>
+    <circle class="astro" cx="1150" cy="138" r="38"/>
+    <g class="nubes"><ellipse cx="320" cy="122" rx="70" ry="12"/><ellipse cx="380" cy="112" rx="50" ry="10"/><ellipse cx="900" cy="104" rx="60" ry="10"/></g>
     <path class="colina1" d="M0 190 C180 120 300 150 460 120 C620 90 760 150 900 118 C1060 82 1220 130 1440 100 V300 H0Z"/>
     <path class="colina2" d="M0 220 C200 170 380 200 560 175 C760 148 920 205 1100 178 C1260 155 1360 185 1440 170 V300 H0Z"/>
     <g transform="translate(560 120)">
@@ -728,8 +761,12 @@ def generar(almacen: Almacen, cfg, destino: Path, avisar=print) -> int:
     for f in ("d3.min.js", "d3-composite-projections.min.js"):
         _copiar_si_cambia(Path(__file__).with_name("js") / f, js / f)
     geo_js = js / "provincias.js"   # como script (no JSON) para que funcione también abriendo el archivo en local
-    if not geo_js.exists() or geo_js.stat().st_mtime < mapa.ARCHIVO.stat().st_mtime:
-        geo_js.write_text("window.PROVINCIAS_ES=" + mapa.ARCHIVO.read_text(encoding="utf-8") + ";", encoding="utf-8")
+    vecinos = mapa.ARCHIVO.with_name("vecinos.geojson")
+    contenido = "window.PROVINCIAS_ES=" + mapa.ARCHIVO.read_text(encoding="utf-8") + ";"
+    if vecinos.exists():
+        contenido += "\nwindow.VECINOS_ES=" + vecinos.read_text(encoding="utf-8") + ";"
+    if not geo_js.exists() or geo_js.read_text(encoding="utf-8") != contenido:
+        geo_js.write_text(contenido, encoding="utf-8")
 
     (destino / "estilo.css").write_text(CSS.strip() + "\n", encoding="utf-8")
     (destino / ".nojekyll").write_text("", encoding="utf-8")
