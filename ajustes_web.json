@@ -4,6 +4,8 @@
   "autor": "Ruben Blanco",
   "mostrar_pendientes": true,
   "diseno": {
-    "cabecera": "foto"
+    "cabecera": "dibujo",
+    "maqueta": "clasica",
+    "modo": "claro"
   }
 }
