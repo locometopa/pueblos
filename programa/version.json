@@ -1,5 +1,5 @@
 {
-  "version": "1.1",
-  "notas": "Novedades: 4 estilos de página entera (Clásica, Revista, Álbum de viaje, Moderna) y más información cuando Wikipedia es escasa (artículo en gallego, catalán, inglés… traducido; comarca, río, código postal…).",
+  "version": "1.2",
+  "notas": "Limpieza: menos archivos en la carpeta (PUEBLOS.bat instala lo necesario, crear_exe.bat no deja restos) y el .exe también se actualiza solo.",
   "archivo": "PUEBLOS.zip"
 }
