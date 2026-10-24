@@ -720,18 +720,20 @@ def _indice(pueblos: list, cfg, pendientes=()) -> str:
         seccion_mapa = ""
     if _DISENO["fiestas"]:
         lista_pueblos = X.seccion_proximas(pueblos + list(pendientes)) + lista_pueblos
+    ultima = X.bloque_ultima(pueblos, fecha_larga) if _DISENO["ultima_visita"] else ""
     partes = [seccion_mapa, lista_pueblos] if _DISENO["mapa_primero"] else [lista_pueblos, seccion_mapa]
     if _DISENO["cronologia"]:
         partes.append(X.cronologia(pueblos))
     cuerpo = f"""
 {cabecera}
+{ultima}
 {''.join(partes)}
 {_pie(cfg)}"""
     desc = cfg.get("subtitulo_web") or ""
     resumen = f"{len(pueblos)} {'pueblo' if len(pueblos) == 1 else 'pueblos'} en {len(prov_visitadas)} " \
               f"{'provincia' if len(prov_visitadas) == 1 else 'provincias'}"
     return _pagina(cfg.get("titulo_web"), cuerpo, "", f"{desc} · {resumen}" if desc else resumen,
-                   JS_INDICE + JS_MAPA + JS_CABECERA + (X.JS_FIESTAS if _DISENO["fiestas"] else ""),
+                   JS_INDICE + JS_MAPA + JS_CABECERA + (X.JS_FIESTAS if _DISENO["fiestas"] else "") + X.JS_ULTIMA,
                    scripts=("js/d3.min.js", "js/d3-composite-projections.min.js", "js/provincias.js"),
                    ruta="", imagen="compartir.jpg" if (_IMG_PORTADA) else "")
 
@@ -940,7 +942,7 @@ def generar(almacen: Almacen, cfg, destino: Path, avisar=print) -> int:
         _copiar_si_cambia(Path(logo), destino / "logo.png")
     elif (destino / "logo.png").exists():
         (destino / "logo.png").unlink()
-    estilo = D.css_final(CSS.strip() + X.CSS + X.CSS_FICHA + X.CSS_FIESTAS + X.CSS_NOTAS + X.CSS_MINI + X.CSS_FUENTES + MQ.CSS, _DISENO)
+    estilo = D.css_final(CSS.strip() + X.CSS + X.CSS_FICHA + X.CSS_FIESTAS + X.CSS_NOTAS + X.CSS_MINI + X.CSS_FUENTES + X.CSS_ULTIMA + MQ.CSS, _DISENO)
     for p in pueblos:
         p["_cerca"] = X.cercanos(p, pueblos)
     # web instalable: iconos, manifiesto y service worker (o uno que se borra si la opción está apagada)

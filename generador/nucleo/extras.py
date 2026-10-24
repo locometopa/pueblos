@@ -804,3 +804,67 @@ CSS_FUENTES = """
 .oficial .of-titulo{display:block;font-size:15px;margin-bottom:4px}
 .oficial p{margin:0 0 10px;font-size:14px;color:var(--tinta-2);line-height:1.5}
 """
+
+
+# ---------------------------------------------------------------------------- última visita (portada)
+def bloque_ultima(visitados: list, fecha_larga) -> str:
+    con_fecha = [p for p in visitados if p.get("fechas_visita")]
+    if not con_fecha:
+        return ""
+    p = max(con_fecha, key=lambda x: max(x["fechas_visita"]))
+    fecha = max(p["fechas_visita"])
+    slug = p["slug"]
+    texto = (p.get("notas") or "").strip()
+    origen = "notas"
+    if not texto:
+        texto = (p.get("texto_ia") or (p.get("wiki") or {}).get("extracto") or "").strip()
+        origen = "info"
+    texto = re.sub(r"\*\*|^[-•★>]\s*", "", texto.split("\n\n")[0], flags=re.M).replace("\n", " ")
+    if len(texto) > 260:
+        texto = texto[:texto.rfind(" ", 0, 250)] + "…"
+    fotos = [f for f in p.get("fotos", []) if f["archivo"] != p.get("portada")][:3]
+    portada = (f'<img src="pueblos/{e(slug)}/fotos/{e(p["portada"])}" alt="{e(p["nombre"])}" loading="lazy">'
+               if p.get("portada") else f'<span class="u-sinfoto">{e(p["nombre"][:1])}</span>')
+    tira = "".join(f'<img src="pueblos/{e(slug)}/mini/{e(f["archivo"])}" alt="" loading="lazy">' for f in fotos)
+    n_visitas = len(p["fechas_visita"])
+    return (f'<section class="ultima envoltorio" id="ultima-visita"><a class="u-tarjeta" href="pueblos/{e(slug)}/index.html">'
+            f'<div class="u-foto">{portada}</div><div class="u-texto"><span class="u-sello">Última visita</span>'
+            f'<h2>{e(p["nombre"])}</h2><p class="u-lugar">{e(p.get("provincia") or p.get("comunidad") or "")} · '
+            f'<time data-fecha="{e(fecha)}">{e(fecha_larga(fecha))}</time>'
+            f'{f" · {n_visitas}.ª visita" if n_visitas > 1 else ""}</p>'
+            f'<p class="u-nota{" mia" if origen == "notas" else ""}">{e(texto)}</p>'
+            f'{f"<div class={chr(34)}u-tira{chr(34)}>{tira}</div>" if tira else ""}'
+            f'<span class="u-ver">Ver el pueblo →</span></div></a></section>')
+
+
+JS_ULTIMA = r"""
+(function(){var t=document.querySelector('.ultima time[data-fecha]');if(!t)return;
+  var p=t.dataset.fecha.split('-'),d=new Date(+p[0],(+p[1]||1)-1,+p[2]||1),h=new Date();h.setHours(0,0,0,0);
+  var n=Math.round((h-d)/864e5);if(p.length<3||n<0)return;
+  var r=n===0?'hoy':n===1?'ayer':n<7?'hace '+n+' días':n<35?'hace '+Math.round(n/7)+' semanas':n<365?'hace '+Math.round(n/30)+' meses':'';
+  if(r)t.textContent+=' ('+r+')';})();
+"""
+
+CSS_ULTIMA = """
+.ultima{padding-top:34px}
+.u-tarjeta{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:0;border-radius:var(--radio);overflow:hidden;
+  background:var(--tarjeta);box-shadow:var(--sombra);text-decoration:none;color:var(--tinta);transition:transform .2s}
+.u-tarjeta:hover{transform:translateY(-3px)}
+.u-foto{min-height:280px;background:var(--papel-2)}
+.u-foto img{width:100%;height:100%;object-fit:cover;display:block}
+.u-sinfoto{display:grid;place-items:center;height:100%;font:600 80px var(--f-titulo);color:var(--linea)}
+.u-texto{padding:26px 28px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.u-sello{font:600 12px/1 var(--f-texto);letter-spacing:.18em;text-transform:uppercase;color:var(--acento)}
+.u-texto h2{font:600 clamp(30px,4vw,44px)/1.05 var(--f-titulo);margin:2px 0 0}
+.u-lugar{margin:0;color:var(--tinta-2);font-size:15px}
+.u-nota{margin:6px 0 0;line-height:1.55;color:var(--tinta-2)}
+.u-nota.mia{color:var(--tinta);font-style:italic}
+.u-nota.mia::before{content:"“";font:600 2.2em/0 var(--f-titulo);color:var(--acento);vertical-align:-.35em;margin-right:4px}
+.u-tira{display:flex;gap:8px;margin-top:8px}
+.u-tira img{width:72px;height:72px;object-fit:cover;border-radius:10px}
+.u-ver{margin-top:auto;padding-top:10px;font-weight:600;color:var(--acento)}
+@media (max-width:760px){.u-tarjeta{grid-template-columns:1fr}.u-foto{min-height:0;aspect-ratio:16/10}.u-texto{padding:20px}}
+.m-revista .u-tarjeta,.m-album .u-tarjeta{border-radius:2px}
+.m-album .u-tarjeta{background:#fbf8f1;color:#2f2a25;transform:rotate(-.6deg)}
+.m-moderna .u-tarjeta{border-radius:28px}
+"""

@@ -20,6 +20,7 @@ DEFECTO = {
     "cercanos": True,            # «Cerca de aquí»: tus otros pueblos cercanos
     "fiestas": True,             # fiestas de cada pueblo y «Próximas fiestas» en la portada
     "notas_a_mano": True,        # «Mi cuaderno» con letra manuscrita
+    "ultima_visita": True,       # tarjeta grande «Última visita» al principio de la portada
     "maqueta": "clasica",        # clasica | revista | album | moderna (aspecto de la página entera)
 }
 
