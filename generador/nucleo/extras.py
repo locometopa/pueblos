@@ -692,7 +692,7 @@ JS_FICHA_LUGAR = r"""
     if(s.extract) $('.fl-texto').innerHTML='<p>'+esc(s.extract)+'</p>';
     var img=(s.originalimage&&s.originalimage.width<=1600?s.originalimage.source:(s.thumbnail&&s.thumbnail.source));
     if(img&&!$('.fl-foto img')) $('.fl-foto').innerHTML='<img alt="" src="'+esc(img)+'">';
-    var c=s.coordinates||{}; botones(url,c.lat,c.lon);
+    var c=s.coordinates||{}; if(c.lat!=null) botones(url,c.lat,c.lon);
     $('.fl-fuente').textContent='Texto de Wikipedia (CC BY-SA 4.0).';}
   [].forEach.call(tarjetas,function(t){t.addEventListener('click',function(ev){
     ev.preventDefault();
@@ -701,8 +701,11 @@ JS_FICHA_LUGAR = r"""
     $('.fl-desc').textContent=''; $('.fl-texto').innerHTML='<p class="fl-cargando">Cargando…</p>'; $('.fl-fuente').textContent='';
     $('.fl-foto').innerHTML=img?'<img alt="" src="'+esc(img.getAttribute('src'))+'">'+(cred?'<small>'+esc(cred.textContent)+'</small>':''):'';
     caja.classList.toggle('sin-foto',!img);
-    botones(url,null,null);
+    var la=t.dataset.lat?+t.dataset.lat:null, lo=t.dataset.lon?+t.dataset.lon:null;
+    botones(url,la,lo);
     caja.hidden=false; document.body.classList.add('sin-scroll');
+    if(/openstreetmap\.org/.test(url||'')){ $('.fl-texto').innerHTML=''; $('.fl-fuente').textContent='Datos de OpenStreetMap.';
+      $('.fl-botones a.sec')&&($('.fl-botones a.sec').textContent='Ver en el mapa'); return; }
     var m=/wikipedia\.org\/wiki\/(.+)$/.exec(url||''), q=/wikidata\.org\/wiki\/(Q\d+)/.exec(url||'');
     var p;
     if(m) p=resumen(decodeURIComponent(m[1])).then(function(s){pintarWiki(s,url);});
@@ -710,7 +713,7 @@ JS_FICHA_LUGAR = r"""
         var e=d.entities[q[1]]||{}, desc=((e.descriptions||{}).es||{}).value, co=(((e.claims||{}).P625||[])[0]||{}).mainsnak;
         var v=co&&co.datavalue&&co.datavalue.value, wl=((e.sitelinks||{}).eswiki||{}).title;
         if(desc) $('.fl-desc').textContent=desc.charAt(0).toUpperCase()+desc.slice(1);
-        $('.fl-texto').innerHTML=''; botones(url,v&&v.latitude,v&&v.longitude);
+        $('.fl-texto').innerHTML=''; if(v) botones(url,v.latitude,v.longitude);
         $('.fl-fuente').textContent='Datos de Wikidata.';
         if(wl) return resumen(wl).then(function(s){pintarWiki(s,'https://es.wikipedia.org/wiki/'+encodeURIComponent(wl.replace(/ /g,'_')));});
       });
@@ -755,4 +758,45 @@ CSS_MINI = """
 .fl-fuente{margin:12px 0 0;font-size:12px;color:var(--tinta-2)}
 body.sin-scroll{overflow:hidden}
 @media (max-width:600px){.ficha-lugar{align-items:flex-end;padding:0}.fl-hoja{border-radius:18px 18px 0 0;max-height:85vh}}
+"""
+
+
+# ---------------------------------------------------------------------------- otras fuentes
+def chips_distinciones(lista) -> str:
+    if not lista:
+        return ""
+    return '<ul class="distinciones">' + "".join(f"<li>🏅 {e(d)}</li>" for d in lista[:5]) + "</ul>"
+
+
+def bloque_oficial(of) -> str:
+    if not of or not of.get("url"):
+        return ""
+    from urllib.parse import urlparse
+    dominio = urlparse(of["url"]).netloc.replace("www.", "")
+    titulo = of.get("titulo") or dominio
+    desc = f'<p>{e(of["descripcion"])}</p>' if of.get("descripcion") else ""
+    return (f'<section class="caja oficial"><h3>🏛 Web oficial</h3><b class="of-titulo">{e(titulo)}</b>{desc}'
+            f'<a class="boton sec" href="{e(of["url"])}" target="_blank" rel="noopener">Visitar {e(dominio)} →</a></section>')
+
+
+ICONOS_GUIA = {"entender": "🧭", "llegar": "🚆", "ver": "👀", "hacer": "🥾", "comprar": "🛍", "comer": "🍽",
+               "beber": "🍷", "dormir": "🛏", "alrededores": "🗺"}
+
+
+def bloque_guia(guia: dict) -> str:
+    def parr(t):
+        return "".join(f"<p>{e(b.strip()).replace(chr(10), '<br>')}</p>" for b in t.split("\n\n") if b.strip())
+    bloques = "".join(f'<details><summary><span>{ICONOS_GUIA.get(s["clave"], "•")}</span> {e(s["titulo"])}</summary>'
+                      f'{parr(s["texto"])}</details>' for s in guia["secciones"])
+    return (f'<section class="saber-mas guia"><h2>Guía de viaje</h2>{bloques}'
+            f'<p class="fuente">De <a href="{e(guia.get("url"))}" target="_blank" rel="noopener">Wikivoyage</a>, '
+            f'la guía de viaje libre (CC BY-SA 4.0).</p></section>')
+
+
+CSS_FUENTES = """
+.distinciones{list-style:none;margin:0 0 14px;padding:0;display:flex;flex-direction:column;gap:6px}
+.distinciones li{font-size:13px;font-weight:600;padding:6px 10px;border-radius:10px;background:color-mix(in srgb,var(--acento-2) 14%,var(--tarjeta));
+  color:var(--tinta)}
+.oficial .of-titulo{display:block;font-size:15px;margin-bottom:4px}
+.oficial p{margin:0 0 10px;font-size:14px;color:var(--tinta-2);line-height:1.5}
 """

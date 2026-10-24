@@ -624,14 +624,35 @@
       res.push({
         titulo: pg.title, miniatura: info.thumburl, pagina: info.descriptionurl || '',
         autor: v('Artist').slice(0, 120) || 'Autor desconocido', licencia: v('LicenseShortName') || 'Licencia libre',
-        url_licencia: (meta.LicenseUrl || {}).value || '',
+        url_licencia: (meta.LicenseUrl || {}).value || '', origen: 'Wikimedia Commons',
       });
+    }
+    return res;
+  }
+  // Fotos con licencia Creative Commons de Flickr y otros sitios, a través de Openverse
+  async function openverseBuscar(p) {
+    const q = new URLSearchParams({ q: `${p.nombre} ${p.provincia || ''}`.trim(), page_size: 30,
+      license: 'by,by-sa,cc0,pdm,by-nc,by-nc-sa', category: 'photograph', mature: 'false' });
+    const r = await fetch(`${window.PUEBLOS_OPENVERSE || 'https://api.openverse.org/v1/images/'}?${q}`);
+    if (!r.ok) throw new Error('Openverse ' + r.status);
+    const n = normalizar(p.nombre), res = [];
+    for (const it of (await r.json()).results || []) {
+      if (it.width && it.width < 800) continue;
+      const texto = normalizar([it.title || ''].concat((it.tags || []).map((t) => t.name || '')).join(' '));
+      if (!texto.includes(n)) continue;
+      const l = (it.license || '').toUpperCase();
+      res.push({ titulo: 'openverse:' + it.id, miniatura: it.thumbnail || it.url, descarga: it.url,
+        pagina: it.foreign_landing_url || it.url, autor: (it.creator || 'Autor desconocido').slice(0, 120),
+        licencia: (l === 'PDM' || l === 'CC0') ? 'Dominio público' : `CC ${l} ${it.license_version || ''}`.trim(),
+        url_licencia: it.license_url || '', origen: (it.source || it.provider || 'Openverse').replace(/_/g, ' ').replace(/^./, (c) => c.toUpperCase()) });
     }
     return res;
   }
   async function commonsBuscar(p) {
     const vistos = new Set(), res = [];
     const consultas = [];
+    const cat = (p.wiki || {}).commons_cat;
+    if (cat) consultas.push({ generator: 'categorymembers', gcmtitle: 'Category:' + cat, gcmtype: 'file', gcmlimit: 40 });
     if (p.lat != null) consultas.push({ generator: 'geosearch', ggscoord: `${p.lat}|${p.lon}`, ggsradius: 2000, ggsnamespace: 6, ggslimit: 40 });
     consultas.push({ generator: 'search', gsrsearch: `"${p.nombre}" ${p.provincia || ''} filetype:bitmap`.trim(), gsrnamespace: 6, gsrlimit: 40 });
     for (const c of consultas) {
@@ -639,6 +660,9 @@
         for (const it of await commonsConsulta(c)) if (!vistos.has(it.titulo)) { vistos.add(it.titulo); res.push(it); }
       } catch (e) { console.warn(e); }
     }
+    try {
+      for (const it of await openverseBuscar(p)) if (!vistos.has(it.pagina)) { vistos.add(it.pagina); res.push(it); }
+    } catch (e) { console.warn(e); }
     return res;
   }
 
@@ -1250,7 +1274,7 @@
       <p class="sub">${estado === 'visitado' ? '¿Le pones ya alguna foto? Si no tienes fotos tuyas, puedes usar fotos libres de internet.'
         : 'Puedes ponerle fotos de internet para tu lista de pendientes.'}</p>
       <div class="lista-opciones">
-        <button id="o-internet">🌐 <b>Fotos de internet</b><small>Fotos libres de Wikimedia Commons, con su autor citado</small></button>
+        <button id="o-internet">🌐 <b>Fotos de internet</b><small>Fotos libres de Wikimedia Commons, Flickr y más, con su autor citado</small></button>
         ${estado === 'visitado' ? '<button id="o-mias">📷 <b>Mis fotos</b><small>Desde la galería del móvil</small></button>' : ''}
       </div>
       <button class="btn sec ancho" id="o-luego">Más tarde</button>`);
@@ -1261,7 +1285,7 @@
 
   async function dialogoCommons() {
     const { ed, slug } = E.editor;
-    espera('Buscando fotos libres en Wikimedia Commons…');
+    espera('Buscando fotos libres (Commons, Flickr…)…');
     let items = [];
     try { items = await commonsBuscar(ed); } catch (e) { aviso(e.message, true); }
     finEspera();
@@ -1269,9 +1293,9 @@
     items = items.filter((it) => !ya.has(it.pagina));
     if (!items.length) { aviso('No he encontrado fotos libres de este pueblo. Revisa el nombre y la ubicación.', true); return; }
     const d = dialogo(`<h2>Fotos de internet</h2>
-      <p class="sub">Fotos de uso libre de Wikimedia Commons. En la web se citará su autor y licencia. Revisa que sean del pueblo.</p>
+      <p class="sub">Fotos de uso libre de Wikimedia Commons, Flickr y otros sitios. En la web se citará su autor y licencia. Revisa que sean del pueblo.</p>
       <div class="commons">${items.map((it, i) => `<label><input type="checkbox" data-i="${i}"><img src="${esc(it.miniatura)}" alt="" loading="lazy">
-        <small>${esc(it.autor)} · ${esc(it.licencia)}</small></label>`).join('')}</div>
+        <small>${esc(it.autor)} · ${esc(it.licencia)} · ${esc((it.origen || "Commons").replace("Wikimedia ", ""))}</small></label>`).join('')}</div>
       <div class="fila fin"><button class="btn sec" id="c-cancelar">Cancelar</button><button class="btn" id="c-anadir">Añadir las marcadas</button></div>`);
     $('#c-cancelar', d).onclick = () => d.remove();
     $('#c-anadir', d).onclick = async () => {
@@ -1285,27 +1309,30 @@
         const grandes = {};
         for (let i = 0; i < elegidas.length; i += 40) {
           const lote = elegidas.slice(i, i + 40);
-          for (const it of await commonsConsulta({ titles: lote.map((x) => x.titulo).join('|') }, 1600)) grandes[it.titulo] = it.miniatura;
+          const deCommons = lote.filter((x) => !x.descarga);
+          if (deCommons.length) for (const it of await commonsConsulta({ titles: deCommons.map((x) => x.titulo).join('|') }, 1600)) grandes[it.titulo] = it.miniatura;
         }
         for (let i = 0; i < elegidas.length; i++) {
           const it = elegidas[i];
           espera(`Preparando fotos (${i + 1} de ${elegidas.length})…`, i / elegidas.length);
           try {
-            const r = await fetch(grandes[it.titulo] || it.miniatura);
-            if (!r.ok) throw new Error(r.status);
+            let r = await fetch(grandes[it.titulo] || it.descarga || it.miniatura).catch(() => null);
+            if ((!r || !r.ok) && it.descarga) r = await fetch(it.miniatura);   // si el sitio original no deja, la copia de Openverse
+            if (!r || !r.ok) throw new Error(r ? r.status : 'red');
             const { grande, mini } = await prepararFoto(await r.blob());
             const nombre = nombreFoto();
             binarios.push({ ruta: `datos/${slug}/fotos/${nombre}`, blob: grande }, { ruta: `datos/${slug}/mini/${nombre}`, blob: mini });
             E.locales[`datos/${slug}/mini/${nombre}`] = URL.createObjectURL(mini);
             E.locales[`datos/${slug}/fotos/${nombre}`] = URL.createObjectURL(grande);
             nuevas.push({ archivo: nombre, fecha: '', pie: '', original: it.pagina,
-              credito: { autor: it.autor, licencia: it.licencia, url_licencia: it.url_licencia, fuente: it.pagina } });
+              credito: { autor: it.autor, licencia: it.licencia, url_licencia: it.url_licencia, fuente: it.pagina,
+                origen: it.origen || 'Wikimedia Commons' } });
           } catch (e) { fallos++; }
         }
       } finally { finEspera(); }
       if (!nuevas.length) { aviso('No se pudo descargar ninguna foto.', true); return; }
       try {
-        const res = await guardar([opEditor(nuevas)], binarios, [], `${ed.nombre}: ${nuevas.length} fotos de Wikimedia Commons`);
+        const res = await guardar([opEditor(nuevas)], binarios, [], `${ed.nombre}: ${nuevas.length} fotos de internet`);
         const p = res[slug];
         E.editor.orig = clonar(p); E.editor.ed = clonar(p);
         pintarEditor();
