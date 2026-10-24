@@ -389,29 +389,37 @@ def bloque_cercanos(lista) -> str:
 
 JS_TIEMPO = r"""
 (function(){
-  var c=document.querySelector('.caja.tiempo'); if(!c) return;
+  var c=document.querySelector('.tiempo-mini'); if(!c) return;
   var W={0:['☀️','Despejado'],1:['🌤','Casi despejado'],2:['⛅','Nubes y claros'],3:['☁️','Nublado'],45:['🌫','Niebla'],48:['🌫','Niebla'],
     51:['🌦','Llovizna'],53:['🌦','Llovizna'],55:['🌧','Llovizna fuerte'],56:['🌧','Llovizna helada'],57:['🌧','Llovizna helada'],
     61:['🌦','Lluvia débil'],63:['🌧','Lluvia'],65:['🌧','Lluvia fuerte'],66:['🌧','Lluvia helada'],67:['🌧','Lluvia helada'],
     71:['🌨','Nieve débil'],73:['🌨','Nieve'],75:['❄️','Nieve fuerte'],77:['🌨','Granizo fino'],80:['🌦','Chubascos'],81:['🌧','Chubascos'],
     82:['⛈','Chubascos fuertes'],85:['🌨','Chubascos de nieve'],86:['❄️','Chubascos de nieve'],95:['⛈','Tormenta'],96:['⛈','Tormenta con granizo'],99:['⛈','Tormenta con granizo']};
-  function w(n,dia){var x=W[n]||['🌡','—']; if(!dia&&(n===0||n===1)) x=[n===0?'🌙':'🌙',x[1]]; return x;}
+  function w(n,dia){var x=W[n]||['🌡','—']; if(!dia&&(n===0||n===1)) x=['🌙',x[1]]; return x;}
   var DS=['dom','lun','mar','mié','jue','vie','sáb'];
+  var b=c.querySelector('.t-boton'), panel=c.querySelector('.t-panel');
+  function abrir(si){panel.hidden=!si;b.setAttribute('aria-expanded',si?'true':'false');c.classList.toggle('abierto',si);}
+  b.addEventListener('click',function(ev){ev.stopPropagation();abrir(panel.hidden);});
+  document.addEventListener('click',function(ev){if(!c.contains(ev.target))abrir(false);});
+  document.addEventListener('keydown',function(ev){if(ev.key==='Escape')abrir(false);});
   var url='https://api.open-meteo.com/v1/forecast?latitude='+c.dataset.lat+'&longitude='+c.dataset.lon+
-    '&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,is_day'+
+    '&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,relative_humidity_2m,is_day'+
     '&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset&timezone=auto&forecast_days=5';
   fetch(url).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){
     var a=d.current, x=w(a.weather_code,a.is_day);
-    c.querySelector('.t-ahora').innerHTML='<span class="t-icono">'+x[0]+'</span><span class="t-grados">'+Math.round(a.temperature_2m)+
-      '°</span><span class="t-txt">'+x[1]+'<small>Sensación '+Math.round(a.apparent_temperature)+'° · viento '+Math.round(a.wind_speed_10m)+' km/h</small></span>';
+    b.querySelector('.t-icono').textContent=x[0];
+    b.querySelector('.t-grados').textContent=Math.round(a.temperature_2m)+'°';
+    b.querySelector('.t-txt').textContent=x[1];
+    c.querySelector('.t-detalle').innerHTML='<b>'+x[0]+' '+Math.round(a.temperature_2m)+'° · '+x[1]+'</b><br>Sensación '+Math.round(a.apparent_temperature)+
+      '° · viento '+Math.round(a.wind_speed_10m)+' km/h · humedad '+Math.round(a.relative_humidity_2m)+'%';
     var D=d.daily, h='';
     for(var i=0;i<D.time.length;i++){var f=new Date(D.time[i]+'T12:00:00'), y=w(D.weather_code[i],1);
-      var lluvia=D.precipitation_probability_max&&D.precipitation_probability_max[i]>=30?'<em>💧'+D.precipitation_probability_max[i]+'%</em>':'<em></em>';
-      h+='<li><b>'+(i===0?'Hoy':i===1?'Mañana':DS[f.getDay()])+'</b><span title="'+y[1]+'">'+y[0]+'</span>'+lluvia+
+      var ll=D.precipitation_probability_max&&D.precipitation_probability_max[i]>=30?'<em>💧'+D.precipitation_probability_max[i]+'%</em>':'<em></em>';
+      h+='<li><b>'+(i===0?'Hoy':i===1?'Mañana':DS[f.getDay()])+'</b><span title="'+y[1]+'">'+y[0]+'</span>'+ll+
          '<span>'+Math.round(D.temperature_2m_max[i])+'° <small>'+Math.round(D.temperature_2m_min[i])+'°</small></span></li>';}
     c.querySelector('.t-dias').innerHTML=h;
     var hora=function(s){return s?s.slice(11,16):'';};
-    c.querySelector('.t-sol').textContent='🌅 '+hora(D.sunrise[0])+'   🌇 '+hora(D.sunset[0]);
+    c.querySelector('.t-sol').textContent='🌅 '+hora(D.sunrise[0])+'    🌇 '+hora(D.sunset[0]);
     c.hidden=false;
   }).catch(function(){});
 })();
@@ -645,4 +653,106 @@ CSS_NOTAS = """
 .cuaderno::after{content:"";display:table;clear:both}
 @media (max-width:600px){.cuaderno .hoja{padding:26px 18px 20px 46px;background-position:-8px 0,0 18px}
   .cuaderno .polaroid{width:120px;margin:-2px -4px 8px 12px}}
+"""
+
+
+def tiempo_mini(lat, lon) -> str:
+    """Píldora pequeña en la cabecera del pueblo; al pulsarla se despliega la previsión."""
+    if lat is None or lon is None:
+        return ""
+    return (f'<div class="tiempo-mini" data-lat="{lat}" data-lon="{lon}" hidden>'
+            '<button class="t-boton" type="button" aria-expanded="false" title="Ver la previsión">'
+            '<span class="t-icono"></span><b class="t-grados"></b><span class="t-txt"></span><span class="t-flecha">▾</span></button>'
+            '<div class="t-panel" hidden><h3>El tiempo ahora</h3><p class="t-detalle"></p><ol class="t-dias"></ol><p class="t-sol"></p>'
+            '<p class="fuente">Previsión de <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a></p></div></div>')
+
+
+JS_FICHA_LUGAR = r"""
+(function(){
+  var tarjetas=document.querySelectorAll('.lugar[data-ficha]'); if(!tarjetas.length) return;
+  var caja=document.createElement('div'); caja.className='ficha-lugar'; caja.hidden=true;
+  caja.innerHTML='<div class="fl-hoja" role="dialog" aria-modal="true"><button class="fl-cerrar" aria-label="Cerrar">✕</button>'+
+    '<div class="fl-foto"></div><div class="fl-cuerpo"><h3></h3><p class="fl-desc"></p><div class="fl-texto"></div>'+
+    '<div class="fl-botones"></div><p class="fl-fuente"></p></div></div>';
+  document.body.appendChild(caja);
+  var $=function(s){return caja.querySelector(s);};
+  function cerrar(){caja.hidden=true;document.body.classList.remove('sin-scroll');}
+  $('.fl-cerrar').onclick=cerrar;
+  caja.addEventListener('click',function(ev){if(ev.target===caja)cerrar();});
+  document.addEventListener('keydown',function(ev){if(ev.key==='Escape'&&!caja.hidden)cerrar();});
+  function esc(t){return String(t||'').replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function botones(url,lat,lon){var h='';
+    if(lat!=null) h+='<a class="boton" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination='+lat+','+lon+'">🚗 Cómo llegar</a>';
+    if(url) h+='<a class="boton sec" target="_blank" rel="noopener" href="'+esc(url)+'">Leer más</a>';
+    $('.fl-botones').innerHTML=h;}
+  function resumen(titulo){
+    return fetch('https://es.wikipedia.org/api/rest_v1/page/summary/'+encodeURIComponent(titulo)).then(function(r){if(!r.ok)throw 0;return r.json();});}
+  function pintarWiki(s,url){
+    if(s.description) $('.fl-desc').textContent=s.description;
+    if(s.extract) $('.fl-texto').innerHTML='<p>'+esc(s.extract)+'</p>';
+    var img=(s.originalimage&&s.originalimage.width<=1600?s.originalimage.source:(s.thumbnail&&s.thumbnail.source));
+    if(img&&!$('.fl-foto img')) $('.fl-foto').innerHTML='<img alt="" src="'+esc(img)+'">';
+    var c=s.coordinates||{}; botones(url,c.lat,c.lon);
+    $('.fl-fuente').textContent='Texto de Wikipedia (CC BY-SA 4.0).';}
+  [].forEach.call(tarjetas,function(t){t.addEventListener('click',function(ev){
+    ev.preventDefault();
+    var url=t.getAttribute('href'), img=t.querySelector('img'), cred=t.querySelector('.credito');
+    $('h3').textContent=t.querySelector('b').textContent;
+    $('.fl-desc').textContent=''; $('.fl-texto').innerHTML='<p class="fl-cargando">Cargando…</p>'; $('.fl-fuente').textContent='';
+    $('.fl-foto').innerHTML=img?'<img alt="" src="'+esc(img.getAttribute('src'))+'">'+(cred?'<small>'+esc(cred.textContent)+'</small>':''):'';
+    caja.classList.toggle('sin-foto',!img);
+    botones(url,null,null);
+    caja.hidden=false; document.body.classList.add('sin-scroll');
+    var m=/wikipedia\.org\/wiki\/(.+)$/.exec(url||''), q=/wikidata\.org\/wiki\/(Q\d+)/.exec(url||'');
+    var p;
+    if(m) p=resumen(decodeURIComponent(m[1])).then(function(s){pintarWiki(s,url);});
+    else if(q) p=fetch('https://www.wikidata.org/wiki/Special:EntityData/'+q[1]+'.json').then(function(r){return r.json();}).then(function(d){
+        var e=d.entities[q[1]]||{}, desc=((e.descriptions||{}).es||{}).value, co=(((e.claims||{}).P625||[])[0]||{}).mainsnak;
+        var v=co&&co.datavalue&&co.datavalue.value, wl=((e.sitelinks||{}).eswiki||{}).title;
+        if(desc) $('.fl-desc').textContent=desc.charAt(0).toUpperCase()+desc.slice(1);
+        $('.fl-texto').innerHTML=''; botones(url,v&&v.latitude,v&&v.longitude);
+        $('.fl-fuente').textContent='Datos de Wikidata.';
+        if(wl) return resumen(wl).then(function(s){pintarWiki(s,'https://es.wikipedia.org/wiki/'+encodeURIComponent(wl.replace(/ /g,'_')));});
+      });
+    else p=Promise.reject();
+    p.catch(function(){ if($('.fl-cargando')) $('.fl-texto').innerHTML='<p>No he podido cargar más información ahora.</p>'; });
+  });});
+})();
+"""
+
+CSS_MINI = """
+.tiempo-mini{position:relative;display:inline-block;margin-top:14px;z-index:6}
+.tiempo-mini[hidden],.t-panel[hidden]{display:none}
+.t-boton{display:inline-flex;align-items:center;gap:7px;padding:6px 12px 6px 10px;border-radius:99px;border:1px solid rgba(255,255,255,.35);
+  background:rgba(0,0,0,.32);color:#fff;font:500 15px var(--f-texto);cursor:pointer;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.t-boton:hover{background:rgba(0,0,0,.45)}
+.heroe.sin-foto .t-boton{background:var(--tarjeta);color:var(--tinta);border-color:var(--linea)}
+.t-boton .t-icono{font-size:18px;line-height:1}
+.t-boton .t-grados{font:700 16px/1 var(--f-texto)}
+.t-boton .t-txt{font-weight:500}
+.t-boton .t-flecha{font-size:12px;opacity:.8;transition:transform .2s}
+.tiempo-mini.abierto .t-flecha{transform:rotate(180deg)}
+.t-panel{position:absolute;left:0;top:calc(100% + 8px);width:min(340px,calc(100vw - 40px));padding:14px;border-radius:14px;
+  background:var(--tarjeta);color:var(--tinta);box-shadow:0 12px 32px rgba(0,0,0,.25)}
+.t-panel h3{font:600 17px var(--f-titulo);margin:0 0 6px}
+.t-panel .t-detalle{margin:0;font-size:14px;color:var(--tinta-2)}
+.t-panel .t-detalle b{color:var(--tinta);font-size:15px}
+.t-panel .fuente{margin:8px 0 0;font-size:12px;color:var(--tinta-2)}
+.t-panel .fuente a{color:inherit}
+.ficha-lugar{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:18px}
+.ficha-lugar[hidden]{display:none}
+.fl-hoja{position:relative;width:min(560px,100%);max-height:88vh;overflow:auto;background:var(--tarjeta);color:var(--tinta);border-radius:18px;
+  box-shadow:0 20px 50px rgba(0,0,0,.35)}
+.fl-cerrar{position:absolute;top:10px;right:10px;z-index:2;width:36px;height:36px;border-radius:50%;border:0;background:rgba(0,0,0,.5);color:#fff;font-size:16px;cursor:pointer}
+.fl-foto img{display:block;width:100%;max-height:300px;object-fit:cover}
+.fl-foto small{display:block;padding:4px 16px 0;font-size:11px;color:var(--tinta-2)}
+.ficha-lugar.sin-foto .fl-cerrar{background:var(--papel-2);color:var(--tinta)}
+.fl-cuerpo{padding:14px 20px 18px}
+.fl-cuerpo h3{font:600 24px/1.2 var(--f-titulo);margin:0 40px 4px 0}
+.fl-desc{margin:0 0 10px;color:var(--tinta-2);font-style:italic}
+.fl-texto p{margin:0 0 10px;line-height:1.55}
+.fl-botones{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.fl-fuente{margin:12px 0 0;font-size:12px;color:var(--tinta-2)}
+body.sin-scroll{overflow:hidden}
+@media (max-width:600px){.ficha-lugar{align-items:flex-end;padding:0}.fl-hoja{border-radius:18px 18px 0 0;max-height:85vh}}
 """
