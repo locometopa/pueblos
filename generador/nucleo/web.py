@@ -6,6 +6,7 @@ import time
 from pathlib import Path
 
 from . import diseno as D
+from . import extras as X
 from . import mapa
 from .datos import Almacen, normalizar, slugify
 
@@ -469,6 +470,10 @@ JS_VISOR = r"""
 """
 
 
+_URL = ""          # dirección pública de la web (para WhatsApp)
+_ICONOS = False    # icono-192/512.png generados
+_CFG = {}
+_IMG_PORTADA = False
 _VERSION_RECURSOS = "1"   # cambia cuando cambian estilos o mapa: así el navegador no usa copias viejas
 _DISENO = D.normalizar({})
 _LOGO = False
@@ -483,7 +488,17 @@ def _script_previa(raiz: str) -> str:
             "document.head.appendChild(s);}setInterval(mirar,1200);mirar();})();</script>")
 
 
-def _pagina(titulo: str, cuerpo: str, raiz: str, descripcion: str = "", js: str = "", scripts=()) -> str:
+def _pagina(titulo: str, cuerpo: str, raiz: str, descripcion: str = "", js: str = "", scripts=(),
+            ruta: str = "", imagen: str = "") -> str:
+    icono_ios = "icono-192.png" if _ICONOS else ("logo.png" if _LOGO else "favicon.svg")
+    extra = ""
+    if _DISENO["compartir"]:
+        extra += X.meta_compartir(_URL, titulo, descripcion, ruta, imagen, _CFG.get("titulo_web") or "") + "\n"
+    if _DISENO["instalable"]:
+        extra += (f'<link rel="manifest" href="{raiz}manifest.webmanifest?v={_VERSION_RECURSOS}">\n'
+                  f'<meta name="apple-mobile-web-app-capable" content="yes">\n'
+                  f'<meta name="apple-mobile-web-app-title" content="{e(_CFG.get("titulo_web"))}">\n')
+    js_inst = X.js_instalar(raiz) if _DISENO["instalable"] and not _PREVIA else ""
     return f"""<!doctype html>
 <html lang="es">
 <head>
@@ -494,7 +509,8 @@ def _pagina(titulo: str, cuerpo: str, raiz: str, descripcion: str = "", js: str 
 <meta name="theme-color" content="{D.color_tema(_DISENO)}">
 <meta name="color-scheme" content="{ {'claro': 'light', 'oscuro': 'dark'}.get(_DISENO['modo'], 'light dark') }">
 <link rel="icon" href="{raiz}{'logo.png' if _LOGO else 'favicon.svg'}?v={_VERSION_RECURSOS}">
-<link rel="apple-touch-icon" href="{raiz}{'logo.png' if _LOGO else 'favicon.svg'}?v={_VERSION_RECURSOS}">
+<link rel="apple-touch-icon" href="{raiz}{icono_ios}?v={_VERSION_RECURSOS}">
+{extra}
 {D.enlace_fuentes(_DISENO)}
 <link rel="stylesheet" href="{raiz}estilo.css?v={_VERSION_RECURSOS}">
 </head>
@@ -502,6 +518,7 @@ def _pagina(titulo: str, cuerpo: str, raiz: str, descripcion: str = "", js: str 
 {cuerpo}
 {''.join(f'<script src="{raiz}{x}?v={_VERSION_RECURSOS}"></script>' for x in scripts)}
 {f'<script>{js}</script>' if js else ''}
+{f'<script>{js_inst}</script>' if js_inst else ''}
 {_script_previa(raiz) if _PREVIA else ''}
 </body>
 </html>
@@ -529,7 +546,8 @@ def _pie(cfg) -> str:
             f'Textos de <a href="https://es.wikipedia.org">Wikipedia</a> con licencia '
             f'<a href="https://creativecommons.org/licenses/by-sa/4.0/deed.es">CC BY-SA 4.0</a> · '
             f'Algunas fotos son de <a href="https://commons.wikimedia.org">Wikimedia Commons</a>; '
-            f'su autor y licencia figuran junto a cada una · Mapa: <a href="https://github.com/martgnz/es-atlas">es-atlas</a> · Actualizado el {fecha_larga(time.strftime("%Y-%m-%d"))}</div></footer>')
+            f'su autor y licencia figuran junto a cada una · Mapa: <a href="https://github.com/martgnz/es-atlas">es-atlas</a> · Actualizado el {fecha_larga(time.strftime("%Y-%m-%d"))}'
+            f'{X.BOTON_INSTALAR if _DISENO["instalable"] else ""}</div></footer>')
 
 
 # ---------------------------------------------------------------------------- índice
@@ -698,12 +716,19 @@ def _indice(pueblos: list, cfg, pendientes=()) -> str:
     if not _DISENO["mostrar_mapa"]:
         seccion_mapa = ""
     partes = [seccion_mapa, lista_pueblos] if _DISENO["mapa_primero"] else [lista_pueblos, seccion_mapa]
+    if _DISENO["cronologia"]:
+        partes.append(X.cronologia(pueblos))
     cuerpo = f"""
 {cabecera}
 {''.join(partes)}
 {_pie(cfg)}"""
-    return _pagina(cfg.get("titulo_web"), cuerpo, "", cfg.get("subtitulo_web"), JS_INDICE + JS_MAPA + JS_CABECERA,
-                   scripts=("js/d3.min.js", "js/d3-composite-projections.min.js", "js/provincias.js"))
+    desc = cfg.get("subtitulo_web") or ""
+    resumen = f"{len(pueblos)} {'pueblo' if len(pueblos) == 1 else 'pueblos'} en {len(prov_visitadas)} " \
+              f"{'provincia' if len(prov_visitadas) == 1 else 'provincias'}"
+    return _pagina(cfg.get("titulo_web"), cuerpo, "", f"{desc} · {resumen}" if desc else resumen,
+                   JS_INDICE + JS_MAPA + JS_CABECERA,
+                   scripts=("js/d3.min.js", "js/d3-composite-projections.min.js", "js/provincias.js"),
+                   ruta="", imagen="compartir.jpg" if (_IMG_PORTADA) else "")
 
 
 # ---------------------------------------------------------------------------- pueblo
@@ -830,7 +855,10 @@ def _pagina_pueblo(p: dict, anterior, siguiente, cfg) -> str:
     cuerpo = (f'{heroe}<div class="cuerpo envoltorio"><div>{"".join(principal)}</div>{aside}</div>'
               f'{galeria}{vecinos}{_pie(cfg)}')
     desc = (w.get("extracto") or p.get("texto_ia") or "")[:160]
-    return _pagina(f'{p["nombre"]} · {cfg.get("titulo_web")}', cuerpo, "../../", desc, JS_VISOR)
+    imagen = f'pueblos/{p["slug"]}/compartir.jpg' if p.get("_img_compartir") else (
+        f'pueblos/{p["slug"]}/fotos/{p["portada"]}' if p.get("portada") else "")
+    return _pagina(f'{p["nombre"]} · {cfg.get("titulo_web")}', cuerpo, "../../", desc, JS_VISOR,
+                   ruta=f'pueblos/{p["slug"]}/', imagen=imagen)
 
 
 # ---------------------------------------------------------------------------- generar
@@ -869,8 +897,11 @@ def generar(almacen: Almacen, cfg, destino: Path, avisar=print) -> int:
     if not geo_js.exists() or geo_js.read_text(encoding="utf-8") != contenido:
         geo_js.write_text(contenido, encoding="utf-8")
     import hashlib
-    global _VERSION_RECURSOS, _DISENO, _LOGO, _PREVIA
+    global _VERSION_RECURSOS, _DISENO, _LOGO, _PREVIA, _URL, _ICONOS, _CFG, _IMG_PORTADA
     _DISENO = D.normalizar(cfg.get("diseno"))
+    _CFG = cfg
+    _URL = X.url_base(cfg)
+    colores = D.PALETAS[_DISENO["paleta"]][2 if _DISENO["modo"] == "oscuro" else 1]
     _PREVIA = bool(cfg.get("_previa"))
     logo = cfg.get("logo_ruta")
     _LOGO = bool(logo and Path(logo).exists())
@@ -878,12 +909,38 @@ def generar(almacen: Almacen, cfg, destino: Path, avisar=print) -> int:
         _copiar_si_cambia(Path(logo), destino / "logo.png")
     elif (destino / "logo.png").exists():
         (destino / "logo.png").unlink()
-    estilo = D.css_final(CSS.strip(), _DISENO)
+    estilo = D.css_final(CSS.strip() + X.CSS, _DISENO)
+    # web instalable: iconos, manifiesto y service worker (o uno que se borra si la opción está apagada)
+    _ICONOS = False
+    if _DISENO["instalable"]:
+        _ICONOS = X.iconos(destino, Path(logo) if _LOGO else None, colores)
+        (destino / "manifest.webmanifest").write_text(
+            X.manifiesto(cfg.get("titulo_web") or "Mis pueblos", cfg.get("subtitulo_web") or "", colores, _ICONOS),
+            encoding="utf-8")
+    elif (destino / "manifest.webmanifest").exists():
+        (destino / "manifest.webmanifest").unlink()
+    # imágenes para compartir (WhatsApp…)
+    _IMG_PORTADA = False
+    if _DISENO["compartir"]:
+        recientes = sorted((p for p in visitados if p.get("portada")),
+                           key=lambda x: (x.get("fechas_visita") or [""])[-1], reverse=True)
+        fotos_portada = [almacen.carpeta_pueblo(p["slug"]) / "fotos" / p["portada"] for p in recientes]
+        provs = len({p["_prov"] for p in visitados if p.get("_prov")})
+        cifras = f"{len(visitados)} {'pueblo' if len(visitados) == 1 else 'pueblos'} · {provs} " \
+                 f"{'provincia' if provs == 1 else 'provincias'}"
+        _IMG_PORTADA = X.imagen_portada(fotos_portada, destino / "compartir.jpg", cfg.get("titulo_web") or "",
+                                        cfg.get("subtitulo_web") or "", cifras, colores)
+        for p in pueblos:
+            if p.get("portada"):
+                p["_img_compartir"] = X.imagen_pueblo(almacen.carpeta_pueblo(p["slug"]) / "fotos" / p["portada"],
+                                                      destino / "pueblos" / p["slug"] / "compartir.jpg", p["nombre"], colores)
     (destino / "favicon.svg").write_text(D.favicon_svg(_DISENO), encoding="utf-8")
     huella = estilo + contenido + (str(Path(logo).stat().st_mtime) if _LOGO else "")
     _VERSION_RECURSOS = hashlib.md5(huella.encode("utf-8")).hexdigest()[:10]
 
     (destino / "estilo.css").write_text(estilo + "\n", encoding="utf-8")
+    (destino / "sw.js").write_text(X.service_worker(_VERSION_RECURSOS) if _DISENO["instalable"] else X.SW_APAGADO,
+                                   encoding="utf-8")
     (destino / ".nojekyll").write_text("", encoding="utf-8")
     (destino / "index.html").write_text(_indice(visitados, cfg, pendientes), encoding="utf-8")
 

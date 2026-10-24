@@ -12,6 +12,9 @@ DEFECTO = {
     "mostrar_mapa": True,
     "mapa_primero": True,
     "mostrar_extra": True,       # «Qué ver» y «Para saber más» en cada pueblo
+    "cronologia": True,          # línea del tiempo de viajes en la portada
+    "compartir": True,           # foto y título al compartir por WhatsApp, Telegram…
+    "instalable": True,          # se puede instalar en el móvil como una app
 }
 
 CABECERAS = {
