@@ -822,20 +822,25 @@
       ${cabecera('Mis pueblos', 'panel de gestión', '', `<a class="icono" href="${esc(web)}" target="_blank" rel="noopener" title="Ver mi web" aria-label="Ver mi web" style="text-decoration:none">🌐</a><button class="icono" id="ajustes" title="Ajustes" aria-label="Ajustes">⚙</button>`)}
       <main class="cont">
         <div class="pestanas" role="tablist">
-          <button data-v="visitados" aria-pressed="${E.vista === 'visitados'}">🏘 Visitados · ${vis.length}</button>
-          <button data-v="pendientes" aria-pressed="${E.vista === 'pendientes'}">📌 Por visitar · ${pen.length}</button>
+          <button data-v="visitados" aria-pressed="${E.vista === 'visitados'}">🏘 Visitados <small>${vis.length}</small></button>
+          <button data-v="pendientes" aria-pressed="${E.vista === 'pendientes'}">📌 Por visitar <small>${pen.length}</small></button>
+          <button data-v="revisar" aria-pressed="${E.vista === 'revisar'}">✔ Revisar <small>${revisiones(todos).total}</small></button>
         </div>
+        ${E.vista === 'revisar' ? pintarRevisar(todos) : `
         <input class="buscar" id="buscar" type="search" placeholder="🔎 Buscar pueblo o provincia…" value="${esc(E.filtro)}">
         ${E.vista === 'visitados' && sinPropias ? `<p class="resumen">${sinPropias} ${sinPropias === 1 ? 'pueblo visitado' : 'pueblos visitados'} sin fotos tuyas todavía.</p>` : ''}
         <div class="rejilla">${lista.map(ficha).join('') || `<p class="vacio" style="grid-column:1/-1">${E.filtro ? 'No hay pueblos que coincidan.' :
-          E.vista === 'visitados' ? 'Todavía no hay pueblos. Sube las fotos de un viaje o añade uno.' : 'Tu lista de pendientes está vacía.'}</p>`}</div>
+          E.vista === 'visitados' ? 'Todavía no hay pueblos. Sube las fotos de un viaje o añade uno.' : 'Tu lista de pendientes está vacía.'}</p>`}</div>`}
       </main>
       <nav class="acciones">
         <button class="btn sec" id="nuevo">＋ Pueblo</button>
-        <button class="btn" id="subir">📷 Subir fotos</button>
+        <button class="btn aqui" id="aqui">📍 Estoy aquí</button>
+        <button class="btn sec" id="subir">📷 Fotos</button>
       </nav>`;
     $$('.pestanas button').forEach((b) => (b.onclick = () => { E.vista = b.dataset.v; pantallaLista(); }));
-    $('#buscar').oninput = (ev) => {
+    $$('.rev-chip').forEach((b) => (b.onclick = () => abrirEditor(b.dataset.slug)));
+    $('#aqui').onclick = estoyAqui;
+    if ($('#buscar')) $('#buscar').oninput = (ev) => {
       E.filtro = ev.target.value;
       const pos = ev.target.selectionStart;
       pantallaLista();
@@ -846,6 +851,101 @@
     $('#subir').onclick = () => elegirFotos((files) => subirFotosViaje(files));
     $('#ajustes').onclick = pantallaAjustes;
     pintarAvisoInstalar();
+  }
+
+  // ------------------------------------------------------------------ revisar: lo que le falta a cada pueblo
+  const REVISIONES = [
+    ['ubicacion', 'Sin ubicación en el mapa', 'todos', (p) => p.lat == null],
+    ['fecha', 'Sin fecha de visita', 'visitado', (p) => !(p.fechas_visita || []).length],
+    ['fotos', 'Sin fotos tuyas', 'visitado', (p) => !p.fotos.some((f) => !f.credito)],
+    ['sinfoto', 'Sin ninguna foto', 'todos', (p) => !p.fotos.length],
+    ['info', 'Sin información de Wikipedia', 'todos', (p) => !((p.wiki || {}).extracto)],
+    ['notas', 'Sin una línea tuya (opcional)', 'visitado', (p) => !(p.notas || '').trim()],
+  ];
+  function revisiones(todos) {
+    const grupos = REVISIONES.map(([clave, texto, quien, falta]) => ({ clave, texto,
+      lista: todos.filter((p) => (quien === 'todos' || (p.estado || 'visitado') === quien) && falta(p)) }));
+    return { grupos, total: grupos.filter((g) => g.clave !== 'notas').reduce((n, g) => n + g.lista.length, 0) };
+  }
+  function pintarRevisar(todos) {
+    const { grupos, total } = revisiones(todos);
+    const con = grupos.filter((g) => g.lista.length);
+    if (!con.length) return '<p class="vacio">¡Todo completo! Tu web está al día. 🎉</p>';
+    return `<p class="resumen">${total ? `${total} cosas por completar. Toca un pueblo para arreglarlo.` : 'Solo quedan cosas opcionales.'}</p>` +
+      con.map((g) => `<section class="tarjeta revisar"><h2>${esc(g.texto)} <small>${g.lista.length}</small></h2><div class="rev-chips">` +
+        g.lista.sort((a, b) => normalizar(a.nombre).localeCompare(normalizar(b.nombre))).map((p) =>
+          `<button class="rev-chip" data-slug="${esc(p.slug)}">${p.portada ? `<img src="${esc(urlFoto(p.slug, p.portada))}" alt="">` : ''}${esc(p.nombre)}</button>`).join('') +
+        '</div></section>').join('');
+  }
+
+  // ------------------------------------------------------------------ «Estoy aquí»: el pueblo donde estás, visitado hoy
+  function hoyLocal() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  }
+  async function estoyAqui() {
+    if (!navigator.geolocation) { aviso('Este navegador no puede dar tu ubicación.', true); return; }
+    espera('Buscando dónde estás…');
+    let pos;
+    try {
+      pos = await new Promise((ok, mal) => navigator.geolocation.getCurrentPosition(ok, mal,
+        { enableHighAccuracy: true, timeout: 20000, maximumAge: 60000 }));
+    } catch (e) {
+      finEspera();
+      aviso(e && e.code === 1 ? 'No tengo permiso para ver tu ubicación. Actívalo para esta web en los ajustes del navegador.'
+        : 'No he podido saber dónde estás. Prueba otra vez al aire libre.', true);
+      return;
+    }
+    const lat = pos.coords.latitude, lon = pos.coords.longitude;
+    let lugar = null;
+    try { lugar = await geoInverso(lat, lon); } catch (e) { console.warn(e); }
+    finEspera();
+    if (!lugar || !lugar.nombre) { aviso('No reconozco ningún pueblo aquí. Puedes añadirlo con «＋ Pueblo».', true); return; }
+    const hoy = hoyLocal();
+    const existente = buscarPueblo(lugar.nombre, lugar.provincia);
+    const ya = existente && (existente.fechas_visita || []).includes(hoy);
+    const d = dialogo(`<h2>📍 ${esc(lugar.nombre)}</h2>
+      <p class="sub">${esc([lugar.provincia, lugar.comunidad].filter(Boolean).join(' · '))}</p>
+      <p>${ya ? 'Ya lo tienes como visitado hoy.' : existente ? (existente.estado === 'pendiente'
+        ? '¡Estaba en tu lista «Por visitar»! Lo paso a visitado con la fecha de hoy.' : 'Ya lo tienes: le añado la visita de hoy.')
+        : 'Lo añado a tus pueblos visitados, con la fecha de hoy y los datos de Wikipedia.'}</p>
+      <label class="interruptor"><input type="checkbox" id="a-foto" checked> Hacer o elegir una foto ahora</label>
+      <div class="fila fin" style="margin-top:10px"><button class="btn sec" id="a-no">Cancelar</button>
+        <button class="btn" id="a-si">${ya ? 'Abrir' : 'Marcar visitado hoy'}</button></div>`);
+    $('#a-no', d).onclick = () => d.remove();
+    $('#a-si', d).onclick = async () => {
+      const conFoto = $('#a-foto', d).checked;
+      d.remove();
+      let slug;
+      try {
+        if (existente) {
+          slug = existente.slug;
+          if (!ya) {
+            await guardar([{ slug, aplicar: (fresco) => {
+              const p = fresco || clonar(existente);
+              p.fechas_visita = (p.fechas_visita || []).concat([hoy]).filter((x, i, a) => a.indexOf(x) === i).sort();
+              p.estado = 'visitado';
+              if (p.lat == null) { p.lat = +lat.toFixed(6); p.lon = +lon.toFixed(6); }
+              return p;
+            } }], [], [], `${existente.nombre}: visitado hoy (desde el móvil)`);
+          }
+        } else {
+          const p = puebloVacio(lugar.nombre);
+          Object.assign(p, { provincia: lugar.provincia, comunidad: lugar.comunidad, pais: lugar.pais || 'España',
+            estado: 'visitado', lat: +lat.toFixed(6), lon: +lon.toFixed(6), fechas_visita: [hoy] });
+          espera('Consultando Wikipedia…');
+          try { aplicarWiki(p, await wikiTodo(p.nombre, p.provincia, p.lat, p.lon)); } catch (e) { console.warn(e); }
+          finEspera();
+          p.lat = +lat.toFixed(6); p.lon = +lon.toFixed(6);
+          slug = slugLibre(p.nombre, p.provincia);
+          p.slug = slug;
+          await guardar([{ slug, aplicar: (fresco) => fresco || p }], [], [], `Nuevo pueblo: ${p.nombre} (visitado hoy, desde el móvil)`);
+        }
+      } catch (e) { finEspera(); aviso(e.message, true); return; }
+      abrirEditor(slug);
+      if (!ya) aviso(`¡${lugar.nombre} visitado hoy! 🎉`);
+      if (conFoto) setTimeout(() => elegirFotos(anadirMisFotos, true), 300);
+    };
   }
 
   function ficha(p) {
@@ -1188,9 +1288,10 @@
     });
   }
 
-  function elegirFotos(cb) {
+  function elegirFotos(cb, camara) {
     const input = $('#selector-fotos');
     input.value = '';
+    if (camara) input.setAttribute('capture', 'environment'); else input.removeAttribute('capture');
     input.onchange = () => { const files = Array.from(input.files || []); if (files.length) cb(files); };
     input.click();
   }

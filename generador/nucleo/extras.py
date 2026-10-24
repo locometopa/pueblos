@@ -868,3 +868,120 @@ CSS_ULTIMA = """
 .m-album .u-tarjeta{background:#fbf8f1;color:#2f2a25;transform:rotate(-.6deg)}
 .m-moderna .u-tarjeta{border-radius:28px}
 """
+
+
+# ---------------------------------------------------------------------------- rutas por los pendientes
+def _agrupar(puntos: list, umbral_km: float = 70) -> list:
+    """Grupos de pueblos que están cerca unos de otros (enlace simple)."""
+    grupos = []
+    sin = list(puntos)
+    while sin:
+        grupo = [sin.pop(0)]
+        cambiado = True
+        while cambiado:
+            cambiado = False
+            for q in list(sin):
+                if any(distancia_km((q["lat"], q["lon"]), (g["lat"], g["lon"])) <= umbral_km for g in grupo):
+                    grupo.append(q)
+                    sin.remove(q)
+                    cambiado = True
+        grupos.append(grupo)
+    return grupos
+
+
+def _ordenar_ruta(grupo: list) -> list:
+    """Empieza en un extremo y va siempre al más cercano."""
+    if len(grupo) < 3:
+        return list(grupo)
+    a, b = max(((x, y) for x in grupo for y in grupo if x is not y),
+               key=lambda par: distancia_km((par[0]["lat"], par[0]["lon"]), (par[1]["lat"], par[1]["lon"])))
+    ruta, resto = [a], [p for p in grupo if p is not a]
+    while resto:
+        u = ruta[-1]
+        sig = min(resto, key=lambda p: distancia_km((u["lat"], u["lon"]), (p["lat"], p["lon"])))
+        ruta.append(sig)
+        resto.remove(sig)
+    return ruta
+
+
+def _mini_mapa(ruta: list) -> str:
+    la = [p["lat"] for p in ruta]
+    lo = [p["lon"] for p in ruta]
+    import math
+    k = math.cos(math.radians(sum(la) / len(la)))
+    xs = [x * k for x in lo]
+    w, h, m = 220, 140, 16
+    dx, dy = max(xs) - min(xs) or 0.01, max(la) - min(la) or 0.01
+    esc = min((w - 2 * m) / dx, (h - 2 * m) / dy)
+    ox = (w - dx * esc) / 2
+    oy = (h - dy * esc) / 2
+    pts = [(ox + (x - min(xs)) * esc, h - (oy + (y - min(la)) * esc)) for x, y in zip(xs, la)]
+    linea = " ".join(f"{x:.1f},{y:.1f}" for x, y in pts)
+    circ = "".join(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="7"/><text x="{x:.1f}" y="{y + 3.5:.1f}">{i + 1}</text>'
+                   for i, (x, y) in enumerate(pts))
+    return (f'<svg class="r-mapa" viewBox="0 0 {w} {h}" role="img" aria-label="Recorrido">'
+            f'<polyline points="{linea}"/>{circ}</svg>')
+
+
+def _nombre_zona(ruta: list) -> str:
+    provs = list(dict.fromkeys(p.get("provincia") or p.get("comunidad") or "" for p in ruta))
+    provs = [x for x in provs if x]
+    if not provs:
+        return "Escapada"
+    if len(provs) == 1:
+        return f"Escapada por {provs[0]}"
+    if len(provs) == 2:
+        return f"Entre {provs[0]} y {provs[1]}"
+    coms = list(dict.fromkeys(p.get("comunidad") for p in ruta if p.get("comunidad")))
+    return f"Ruta por {coms[0]}" if len(coms) == 1 else f"Ruta por {provs[0]}, {provs[1]} y más"
+
+
+def bloque_rutas(pendientes: list) -> str:
+    puntos = [p for p in pendientes if p.get("lat") is not None and p.get("lon") is not None]
+    rutas = [_ordenar_ruta(g) for g in _agrupar(puntos) if len(g) >= 2]
+    if not rutas:
+        return ""
+    rutas.sort(key=len, reverse=True)
+    tarjetas = []
+    for ruta in rutas[:6]:
+        ruta = ruta[:10]
+        tramos = [distancia_km((a["lat"], a["lon"]), (b["lat"], b["lon"])) for a, b in zip(ruta, ruta[1:])]
+        total = sum(tramos) * 1.3             # la carretera da más vueltas que la línea recta
+        dias = "1 día" if len(ruta) <= 3 and total < 150 else "fin de semana" if len(ruta) <= 5 and total < 350 else "3 o 4 días"
+        paradas = []
+        for i, p in enumerate(ruta):
+            km = f'<small>{round(tramos[i - 1] * 1.3)} km</small>' if i else '<small>salida</small>'
+            paradas.append(f'<li><a href="pueblos/{e(p["slug"])}/index.html"><b>{i + 1}</b>{e(p["nombre"])}</a>{km}</li>')
+        coord = lambda p: f'{p["lat"]},{p["lon"]}'  # noqa: E731
+        url = (f'https://www.google.com/maps/dir/?api=1&amp;origin={coord(ruta[0])}&amp;destination={coord(ruta[-1])}'
+               + (f'&amp;waypoints={"%7C".join(coord(p) for p in ruta[1:-1])}' if len(ruta) > 2 else "") + '&amp;travelmode=driving')
+        tarjetas.append(f'<article class="ruta">{_mini_mapa(ruta)}<div class="r-texto"><h3>{e(_nombre_zona(ruta))}</h3>'
+                        f'<p class="r-datos">{len(ruta)} pueblos · unos {round(total)} km · {dias}</p>'
+                        f'<ol class="r-paradas">{"".join(paradas)}</ol>'
+                        f'<a class="boton" href="{url}" target="_blank" rel="noopener">🚗 Ver la ruta</a></div></article>')
+    return (f'<div class="rutas"><h3 class="r-titulo">Escapadas posibles</h3>'
+            f'<p class="r-intro">Mis pendientes que están cerca unos de otros, en el orden más corto. Los kilómetros son aproximados.</p>'
+            f'<div class="r-rejilla">{"".join(tarjetas)}</div></div>')
+
+
+CSS_RUTAS = """
+.rutas{margin-top:34px}
+.r-titulo{font:600 26px var(--f-titulo);margin:0 0 4px}
+.r-intro{margin:0 0 16px;color:var(--tinta-2)}
+.r-rejilla{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.ruta{display:flex;flex-direction:column;border-radius:var(--radio);background:var(--tarjeta);box-shadow:var(--sombra);overflow:hidden}
+.r-mapa{width:100%;height:auto;display:block;background:color-mix(in srgb,var(--pendiente) 10%,var(--papel-2))}
+.r-mapa polyline{fill:none;stroke:var(--pendiente);stroke-width:2.5;stroke-dasharray:6 5;stroke-linecap:round}
+.r-mapa circle{fill:var(--pendiente);stroke:var(--tarjeta);stroke-width:2}
+.r-mapa text{fill:#fff;font:700 9px var(--f-texto);text-anchor:middle}
+.r-texto{padding:14px 16px 16px;display:flex;flex-direction:column;gap:8px;flex:1}
+.r-texto h3{font:600 20px var(--f-titulo);margin:0}
+.r-datos{margin:0;color:var(--tinta-2);font-size:14px}
+.r-paradas{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.r-paradas li{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:15px}
+.r-paradas a{display:flex;align-items:center;gap:8px;color:var(--tinta);text-decoration:none}
+.r-paradas a:hover{color:var(--pendiente)}
+.r-paradas b{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--pendiente);color:#fff;font-size:11px}
+.r-paradas small{color:var(--tinta-2);white-space:nowrap}
+.ruta .boton{align-self:flex-start;margin-top:auto;background:var(--pendiente)}
+"""

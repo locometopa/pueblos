@@ -149,3 +149,14 @@ h1,h2,h3{font-family:var(--f-titulo);font-weight:600;letter-spacing:-.01em;margi
 .instalar-aviso .ayuda{margin:8px 0 0}
 
 .instalar-aviso .icono{background:none;border:0;color:var(--tinta-2);font-size:18px;width:36px;height:36px}
+
+.pestanas button small{font-weight:500;opacity:.7;margin-left:2px}
+@media (max-width:420px){.pestanas button{font-size:13px;padding:9px 2px}}
+.acciones .btn.aqui{flex:1.2}
+.revisar h2{font-size:17px;margin:0 0 10px}
+.revisar h2 small{color:var(--tinta-2);font-weight:500}
+.rev-chips{display:flex;flex-wrap:wrap;gap:8px}
+.rev-chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--linea);background:var(--papel-2);color:var(--tinta);
+  border-radius:99px;padding:5px 12px 5px 5px;font:inherit;font-size:14px;cursor:pointer}
+.rev-chip img{width:28px;height:28px;border-radius:50%;object-fit:cover}
+.rev-chip:not(:has(img)){padding-left:12px}

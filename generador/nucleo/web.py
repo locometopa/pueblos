@@ -645,7 +645,7 @@ def _indice(pueblos: list, cfg, pendientes=()) -> str:
         fichas = "".join(_ficha(p) for p in sorted(pendientes, key=lambda x: normalizar(x["nombre"])))
         seccion_pend = (f'<section class="pendientes" id="por-visitar"><h2>Próximos destinos</h2>'
                         f'<p>{len(pendientes)} {"pueblo" if len(pendientes) == 1 else "pueblos"} en mi lista de pendientes.</p>'
-                        f'<div class="rejilla">{fichas}</div></section>')
+                        f'<div class="rejilla">{fichas}</div>{X.bloque_rutas(pendientes) if _DISENO["rutas"] else ""}</section>')
 
     textos = f"""
   <div class="marca">{'<img src="logo.png" alt="">' if _LOGO else ''}<div class="sello">Cuaderno de viaje</div></div>
@@ -942,7 +942,7 @@ def generar(almacen: Almacen, cfg, destino: Path, avisar=print) -> int:
         _copiar_si_cambia(Path(logo), destino / "logo.png")
     elif (destino / "logo.png").exists():
         (destino / "logo.png").unlink()
-    estilo = D.css_final(CSS.strip() + X.CSS + X.CSS_FICHA + X.CSS_FIESTAS + X.CSS_NOTAS + X.CSS_MINI + X.CSS_FUENTES + X.CSS_ULTIMA + MQ.CSS, _DISENO)
+    estilo = D.css_final(CSS.strip() + X.CSS + X.CSS_FICHA + X.CSS_FIESTAS + X.CSS_NOTAS + X.CSS_MINI + X.CSS_FUENTES + X.CSS_ULTIMA + X.CSS_RUTAS + MQ.CSS, _DISENO)
     for p in pueblos:
         p["_cerca"] = X.cercanos(p, pueblos)
     # web instalable: iconos, manifiesto y service worker (o uno que se borra si la opción está apagada)
