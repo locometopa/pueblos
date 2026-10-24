@@ -23,7 +23,7 @@
     "web": "http://www.aytolierganes.com/"
   },
   "texto_ia": "",
-  "notas": "",
+  "notas": "Con mi mujer",
   "fotos": [
     {
       "archivo": "0001.jpg",
@@ -76,6 +76,7 @@
   ],
   "portada": "0004.jpg",
   "publicar": true,
+  "estado": "visitado",
   "creado": "2026-10-24 16:10",
-  "modificado": "2026-10-24 17:47"
+  "modificado": "2026-10-24 18:37"
 }
