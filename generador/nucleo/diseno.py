@@ -20,6 +20,7 @@ DEFECTO = {
     "cercanos": True,            # «Cerca de aquí»: tus otros pueblos cercanos
     "fiestas": True,             # fiestas de cada pueblo y «Próximas fiestas» en la portada
     "notas_a_mano": True,        # «Mi cuaderno» con letra manuscrita
+    "maqueta": "clasica",        # clasica | revista | album | moderna (aspecto de la página entera)
 }
 
 CABECERAS = {
@@ -87,6 +88,9 @@ def normalizar(d) -> dict:
         res["paleta"] = DEFECTO["paleta"]
     if res["tipografia"] not in TIPOGRAFIAS:
         res["tipografia"] = DEFECTO["tipografia"]
+    from .maquetas import MAQUETAS
+    if res["maqueta"] not in MAQUETAS:
+        res["maqueta"] = "clasica"
     if res["modo"] not in ("auto", "claro", "oscuro"):
         res["modo"] = "auto"
     return res

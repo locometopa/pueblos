@@ -1,5 +1,5 @@
 {
-  "version": "1.0",
-  "notas": "Novedades: más fuentes de información (web oficial del ayuntamiento, guía de Wikivoyage, distinciones, lugares de OpenStreetMap) y de fotos (Flickr y otros con licencia libre). Incluye todo lo anterior: fiestas, cuaderno, varias IAs, el tiempo…",
+  "version": "1.1",
+  "notas": "Novedades: 4 estilos de página entera (Clásica, Revista, Álbum de viaje, Moderna) y más información cuando Wikipedia es escasa (artículo en gallego, catalán, inglés… traducido; comarca, río, código postal…).",
   "archivo": "PUEBLOS.zip"
 }

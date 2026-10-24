@@ -794,6 +794,10 @@ def bloque_guia(guia: dict) -> str:
 
 
 CSS_FUENTES = """
+.otra-wiki details{border-radius:12px;background:var(--tarjeta);box-shadow:var(--sombra);padding:2px 18px}
+.otra-wiki summary{cursor:pointer;padding:12px 0;font:600 18px var(--f-titulo);list-style:none}
+.otra-wiki summary::after{content:" +";color:var(--tinta-2)}
+.otra-wiki details[open] summary::after{content:" –"}
 .distinciones{list-style:none;margin:0 0 14px;padding:0;display:flex;flex-direction:column;gap:6px}
 .distinciones li{font-size:13px;font-weight:600;padding:6px 10px;border-radius:10px;background:color-mix(in srgb,var(--acento-2) 14%,var(--tarjeta));
   color:var(--tinta)}

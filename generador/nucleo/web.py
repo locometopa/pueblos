@@ -7,6 +7,7 @@ from pathlib import Path
 
 from . import diseno as D
 from . import extras as X
+from . import maquetas as MQ
 from . import mapa
 from .datos import Almacen, normalizar, slugify
 
@@ -512,10 +513,11 @@ def _pagina(titulo: str, cuerpo: str, raiz: str, descripcion: str = "", js: str 
 <link rel="apple-touch-icon" href="{raiz}{icono_ios}?v={_VERSION_RECURSOS}">
 {extra}
 {D.enlace_fuentes(_DISENO)}
+{MQ.FUENTES.get(_DISENO["maqueta"], "")}
 {cabeza}
 <link rel="stylesheet" href="{raiz}estilo.css?v={_VERSION_RECURSOS}">
 </head>
-<body>
+<body class="m-{_DISENO['maqueta']}">
 {cuerpo}
 {''.join(f'<script src="{raiz}{x}?v={_VERSION_RECURSOS}"></script>' for x in scripts)}
 {f'<script>{js}</script>' if js else ''}
@@ -563,7 +565,7 @@ def _ficha(p: dict) -> str:
     if pendiente:
         visita = p["provincia"] or "Por visitar"
     return (f'<a class="ficha{" pend" if pendiente else ""}" href="pueblos/{e(p["slug"])}/index.html" data-buscar="{e(buscar)}">'
-            f'<div class="foto">{foto}</div><div class="texto"><h4>{e(p["nombre"])}</h4>'
+            f'<div class="foto">{foto}</div><div class="texto"><small class="f-prov">{e(p["provincia"] or p["comunidad"])}</small><h4>{e(p["nombre"])}</h4>'
             f'<p>{e(visita) or "&nbsp;"}</p></div></a>')
 
 
@@ -774,6 +776,15 @@ def _pagina_pueblo(p: dict, anterior, siguiente, cfg) -> str:
                          f'<p class="nota-ia">Texto redactado con ayuda de IA a partir de Wikipedia.</p></section>')
     if w.get("extracto"):
         principal.append(f'<section class="wiki">{parrafos(w["extracto"])}</section>')
+    otra = w.get("extracto_otro") or {}
+    if otra.get("texto"):
+        traducido = bool(otra.get("texto_es"))
+        nota = (f'Traducido de la <a href="{e(otra.get("url"))}">Wikipedia en {e(otra["idioma"])}</a> (CC BY-SA 4.0).'
+                if traducido else f'De la <a href="{e(otra.get("url"))}">Wikipedia en {e(otra["idioma"])}</a> (CC BY-SA 4.0).')
+        lang = "" if traducido else f' lang="{e(otra.get("lengua"))}"'
+        principal.append(f'<section class="wiki otra-wiki"{lang}>'
+                         f'<details{" open" if not w.get("extracto") else ""}><summary>Más sobre {e(p["nombre"])}</summary>'
+                         f'{parrafos(otra.get("texto_es") or otra["texto"])}<p class="fuente">{nota}</p></details></section>')
     if _DISENO["fiestas"]:
         from .fiestas import del_pueblo
         principal.append(X.bloque_fiestas(del_pueblo(p), p["nombre"]))
@@ -821,6 +832,8 @@ def _pagina_pueblo(p: dict, anterior, siguiente, cfg) -> str:
         filas.append(("Gentilicio", w["gentilicio"]))
     if w.get("patron"):
         filas.append(("Patrón", w["patron"]))
+    for etiqueta, valor in (w.get("mas_datos") or [])[:6]:
+        filas.append((etiqueta, valor))
     if visitas:
         filas.append(("Visitas", str(len(visitas))))
     dl = "".join(f"<dt>{e(a)}</dt><dd>{e(b)}</dd>" for a, b in filas)
@@ -927,7 +940,7 @@ def generar(almacen: Almacen, cfg, destino: Path, avisar=print) -> int:
         _copiar_si_cambia(Path(logo), destino / "logo.png")
     elif (destino / "logo.png").exists():
         (destino / "logo.png").unlink()
-    estilo = D.css_final(CSS.strip() + X.CSS + X.CSS_FICHA + X.CSS_FIESTAS + X.CSS_NOTAS + X.CSS_MINI + X.CSS_FUENTES, _DISENO)
+    estilo = D.css_final(CSS.strip() + X.CSS + X.CSS_FICHA + X.CSS_FIESTAS + X.CSS_NOTAS + X.CSS_MINI + X.CSS_FUENTES + MQ.CSS, _DISENO)
     for p in pueblos:
         p["_cerca"] = X.cercanos(p, pueblos)
     # web instalable: iconos, manifiesto y service worker (o uno que se borra si la opción está apagada)
