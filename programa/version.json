@@ -1,5 +1,5 @@
 {
-  "version": "0.8",
-  "notas": "Novedades: elige la IA (Claude, ChatGPT, Gemini u otra) y la ficha de cada pueblo muestra el tiempo, un mapa con «Cómo llegar» y tus pueblos cercanos. También incluye lo de la 0.7: WhatsApp, web y panel instalables, línea del tiempo.",
+  "version": "0.9",
+  "notas": "Novedades: fiestas de cada pueblo (sin IA) con «Próximas fiestas» en la portada, notas rediseñadas como un cuaderno, varias IAs, el tiempo y mapa en cada pueblo, WhatsApp, web y panel instalables.",
   "archivo": "PUEBLOS.zip"
 }
