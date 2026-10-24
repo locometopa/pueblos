@@ -297,10 +297,13 @@ a{color:var(--acento)}
 .foto-prov.ver{opacity:1}
 .velo{fill:var(--rasca);pointer-events:none;transition:opacity 1.2s ease}
 .borde-canarias{fill:none;stroke:var(--linea);stroke-width:1}
-.chincheta{cursor:pointer;transition:transform .15s}
-.chincheta:hover{transform:scale(1.5)}
-.chincheta.visitado circle{fill:var(--acento);stroke:#fff;stroke-width:1.5}
-.chincheta.pendiente circle{fill:var(--tarjeta);stroke:var(--pendiente);stroke-width:2.2;stroke-dasharray:3 2}
+.chincheta{cursor:pointer}
+.chincheta .zona{fill:transparent;stroke:none}
+.chincheta .punto{transition:transform .15s;transform-box:fill-box;transform-origin:center}
+.chincheta:hover .punto,.chincheta.activa .punto{transform:scale(1.5)}
+.chincheta.visitado .punto{fill:var(--acento);stroke:#fff;stroke-width:1.5}
+.chincheta.pendiente .punto{fill:var(--tarjeta);stroke:var(--pendiente);stroke-width:2.2;stroke-dasharray:3 2}
+.prov.elegida{stroke:var(--acento);stroke-width:2.4}
 .mapa-marco.sin-pendientes .chincheta.pendiente{display:none}
 .globo{position:absolute;pointer-events:none;background:var(--tinta);color:var(--papel);padding:7px 11px;border-radius:8px;
   font-size:14px;line-height:1.35;max-width:240px;opacity:0;transform:translate(-50%,calc(-100% - 12px));transition:opacity .12s;z-index:3}
@@ -366,6 +369,10 @@ JS_MAPA = r"""
   function verGlobo(ev,html){var r=marco.getBoundingClientRect(); globo.html(html).classed('ver',true)
      .style('left',(ev.clientX-r.left)+'px').style('top',(ev.clientY-r.top)+'px');}
   function ocultar(){globo.classed('ver',false);}
+  var tactil=window.matchMedia&&matchMedia('(hover:none)').matches, temporizador=null;
+  function avisoTactil(ev,html){ if(!tactil) return; verGlobo(ev,html); clearTimeout(temporizador);
+     temporizador=setTimeout(ocultar,2600); }
+  window.addEventListener('scroll',function(){ if(tactil) ocultar(); },{passive:true});
 
   (function(geo){
     var proy=d3.geoConicConformalSpain().fitExtent([[10,10],[W-10,H-10]],geo), ruta=d3.geoPath(proy);
@@ -387,28 +394,43 @@ JS_MAPA = r"""
       }
       capaProv.append('path').attr('d',d)
         .attr('class','prov '+(info?(info.foto?'destapada':'destapada solo-color'):'tapada'))
-        .on('mousemove',function(ev){
-          var t='<b>'+f.properties.nombre+'</b>';
-          if(info) t+='<br>'+info.n+(info.n==1?' pueblo visitado':' pueblos visitados');
-          else t+='<br>Sin destapar';
-          if(datos.pend[f.id]) t+='<br>'+datos.pend[f.id]+' por visitar';
-          verGlobo(ev,t);})
-        .on('mouseleave',ocultar)
-        .on('click',function(){mostrarPanel(f);});
+        .on('mousemove',function(ev){ if(!tactil) verGlobo(ev,textoProv(f,info)); })
+        .on('mouseleave',function(){ if(!tactil) ocultar(); })
+        .on('click',function(ev){ capaProv.selectAll('.elegida').classed('elegida',false);
+          d3.select(this).classed('elegida',true).raise(); avisoTactil(ev,textoProv(f,info)); mostrarPanel(f); });
     });
     datos.pueblos.forEach(function(p){
       if(p.lat==null) return; var xy=proy([p.lon,p.lat]); if(!xy) return;
-      var g=capaPins.append('g').attr('class','chincheta '+p.estado)
-        .attr('transform','translate('+xy[0]+','+xy[1]+')').style('transform-origin',xy[0]+'px '+xy[1]+'px');
-      g.append('circle').attr('r',p.estado=='pendiente'?5:4.5);
-      g.on('mousemove',function(ev){verGlobo(ev,'<b>'+p.nombre+'</b><br>'+(p.estado=='pendiente'?'Por visitar':(p.fecha||'Visitado')));})
-       .on('mouseleave',ocultar).on('click',function(){location.href=p.url;});
+      var pos=capaPins.append('g').attr('transform','translate('+xy[0]+','+xy[1]+')');
+      var g=pos.append('g').attr('class','escala').append('g').attr('class','chincheta '+p.estado);
+      g.append('circle').attr('class','zona').attr('r',11);
+      g.append('circle').attr('class','punto').attr('r',p.estado=='pendiente'?5:4.5);
+      var texto='<b>'+p.nombre+'</b><br>'+(p.estado=='pendiente'?'Por visitar':(p.fecha||'Visitado'));
+      g.on('mousemove',function(ev){ if(!tactil) verGlobo(ev,texto); })
+       .on('mouseleave',function(){ if(!tactil) ocultar(); })
+       .on('click',function(ev){
+         ev.stopPropagation();
+         // en el móvil: primer toque enseña el nombre; el segundo abre el pueblo
+         if(tactil && !g.classed('activa')){ capaPins.selectAll('.activa').classed('activa',false); g.classed('activa',true);
+           avisoTactil(ev,texto+'<br><small>Toca otra vez para abrir</small>'); return; }
+         location.href=p.url; });
     });
     // encuadre justo (sin mar de sobra), así el mapa se ve grande también en el móvil
     try{ var bb=capaProv.node().getBBox(), m=8;
       if(bb.width>0) svg.attr('viewBox',[bb.x-m,bb.y-m,bb.width+2*m,bb.height+2*m].join(' ')); }catch(e){}
+    // chinchetas del mismo tamaño en pantalla, también cuando el mapa se ve pequeño (móvil)
+    function tamPins(){ var vb=svg.node().viewBox.baseVal, w=svg.node().getBoundingClientRect().width; if(!w||!vb) return;
+      var k=Math.max(1,Math.min(2.6,(vb.width/w)*(tactil?1.15:0.9)));
+      capaPins.selectAll('.escala').attr('transform','scale('+k+')'); }
+    tamPins(); window.addEventListener('resize',tamPins);
   })(window.PROVINCIAS_ES);
 
+  function textoProv(f,info){
+    var t='<b>'+f.properties.nombre+'</b>';
+    if(info) t+='<br>'+info.n+(info.n==1?' pueblo visitado':' pueblos visitados'); else t+='<br>Sin destapar';
+    if(datos.pend[f.id]) t+='<br>'+datos.pend[f.id]+' por visitar';
+    return t;
+  }
   function mostrarPanel(f){
     var lista=datos.pueblos.filter(function(p){return p.prov==f.id;});
     var html='<h3>'+f.properties.nombre+'</h3>';
@@ -416,6 +438,8 @@ JS_MAPA = r"""
     else html+='<ul>'+lista.map(function(p){return '<li class="'+(p.estado=='pendiente'?'pend':'')+'"><a href="'+p.url+'">'+p.nombre+
       (p.estado=='pendiente'?' · por visitar':'')+'</a></li>';}).join('')+'</ul>';
     panel.innerHTML=html; panel.classList.add('ver');
+    var r=panel.getBoundingClientRect();
+    if(r.bottom>innerHeight) panel.scrollIntoView({behavior:'smooth',block:'nearest'});
   }
   var cb=document.getElementById('ver-pendientes');
   if(cb) cb.addEventListener('change',function(){marco.classList.toggle('sin-pendientes',!cb.checked);});

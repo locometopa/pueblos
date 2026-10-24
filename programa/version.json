@@ -1,5 +1,5 @@
 {
-  "version": "0.6",
-  "notas": "Diseño de la web desde el programa, vista previa en vivo, token de GitHub y estado de la publicación.",
+  "version": "0.6.1",
+  "notas": "Mapa más fácil de pulsar: las chinchetas ya no se escapan con el ratón y en el móvil se tocan mejor.",
   "archivo": "PUEBLOS.zip"
 }
