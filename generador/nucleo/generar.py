@@ -62,7 +62,11 @@ def main():
     salida.mkdir(parents=True, exist_ok=True)
     datos = Path(a.datos)
     datos.mkdir(parents=True, exist_ok=True)
-    n = web.generar(Almacen(datos), leer_ajustes(Path(a.ajustes)), salida, print)
+    ajustes = leer_ajustes(Path(a.ajustes))
+    logo = Path(a.ajustes).resolve().parent / "diseno" / "logo.png"
+    if logo.exists():
+        ajustes["logo_ruta"] = str(logo)
+    n = web.generar(Almacen(datos), ajustes, salida, print)
     copiar_gestion(salida, a.repo, a.rama, datos.resolve().parent / "acceso_panel.json")
     print(f"Web generada con {n} pueblos en {salida}")
 
