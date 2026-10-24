@@ -40,6 +40,14 @@ def copiar_gestion(salida: Path, repo: str = "", rama: str = "main", acceso: Pat
                                          encoding="utf-8")
     if acceso and Path(acceso).exists():
         shutil.copy2(acceso, destino / "acceso.json")
+    # Que el navegador no use una versión vieja del panel tras una actualización
+    import hashlib
+    indice = destino / "index.html"
+    html = indice.read_text(encoding="utf-8")
+    for f in ("app.js", "estilo.css", "exifr.lite.umd.js"):
+        v = hashlib.md5((destino / f).read_bytes()).hexdigest()[:10]
+        html = html.replace(f'"{f}"', f'"{f}?v={v}"')
+    indice.write_text(html, encoding="utf-8")
 
 
 def main():
