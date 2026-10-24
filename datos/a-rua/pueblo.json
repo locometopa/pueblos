@@ -1,0 +1,45 @@
+{
+  "slug": "a-rua",
+  "nombre": "A rua",
+  "provincia": "Ourense",
+  "comunidad": "Galicia",
+  "pais": "España",
+  "lat": 42.416505,
+  "lon": -7.120939,
+  "fechas_visita": [],
+  "wiki": {
+    "titulo": "Vilela (Rúa)",
+    "url": "https://es.wikipedia.org/wiki/Vilela_(R%C3%BAa)",
+    "extracto": "Vilela​ es una entidad de población situada en la parroquia de La Rúa, del municipio español de Rúa, en la provincia de Orense, Galicia.​",
+    "desambiguacion": false,
+    "wikidata": "Q12402348",
+    "altitud": 333
+  },
+  "texto_ia": "",
+  "notas": "",
+  "fotos": [
+    {
+      "archivo": "wmvmop2ug000.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "1000086699.jpg|401051"
+    },
+    {
+      "archivo": "wmvmop2y3001.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "1000086700.jpg|350949"
+    },
+    {
+      "archivo": "wmvmop338002.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "1000086703.jpg|331912"
+    }
+  ],
+  "portada": "wmvmop2ug000.jpg",
+  "publicar": true,
+  "estado": "visitado",
+  "creado": "2026-10-24 19:39",
+  "modificado": "2026-10-24 19:40"
+}
