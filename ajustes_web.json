@@ -2,5 +2,6 @@
   "titulo_web": "Mis pueblos",
   "subtitulo_web": "Cuaderno de los pueblos que he visitado",
   "autor": "Ruben Blanco",
-  "mostrar_pendientes": true
+  "mostrar_pendientes": true,
+  "diseno": {}
 }
