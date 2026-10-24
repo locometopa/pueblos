@@ -48,6 +48,11 @@ def copiar_gestion(salida: Path, repo: str = "", rama: str = "main", acceso: Pat
         v = hashlib.md5((destino / f).read_bytes()).hexdigest()[:10]
         html = html.replace(f'"{f}"', f'"{f}?v={v}"')
     indice.write_text(html, encoding="utf-8")
+    # el service worker del panel cambia de nombre de caché con cada versión
+    sw = destino / "sw.js"
+    if sw.exists():
+        v = hashlib.md5(b"".join((destino / f).read_bytes() for f in ("app.js", "estilo.css", "index.html"))).hexdigest()[:10]
+        sw.write_text(sw.read_text(encoding="utf-8").replace("gestion-v1", f"gestion-{v}"), encoding="utf-8")
 
 
 def main():

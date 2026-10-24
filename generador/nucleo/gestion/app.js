@@ -640,6 +640,44 @@
     return res;
   }
 
+  // ------------------------------------------------------------------ instalar en el móvil
+  const INST = {
+    ev: null,
+    ios: /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1),
+    instalada: () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true,
+    posible() { return !this.instalada() && (this.ev || this.ios); },
+  };
+  window.addEventListener('beforeinstallprompt', (ev) => {
+    ev.preventDefault(); INST.ev = ev;
+    if (!E.editor && $('.cab') && !$('#instalar-aviso')) pintarAvisoInstalar();
+  });
+  window.addEventListener('appinstalled', () => { INST.ev = null; const a = $('#instalar-aviso'); if (a) a.remove(); });
+  const AYUDA_IOS = 'En Safari pulsa <b>Compartir</b> (el cuadrado con la flecha ↑) y luego <b>«Añadir a pantalla de inicio»</b>.';
+
+  async function instalar(botonAyuda) {
+    if (INST.ev) {
+      INST.ev.prompt();
+      const r = await INST.ev.userChoice; INST.ev = null;
+      if (r && r.outcome === 'accepted') aviso('Panel instalado: búscalo en tu pantalla de inicio como «Gestión».');
+      const a = $('#instalar-aviso'); if (a) a.remove();
+    } else if (botonAyuda) {
+      botonAyuda.hidden = !botonAyuda.hidden;
+    }
+  }
+
+  function pintarAvisoInstalar() {
+    if (!INST.posible() || local.get('pueblos-no-instalar')) return;
+    const cab = $('.cab'); if (!cab || $('#instalar-aviso')) return;
+    const div = document.createElement('div');
+    div.id = 'instalar-aviso'; div.className = 'instalar-aviso';
+    div.innerHTML = `<div class="fila-inst"><span>📲 Instala el panel en tu móvil y ábrelo como una app.</span>
+      <button class="btn" id="inst-si">Instalar</button><button class="icono" id="inst-no" aria-label="No mostrar más">✕</button></div>
+      <p class="ayuda" id="inst-ios" hidden>${AYUDA_IOS}</p>`;
+    cab.after(div);
+    $('#inst-si').onclick = () => instalar($('#inst-ios'));
+    $('#inst-no').onclick = () => { local.set('pueblos-no-instalar', '1'); div.remove(); };
+  }
+
   // ------------------------------------------------------------------ pantallas
   const app = () => $('#app');
 
@@ -781,6 +819,7 @@
     $('#nuevo').onclick = () => dialogoNuevo(E.vista === 'pendientes' ? 'pendiente' : null);
     $('#subir').onclick = () => elegirFotos((files) => subirFotosViaje(files));
     $('#ajustes').onclick = pantallaAjustes;
+    pintarAvisoInstalar();
   }
 
   function ficha(p) {
@@ -814,6 +853,14 @@
           <div class="fila" style="margin-top:10px"><button class="btn sec" id="clave">🔑 ${E.acceso ? 'Cambiar la contraseña' : 'Poner contraseña'}</button></div>
         </div>
         <div class="tarjeta">
+          <h2>Instalar en el móvil</h2>
+          ${INST.instalada() ? '<p class="ayuda">✅ Estás usando el panel instalado.</p>'
+            : `<p class="ayuda">Pon el panel en la pantalla de inicio con su propio icono («Gestión») y ábrelo a pantalla completa, como una app.</p>
+          <div class="fila" style="margin-top:10px"><button class="btn sec" id="instalar">📲 Instalar el panel</button></div>
+          <p class="ayuda" id="instalar-ios" hidden>${INST.ev ? '' : (INST.ios ? AYUDA_IOS
+            : 'Abre el menú del navegador (⋮) y elige <b>«Instalar aplicación»</b> o <b>«Añadir a pantalla de inicio»</b>.')}</p>`}
+        </div>
+        <div class="tarjeta">
           <h2>Fotos</h2>
           <p class="ayuda">Las fotos se reducen y se les quita la ubicación GPS en tu móvil antes de subirlas.
             Las de internet son de Wikimedia Commons y en la web se cita su autor y licencia.</p>
@@ -822,6 +869,7 @@
     $('#volver').onclick = pantallaLista;
     $('#recargar').onclick = async () => { await cargarTodo(); pantallaLista(); };
     $('#clave').onclick = () => dialogoContrasena(false);
+    if ($('#instalar')) $('#instalar').onclick = () => instalar($('#instalar-ios'));
     $('#salir').onclick = () => {
       if (!confirm('¿Olvidar el token en este navegador?')) return;
       local.del('pueblos-token'); E.gh = null; pantallaAcceso();
@@ -1450,6 +1498,7 @@
   });
 
   async function arrancar() {
+    if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(() => {});
     let cfg = {};
     try { cfg = await (await fetch('config.json', { cache: 'no-store' })).json(); } catch (e) { /* sin config */ }
     const deducido = location.hostname.endsWith('.github.io')

@@ -1,5 +1,5 @@
 {
-  "version": "0.7",
-  "notas": "Novedades: foto y título al compartir por WhatsApp, web instalable en el móvil y línea del tiempo de tus viajes (cada una se puede activar o desactivar en «Diseño»).",
+  "version": "0.7.1",
+  "notas": "Novedades: foto y título al compartir por WhatsApp, web y panel de gestión instalables en el móvil, y línea del tiempo de tus viajes (se activan o desactivan en «Diseño»).",
   "archivo": "PUEBLOS.zip"
 }

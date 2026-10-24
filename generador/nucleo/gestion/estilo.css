@@ -141,3 +141,11 @@ h1,h2,h3{font-family:var(--f-titulo);font-weight:600;letter-spacing:-.01em;margi
 .acceso ol{padding-left:22px;color:var(--tinta-2)}
 .acceso li{margin-bottom:6px}
 .acceso code{background:var(--papel-2);padding:1px 6px;border-radius:5px}
+
+.instalar-aviso{margin:10px 14px 0;padding:10px 12px;border-radius:12px;background:var(--tarjeta);border:1px solid var(--linea)}
+.instalar-aviso .fila-inst{display:flex;align-items:center;gap:10px}
+.instalar-aviso .fila-inst span{flex:1;font-size:15px}
+.instalar-aviso .btn{padding:8px 14px}
+.instalar-aviso .ayuda{margin:8px 0 0}
+
+.instalar-aviso .icono{background:none;border:0;color:var(--tinta-2);font-size:18px;width:36px;height:36px}
