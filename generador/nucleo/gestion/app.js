@@ -135,6 +135,7 @@
     async pedir(metodo, ruta, cuerpo) {
       const r = await fetch(API + ruta, {
         method: metodo,
+        cache: 'no-store',           // siempre lo último de GitHub (si no, el móvil reutiliza respuestas viejas)
         headers: {
           Authorization: 'Bearer ' + this.token, Accept: 'application/vnd.github+json',
           'X-GitHub-Api-Version': '2022-11-28', ...(cuerpo ? { 'Content-Type': 'application/json' } : {}),
@@ -260,7 +261,7 @@
     }
     espera('Guardando en GitHub…', 1);
     try {
-      for (let intento = 0; intento < 4; intento++) {
+      for (let intento = 0; intento < 6; intento++) {
         const { commit, arbol } = await E.gh.cabeza();
         const entradas = [];
         const resultado = {};
@@ -282,7 +283,8 @@
         try {
           await E.gh.moverRama(nuevo);
         } catch (e) {
-          if (e instanceof ErrorConflicto && intento < 3) { await dormir(600); continue; }
+          if (e instanceof ErrorConflicto && intento < 5) { await dormir(800 * (intento + 1)); continue; }
+          if (e instanceof ErrorConflicto) throw new Error('No se pudo guardar porque había otro cambio a la vez. Pulsa Guardar otra vez.');
           throw e;
         }
         E.cabeza = nuevo;
