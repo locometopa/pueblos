@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#2a2621">
+<title>Gestión · Mis pueblos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<div id="app" aria-live="polite"></div>
+<div id="aviso" class="aviso" role="status"></div>
+<div id="espera" class="espera" hidden><div class="espera-caja"><div class="girando"></div><p id="espera-texto">Un momento…</p><div class="barra"><i id="espera-barra"></i></div></div></div>
+<input type="file" id="selector-fotos" accept="image/*" multiple hidden>
+<script src="exifr.lite.umd.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

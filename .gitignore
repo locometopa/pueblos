@@ -1,0 +1,5 @@
+datos/_papelera/
+datos/_cache_geo.json
+datos/**/*.tmp
+_site/
+__pycache__/
