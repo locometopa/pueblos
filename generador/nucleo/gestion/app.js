@@ -103,6 +103,31 @@
   }
   const finEspera = () => { $('#espera').hidden = true; };
 
+  // ------------------------------------------------------------------ contraseña (token cifrado)
+  /* El token se guarda cifrado (AES-256-GCM, clave derivada de la contraseña con PBKDF2-SHA256)
+     en acceso_panel.json, que se publica junto al panel. Sin la contraseña no sirve de nada. */
+  const ITERACIONES = 600000;
+  const aB64 = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf)));
+  const deB64 = (t) => Uint8Array.from(atob(t), (c) => c.charCodeAt(0));
+  async function claveDe(clave, sal, iter) {
+    const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(clave), 'PBKDF2', false, ['deriveKey']);
+    return crypto.subtle.deriveKey({ name: 'PBKDF2', salt: sal, iterations: iter, hash: 'SHA-256' },
+      base, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+  }
+  async function cifrarToken(token, repo, clave) {
+    const sal = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12));
+    const k = await claveDe(clave, sal, ITERACIONES);
+    const datos = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, k, new TextEncoder().encode(JSON.stringify({ token, repo })));
+    return { version: 1, kdf: 'PBKDF2-SHA256', iteraciones: ITERACIONES, sal: aB64(sal), iv: aB64(iv), datos: aB64(datos), creado: ahora() };
+  }
+  async function descifrarToken(acceso, clave) {
+    const k = await claveDe(clave, deB64(acceso.sal), acceso.iteraciones || ITERACIONES);
+    try {
+      const plano = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: deB64(acceso.iv) }, k, deB64(acceso.datos));
+      return JSON.parse(new TextDecoder().decode(plano));
+    } catch (e) { throw new Error('Contraseña incorrecta.'); }
+  }
+
   // ------------------------------------------------------------------ GitHub
   class ErrorConflicto extends Error {}
   class GitHub {
@@ -191,7 +216,7 @@
   // ------------------------------------------------------------------ estado
   const E = {
     gh: null, repo: '', rama: 'main', cabeza: null, pueblos: {}, archivos: {}, locales: {},
-    vista: 'visitados', filtro: '', editor: null, shaFotos: null,
+    vista: 'visitados', filtro: '', editor: null, shaFotos: null, acceso: null,
   };
 
   async function cargarTodo() {
@@ -226,8 +251,8 @@
   /* Guarda en un solo commit. ops: [{slug, aplicar(fresco|null) -> pueblo|null}];
      binarios: [{ruta, blob}]; borrar: [ruta]. Si alguien (el programa) subió algo a la vez,
      se vuelve a leer lo último y se repite: así no se pisan los cambios. */
-  async function guardar(ops, binarios, borrar, mensaje) {
-    binarios = binarios || []; borrar = borrar || [];
+  async function guardar(ops, binarios, borrar, mensaje, textos) {
+    binarios = binarios || []; borrar = borrar || []; textos = textos || [];
     const shas = {};
     for (let i = 0; i < binarios.length; i++) {
       espera(`Subiendo fotos (${i + 1} de ${binarios.length})…`, i / binarios.length);
@@ -250,6 +275,7 @@
         }
         for (const ruta in shas) entradas.push({ path: ruta, mode: '100644', type: 'blob', sha: shas[ruta] });
         for (const ruta of borrar) entradas.push({ path: ruta, mode: '100644', type: 'blob', sha: null });
+        for (const t of textos) entradas.push({ path: t.ruta, mode: '100644', type: 'blob', content: t.contenido });
         if (!entradas.length) return {};
         const nuevoArbol = await E.gh.crearArbol(arbol, entradas);
         const nuevo = await E.gh.crearCommit(mensaje, nuevoArbol, commit);
@@ -653,7 +679,68 @@
         E.repo = r;
         finEspera();
         await iniciar();
+        if (!E.acceso || !local.get('pueblos-sin-clave')) setTimeout(() => dialogoContrasena(!E.acceso), 400);
       } catch (e) { finEspera(); pantallaAcceso(e.message); }
+    };
+  }
+
+  function pantallaContrasena(acceso, error) {
+    app().innerHTML = `
+      <div class="acceso">
+        <h1>Gestión de mis pueblos</h1>
+        <p>Escribe tu contraseña del panel.</p>
+        <div class="tarjeta">
+          <label class="campo"><span>Contraseña</span><input id="clave" type="password" autocomplete="current-password"></label>
+          ${error ? `<p class="ayuda" style="color:var(--peligro)">${esc(error)}</p>` : ''}
+          <button class="btn ancho" id="entrar">Entrar</button>
+        </div>
+        <p class="ayuda"><a href="#" id="con-token">Entrar con el token</a> (por ejemplo, si has creado uno nuevo).</p>
+      </div>`;
+    const entrar = async () => {
+      const clave = $('#clave').value;
+      if (!clave) return;
+      espera('Comprobando la contraseña…');
+      try {
+        const { token, repo } = await descifrarToken(acceso, clave);
+        E.repo = repo || E.repo;
+        E.gh = new GitHub(token, E.repo, E.rama);
+        await E.gh.comprobar();
+        local.set('pueblos-token', token); local.set('pueblos-repo', E.repo);
+        finEspera();
+        await iniciar();
+      } catch (e) {
+        finEspera();
+        pantallaContrasena(acceso, /token/i.test(e.message)
+          ? 'La contraseña es correcta, pero el token ha caducado o se ha borrado. Entra con un token nuevo y vuelve a poner la contraseña.'
+          : e.message);
+      }
+    };
+    $('#entrar').onclick = entrar;
+    $('#clave').onkeydown = (ev) => { if (ev.key === 'Enter') entrar(); };
+    setTimeout(() => $('#clave').focus(), 50);
+    $('#con-token').onclick = (ev) => { ev.preventDefault(); pantallaAcceso(); };
+  }
+
+  function dialogoContrasena(primeraVez) {
+    const d = dialogo(`<h2>${primeraVez ? '¿Entrar con contraseña?' : 'Contraseña del panel'}</h2>
+      <p class="sub">${primeraVez ? 'Así, en otros móviles u ordenadores solo tendrás que escribir una contraseña, no el token.' : 'Sirve para entrar al panel desde cualquier dispositivo sin el token.'}
+        El token se guarda cifrado con ella: usa una contraseña larga que no uses en otros sitios.</p>
+      <label class="campo"><span>Contraseña (mínimo 10 caracteres)</span><input id="p1" type="password" autocomplete="new-password"></label>
+      <label class="campo"><span>Repítela</span><input id="p2" type="password" autocomplete="new-password"></label>
+      <div class="fila fin"><button class="btn sec" id="p-no">${primeraVez ? 'Ahora no' : 'Cancelar'}</button><button class="btn" id="p-ok">Guardar contraseña</button></div>`);
+    $('#p-no', d).onclick = () => { if (primeraVez) local.set('pueblos-sin-clave', '1'); d.remove(); };
+    $('#p-ok', d).onclick = async () => {
+      const a = $('#p1', d).value, b = $('#p2', d).value;
+      if (a.length < 10) { aviso('La contraseña debe tener al menos 10 caracteres.', true); return; }
+      if (a !== b) { aviso('Las dos contraseñas no coinciden.', true); return; }
+      d.remove();
+      espera('Cifrando…');
+      try {
+        const acceso = await cifrarToken(E.gh.token, E.repo, a);
+        await guardar([], [], [], 'Contraseña del panel de gestión', [{ ruta: 'acceso_panel.json', contenido: JSON.stringify(acceso, null, 2) }]);
+        E.acceso = acceso;
+        aviso('Contraseña guardada. En 1–2 minutos podrás usarla en cualquier dispositivo.');
+      } catch (e) { finEspera(); aviso(e.message, true); }
     };
   }
 
@@ -721,6 +808,12 @@
           </div>
         </div>
         <div class="tarjeta">
+          <h2>Contraseña</h2>
+          <p class="ayuda">${E.acceso ? 'Tienes una contraseña para entrar al panel desde cualquier dispositivo sin el token.' : 'Aún no tienes contraseña: en otros dispositivos te pedirá el token.'}
+            Si cambias el token (por ejemplo, al caducar), vuelve a guardar la contraseña aquí.</p>
+          <div class="fila" style="margin-top:10px"><button class="btn sec" id="clave">🔑 ${E.acceso ? 'Cambiar la contraseña' : 'Poner contraseña'}</button></div>
+        </div>
+        <div class="tarjeta">
           <h2>Fotos</h2>
           <p class="ayuda">Las fotos se reducen y se les quita la ubicación GPS en tu móvil antes de subirlas.
             Las de internet son de Wikimedia Commons y en la web se cita su autor y licencia.</p>
@@ -728,6 +821,7 @@
       </main>`;
     $('#volver').onclick = pantallaLista;
     $('#recargar').onclick = async () => { await cargarTodo(); pantallaLista(); };
+    $('#clave').onclick = () => dialogoContrasena(false);
     $('#salir').onclick = () => {
       if (!confirm('¿Olvidar el token en este navegador?')) return;
       local.del('pueblos-token'); E.gh = null; pantallaAcceso();
@@ -1362,8 +1456,12 @@
       ? `${location.hostname.split('.')[0]}/${location.pathname.split('/').filter(Boolean)[0] || ''}` : '';
     E.repo = local.get('pueblos-repo') || cfg.repo || deducido;
     E.rama = cfg.rama || 'main';
+    try {
+      const r = await fetch('acceso.json', { cache: 'no-store' });
+      if (r.ok) E.acceso = await r.json();
+    } catch (e) { /* sin contraseña */ }
     const token = local.get('pueblos-token');
-    if (!token || !E.repo) { pantallaAcceso(); return; }
+    if (!token || !E.repo) { if (E.acceso && E.acceso.datos) pantallaContrasena(E.acceso); else pantallaAcceso(); return; }
     E.gh = new GitHub(token, E.repo, E.rama);
     await iniciar();
   }

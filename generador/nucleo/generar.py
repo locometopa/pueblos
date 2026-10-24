@@ -30,14 +30,16 @@ def leer_ajustes(ruta: Path) -> dict:
     return ajustes
 
 
-def copiar_gestion(salida: Path, repo: str = "", rama: str = "main"):
-    """Copia el panel de gestión a <salida>/gestion con su configuración."""
+def copiar_gestion(salida: Path, repo: str = "", rama: str = "main", acceso: Path = None):
+    """Copia el panel de gestión a <salida>/gestion con su configuración (y el token cifrado, si hay)."""
     destino = Path(salida) / "gestion"
     if destino.exists():
         shutil.rmtree(destino)
     shutil.copytree(CARPETA_GESTION, destino)
     (destino / "config.json").write_text(json.dumps({"repo": repo, "rama": rama}, ensure_ascii=False),
                                          encoding="utf-8")
+    if acceso and Path(acceso).exists():
+        shutil.copy2(acceso, destino / "acceso.json")
 
 
 def main():
@@ -53,7 +55,7 @@ def main():
     datos = Path(a.datos)
     datos.mkdir(parents=True, exist_ok=True)
     n = web.generar(Almacen(datos), leer_ajustes(Path(a.ajustes)), salida, print)
-    copiar_gestion(salida, a.repo, a.rama)
+    copiar_gestion(salida, a.repo, a.rama, datos.resolve().parent / "acceso_panel.json")
     print(f"Web generada con {n} pueblos en {salida}")
 
 
