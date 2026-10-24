@@ -15,7 +15,8 @@
     "extracto": "Vilela​ es una entidad de población situada en la parroquia de La Rúa, del municipio español de Rúa, en la provincia de Orense, Galicia.​",
     "desambiguacion": false,
     "wikidata": "Q12402348",
-    "altitud": 333
+    "altitud": 333,
+    "fiestas": []
   },
   "texto_ia": "",
   "notas": "",
@@ -55,5 +56,5 @@
   "publicar": true,
   "estado": "visitado",
   "creado": "2026-10-24 19:39",
-  "modificado": "2026-10-24 19:58"
+  "modificado": "2026-10-24 20:12"
 }
