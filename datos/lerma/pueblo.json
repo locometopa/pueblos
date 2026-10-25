@@ -1,0 +1,94 @@
+{
+  "slug": "lerma",
+  "nombre": "Lerma",
+  "provincia": "Burgos",
+  "comunidad": "Castilla y León",
+  "pais": "España",
+  "lat": 42.026233,
+  "lon": -3.755933,
+  "fechas_visita": [],
+  "wiki": {
+    "titulo": "Lerma (España)",
+    "url": "https://es.wikipedia.org/wiki/Lerma_(Espa%C3%B1a)",
+    "extracto": "Lerma es un municipio y localidad española de la provincia de Burgos, en la comunidad autónoma de Castilla y León. Está situada sobre un altozano que domina la vega del río Arlanza. El término municipal cuenta con una población de 2585 habitantes (INE 2023). El casco histórico de la localidad, que también es conocida como «Villa Ducal de Lerma» al tener el título de villa, goza del estatus de bien de interés cultural, en la categoría de conjunto histórico.\nEstá catalogado como Uno de Los Pueblos Más Bonitos de España desde el año 2018 y pertenece desde entonces a la asociación homónima.",
+    "desambiguacion": false,
+    "wikidata": "Q1614795",
+    "poblacion": 2629,
+    "poblacion_anio": "2025",
+    "altitud": 849,
+    "superficie": 166,
+    "escudo": "https://commons.wikimedia.org/wiki/Special:FilePath/Escudo_de_Lerma.svg?width=160",
+    "web": "http://www.ayuntamientodelerma.es",
+    "secciones": [
+      {
+        "clave": "historia",
+        "titulo": "Historia",
+        "texto": "La historia y el desarrollo de la villa están irrevocablemente unidos al mecenazgo de Francisco de Sandoval y Rojas, primer duque de Lerma, valido y favorito del rey Felipe III, y por extensión al Ducado de Lerma. La villa fue al Valladolid cortesano (1601-1606) lo que El Escorial a Madrid. Desde la Edad Media, la localidad es paso obligado en la Cañada Real Burgalesa, que une Extremadura y la sierra de la Demanda. Lerma es un conjunto arquitectónico notable del estilo herreriano.\n\nCuenta con tres conventos de monjas de clausura que hospedan a más de un centenar de religiosas.​ Uno de ellos es sede del, recientemente fundado, Instituto religioso Iesu Communio (Comunión de Jesús).​ \nSu plaza mayor, con 6862 m²,​ es una de las más grandes de España, por delante de la plaza Mayor de Salamanca.​ …"
+      },
+      {
+        "clave": "cultura",
+        "titulo": "Cultura",
+        "texto": "Del 21 al 24 de julio de 2010, se llevó a cabo en Lerma el certamen de realización de cortometrajes organizado por Cinemavip: 36 horas de supervivencia fílmica.​ Se realizaron 19 producciones, todas ellas con el mismo decorado: «la villa de Lerma».​\nEn Lerma se ubica desde 1998 una banda de música, la Unión Musical de Lerma, que realiza su actividad de forma independiente dotando a la localidad de una escuela de música que en la actualidad maneja unos 80 alumnos y con clases de todos los instrumentos, Minibanda, Batucada y Minibatucada. Entre otras actividades cabe destacar el ciclo de conciertos Febrero Musical, los Cursos de Invierno y el Festival de Bandas Juveniles. Durante el mes de agosto, entre las actividades del Mes del Barroco, se realizan conciertos a dos órganos, en la iglesia colegial de San Pedro.\nComo evento reseñable destaca la Fiesta Barroca (primer fin de semana de agosto), dentro del Mes del Barroco, nombrada de Interés Turístico Cultural, que tiene lugar durante el mes de agosto. Las fiestas patronales se celebran el día 8 de septiembre y siguientes. A finales de febrero, celebra las marzas. …"
+      }
+    ],
+    "gentilicio": "lermeños",
+    "que_ver": [
+      {
+        "nombre": "iglesia de San Pedro",
+        "url": "https://es.wikipedia.org/wiki/Iglesia_de_San_Pedro_(Castrillo_de_Solarana)",
+        "imagen": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ad/Castrillo_Solarana.jpg/500px-Castrillo_Solarana.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "credito": {
+          "autor": "Don11491",
+          "licencia": "CC BY-SA 4.0",
+          "url_licencia": "https://creativecommons.org/licenses/by-sa/4.0",
+          "fuente": "https://commons.wikimedia.org/wiki/File:Castrillo_Solarana.jpg"
+        }
+      },
+      {
+        "nombre": "Palacio Ducal de Lerma",
+        "url": "https://es.wikipedia.org/wiki/Palacio_Ducal_de_Lerma",
+        "imagen": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7a/Lerma_-_Palacio_Ducal_7.jpg/500px-Lerma_-_Palacio_Ducal_7.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "credito": {
+          "autor": "www.pmrmaeyaert.com",
+          "licencia": "CC BY-SA 3.0",
+          "url_licencia": "https://creativecommons.org/licenses/by-sa/3.0",
+          "fuente": "https://commons.wikimedia.org/wiki/File:Lerma_-_Palacio_Ducal_7.jpg"
+        }
+      },
+      {
+        "nombre": "Lerma",
+        "url": "https://www.wikidata.org/wiki/Q24010475",
+        "imagen": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cf/Entrada_Casco_Lerma.JPG/500px-Entrada_Casco_Lerma.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "credito": {
+          "autor": "Eltitomac",
+          "licencia": "Public domain",
+          "url_licencia": "",
+          "fuente": "https://commons.wikimedia.org/wiki/File:Entrada_Casco_Lerma.JPG"
+        }
+      },
+      {
+        "nombre": "Plaza Mayor de Lerma",
+        "url": "https://www.wikidata.org/wiki/Q131859013",
+        "imagen": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/48/Lerma_Plaza_Mayor_545.jpg/500px-Lerma_Plaza_Mayor_545.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "credito": {
+          "autor": "GFreihalter",
+          "licencia": "CC BY-SA 3.0",
+          "url_licencia": "https://creativecommons.org/licenses/by-sa/3.0",
+          "fuente": "https://commons.wikimedia.org/wiki/File:Lerma_Plaza_Mayor_545.jpg"
+        }
+      },
+      {
+        "nombre": "La Villa",
+        "url": "https://www.wikidata.org/wiki/Q141501134"
+      }
+    ]
+  },
+  "texto_ia": "",
+  "notas": "",
+  "fotos": [],
+  "portada": "",
+  "publicar": true,
+  "estado": "pendiente",
+  "creado": "2026-10-25 14:24",
+  "modificado": "2026-10-25 14:24"
+}
