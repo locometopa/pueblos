@@ -30,72 +30,123 @@
     ],
     "que_ver": [
       {
-        "nombre": "iglesia de San Pedro ad Víncula",
-        "url": "https://es.wikipedia.org/wiki/Iglesia_de_San_Pedro_ad_V%C3%ADncula_(Li%C3%A9rganes)",
-        "imagen": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/40/Li%C3%A9rganes_-_Iglesia_de_San_Pedro_ad_V%C3%ADncula_08.jpg/500px-Li%C3%A9rganes_-_Iglesia_de_San_Pedro_ad_V%C3%ADncula_08.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-        "credito": {
-          "autor": "Zarateman",
-          "licencia": "CC0",
-          "url_licencia": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
-          "fuente": "https://commons.wikimedia.org/wiki/File:Li%C3%A9rganes_-_Iglesia_de_San_Pedro_ad_V%C3%ADncula_08.jpg"
-        }
-      },
-      {
-        "nombre": "Cruz de Rubalcaba",
-        "url": "https://es.wikipedia.org/wiki/Cruz_de_Rubalcaba",
-        "imagen": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d0/Cantabria_Rubalcaba_cruz_Rubalcaba_lou.jpg/500px-Cantabria_Rubalcaba_cruz_Rubalcaba_lou.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-        "credito": {
-          "autor": "Lourdes Cardenal",
-          "licencia": "CC BY-SA 4.0",
-          "url_licencia": "https://creativecommons.org/licenses/by-sa/4.0",
-          "fuente": "https://commons.wikimedia.org/wiki/File:Cantabria_Rubalcaba_cruz_Rubalcaba_lou.jpg"
-        }
-      },
-      {
-        "nombre": "iglesia de San Pantaleón",
-        "url": "https://es.wikipedia.org/wiki/Iglesia_de_San_Pantale%C3%B3n_(Li%C3%A9rganes)",
-        "imagen": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f9/Iglesia_de_San_Pantale%C3%B3n%2C_Li%C3%A9rganes%2C_Cantabria_%2839418%29.jpg/500px-Iglesia_de_San_Pantale%C3%B3n%2C_Li%C3%A9rganes%2C_Cantabria_%2839418%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-        "credito": {
-          "autor": "Ibai1984",
-          "licencia": "CC BY-SA 4.0",
-          "url_licencia": "https://creativecommons.org/licenses/by-sa/4.0",
-          "fuente": "https://commons.wikimedia.org/wiki/File:Iglesia_de_San_Pantale%C3%B3n,_Li%C3%A9rganes,_Cantabria_(39418).jpg"
-        }
-      },
-      {
-        "nombre": "puente de Liérganes",
-        "url": "https://es.wikipedia.org/wiki/Puente_de_Li%C3%A9rganes",
-        "imagen": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/39/Puente_de_Li%C3%A9rganes.jpg/500px-Puente_de_Li%C3%A9rganes.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-        "credito": {
-          "autor": "Dutch Uncle",
-          "licencia": "Public domain",
-          "url_licencia": "",
-          "fuente": "https://commons.wikimedia.org/wiki/File:Puente_de_Li%C3%A9rganes.jpg"
-        }
-      },
-      {
         "nombre": "Palacio de Cuesta Mercadillo",
-        "url": "https://es.wikipedia.org/wiki/Palacio_de_Cuesta_Mercadillo",
-        "imagen": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bc/Palacio_de_La_Ra%C3%B1ada%2C_Li%C3%A9rganes%2C_2017-07-27%2C_Tripleca%C3%B1a.jpg/500px-Palacio_de_La_Ra%C3%B1ada%2C_Li%C3%A9rganes%2C_2017-07-27%2C_Tripleca%C3%B1a.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-        "credito": {
-          "autor": "Triplecaña",
-          "licencia": "CC BY-SA 4.0",
-          "url_licencia": "https://creativecommons.org/licenses/by-sa/4.0",
-          "fuente": "https://commons.wikimedia.org/wiki/File:Palacio_de_La_Ra%C3%B1ada,_Li%C3%A9rganes,_2017-07-27,_Tripleca%C3%B1a.jpg"
-        }
+        "url": "https://www.wikidata.org/wiki/Q43128009",
+        "fuente": "OpenStreetMap",
+        "lat": 43.337088,
+        "lon": -3.74477
       },
       {
-        "nombre": "Localidad de Liérganes",
-        "url": "https://www.wikidata.org/wiki/Q43171323",
-        "imagen": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/89/Casona_-_Lierganes.jpg/500px-Casona_-_Lierganes.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-        "credito": {
-          "autor": "Tony Rotondas",
-          "licencia": "CC BY-SA 3.0",
-          "url_licencia": "https://creativecommons.org/licenses/by-sa/3.0",
-          "fuente": "https://commons.wikimedia.org/wiki/File:Casona_-_Lierganes.jpg"
-        }
+        "nombre": "Puente Mayor",
+        "url": "https://www.openstreetmap.org/node/1295873937",
+        "fuente": "OpenStreetMap",
+        "lat": 43.343209,
+        "lon": -3.741626
+      },
+      {
+        "nombre": "Capilla del Carmen",
+        "url": "https://www.openstreetmap.org/node/11015313407",
+        "fuente": "OpenStreetMap",
+        "lat": 43.340799,
+        "lon": -3.742571
+      },
+      {
+        "nombre": "Casas de Rañada y Portilla",
+        "url": "https://www.openstreetmap.org/node/11015331505",
+        "fuente": "OpenStreetMap",
+        "lat": 43.342401,
+        "lon": -3.742713
+      },
+      {
+        "nombre": "Casona de Cárcoba Rubalcaba s.XVIII",
+        "url": "https://www.openstreetmap.org/node/11015331605",
+        "fuente": "OpenStreetMap",
+        "lat": 43.338482,
+        "lon": -3.744407
+      },
+      {
+        "nombre": "Palacio de los Condes de Torreanaz",
+        "url": "https://www.openstreetmap.org/way/31262245",
+        "fuente": "OpenStreetMap",
+        "lat": 43.362943,
+        "lon": -3.755369
+      },
+      {
+        "nombre": "Calle del Puente Mayor",
+        "url": "https://www.openstreetmap.org/way/32436404",
+        "fuente": "OpenStreetMap",
+        "lat": 43.342845,
+        "lon": -3.741421
+      },
+      {
+        "nombre": "Centro de Interpretación del Hombre Pez",
+        "url": "https://www.openstreetmap.org/way/46984309",
+        "fuente": "OpenStreetMap",
+        "lat": 43.342647,
+        "lon": -3.74151
+      },
+      {
+        "nombre": "Casona de Ardanaz",
+        "url": "https://www.openstreetmap.org/way/238469483",
+        "fuente": "OpenStreetMap",
+        "lat": 43.34319,
+        "lon": -3.722911
+      },
+      {
+        "nombre": "Ecomuseo-Fluviarium de la Montaña y Cuencas Fluviales Pasiegas",
+        "url": "https://www.openstreetmap.org/way/484343650",
+        "fuente": "OpenStreetMap",
+        "lat": 43.34494,
+        "lon": -3.745059
+      },
+      {
+        "nombre": "Casa de los Cañones",
+        "url": "https://www.openstreetmap.org/way/484989175",
+        "fuente": "OpenStreetMap",
+        "lat": 43.341674,
+        "lon": -3.742078
+      },
+      {
+        "nombre": "Palacio de La Rañada",
+        "url": "https://www.openstreetmap.org/way/485653375",
+        "fuente": "OpenStreetMap",
+        "lat": 43.340453,
+        "lon": -3.744188
+      },
+      {
+        "nombre": "Casa del Intendente Antonio de Riaño y Bárcena",
+        "url": "https://www.openstreetmap.org/way/486952412",
+        "fuente": "OpenStreetMap",
+        "lat": 43.343782,
+        "lon": -3.7465
       }
-    ]
+    ],
+    "oficial": {
+      "url": "https://aytolierganes.com.es/",
+      "titulo": "Ayuntamiento de Liérganes",
+      "descripcion": "Las Escuelas de Pámanes acogerán el sábado 24 de octubre, a las 19:00 horas, la representación de El buen doctor, de Neil Simon, a cargo de Rebanal Teatro. La obra rinde homenaje a Chéjov..."
+    },
+    "distinciones": [
+      "Los Pueblos Más Bonitos de España"
+    ],
+    "commons_cat": "Liérganes",
+    "fuentes_v1": true,
+    "fuentes_v2": true,
+    "mas_datos": [
+      [
+        "Comarca / zona",
+        "Cantabria"
+      ],
+      [
+        "Código postal",
+        "39722"
+      ],
+      [
+        "Alcaldía",
+        "Ramon Diego Cabarga"
+      ]
+    ],
+    "fiestas": []
   },
   "texto_ia": "",
   "notas": "Con mi mujer",
@@ -153,5 +204,5 @@
   "publicar": true,
   "estado": "visitado",
   "creado": "2026-10-24 16:10",
-  "modificado": "2026-10-24 20:01"
+  "modificado": "2026-10-25 03:18"
 }
