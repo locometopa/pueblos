@@ -1,5 +1,5 @@
 {
-  "version": "1.5.2",
-  "notas": "Botón «❓ Ayuda» en la barra lateral con las instrucciones dentro del programa. Ajustes en pestañas (incluye la copia de seguridad).",
+  "version": "1.5.3",
+  "notas": "Menús más ordenados y con el estilo del programa: «Mi web» agrupa todo lo de la web y el móvil; «Acerca de» solo versión, actualizaciones y novedades; ayuda con el botón «?».",
   "archivo": "PUEBLOS.zip"
 }
