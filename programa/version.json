@@ -1,5 +1,5 @@
 {
-  "version": "1.5.2",
-  "notas": "Botón «❓ Ayuda» en la barra lateral con las instrucciones dentro del programa. Ajustes en pestañas (incluye la copia de seguridad).",
+  "version": "1.5.4",
+  "notas": "Icono propio en la ventana y la barra de tareas, y acceso directo «PUEBLOS» en el escritorio y el menú Inicio (se crea solo).",
   "archivo": "PUEBLOS.zip"
 }
