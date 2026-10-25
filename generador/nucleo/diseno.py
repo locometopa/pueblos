@@ -21,12 +21,14 @@ DEFECTO = {
     "fiestas": True,             # fiestas de cada pueblo y «Próximas fiestas» en la portada
     "notas_a_mano": True,        # «Mi cuaderno» con letra manuscrita
     "ultima_visita": True,
-    "rutas": True,               # «Escapadas posibles» con mis pueblos por visitar cercanos       # tarjeta grande «Última visita» al principio de la portada
+    "rutas": True,               # «Escapadas posibles» con mis pueblos por visitar cercanos
+    "boton_tema": True,          # botón ☀/☾ para que quien visita cambie entre claro y oscuro
+    "cielo_hora": True,          # el dibujo de la cabecera cambia con la hora: amanecer, día, atardecer, noche
     "maqueta": "clasica",        # clasica | revista | album | moderna (aspecto de la página entera)
 }
 
 CABECERAS = {
-    "dibujo": ("Dibujo", "Un pueblo dibujado; de noche en modo oscuro"),
+    "dibujo": ("Dibujo", "Un pueblo dibujado; amanece, anochece… según la hora"),
     "foto": ("Foto grande", "Una de tus fotos a lo ancho, distinta en cada visita"),
     "collage": ("Collage", "Tus fotos como polaroids junto al título"),
     "sencilla": ("Sencilla", "Solo el título y las cifras"),
@@ -125,6 +127,53 @@ def aplicar_modo(css: str, modo: str) -> str:
     return "".join(trozos)
 
 
+OSCURO_SI = ':root:not([data-tema="claro"])'
+OSCURO_FORZADO = ':root[data-tema="oscuro"]'
+MODO_CSS = (':root[data-tema="claro"]{color-scheme:light}:root[data-tema="oscuro"]{color-scheme:dark}\n')
+
+
+def _prefijar(cuerpo: str, prefijo: str) -> str:
+    """Pone el prefijo delante de cada selector de un bloque CSS (sin @media anidados complicados)."""
+    salida, i, n = [], 0, len(cuerpo)
+    while i < n:
+        llave = cuerpo.find("{", i)
+        if llave < 0:
+            salida.append(cuerpo[i:])
+            break
+        selector = cuerpo[i:llave].strip()
+        nivel, j = 1, llave + 1
+        while j < n and nivel:
+            nivel += {"{": 1, "}": -1}.get(cuerpo[j], 0)
+            j += 1
+        dentro = cuerpo[llave + 1:j - 1]
+        if selector.startswith("@"):
+            if selector.startswith(("@keyframes", "@-webkit-keyframes", "@font-face")):
+                salida.append(f"{selector}{{{dentro}}}")
+            else:
+                salida.append(f"{selector}{{{_prefijar(dentro, prefijo)}}}")
+        elif selector:
+            partes = []
+            for sel in selector.split(","):
+                sel = sel.strip()
+                partes.append(sel.replace(":root", prefijo, 1) if sel.startswith(":root") else f"{prefijo} {sel}")
+            salida.append(f"{','.join(partes)}{{{dentro}}}")
+        i = j
+    return "".join(salida)
+
+
+def alternable(css: str) -> str:
+    """Cada bloque «modo oscuro» vale si el sistema está en oscuro (salvo que se elija claro)
+    y también si se elige oscuro con el botón, aunque el sistema esté en claro."""
+    trozos, ultimo = [], 0
+    for ini, fin, interior in _bloques_oscuros(css):
+        trozos.append(css[ultimo:ini])
+        trozos.append("@media (prefers-color-scheme:dark){" + _prefijar(interior, OSCURO_SI) + "}")
+        trozos.append(_prefijar(interior, OSCURO_FORZADO))
+        ultimo = fin
+    trozos.append(css[ultimo:])
+    return "".join(trozos)
+
+
 def css_final(css_base: str, d: dict) -> str:
     """Estilo de la web con el diseño elegido aplicado."""
     d = normalizar(d)
@@ -140,7 +189,8 @@ def css_final(css_base: str, d: dict) -> str:
     if not d["bandas"]:
         extra.append(".banda,.comunidad:nth-of-type(odd),.pendientes{background:none!important;box-shadow:none!important}")
     css = css + "\n/* ---- diseño elegido ---- */\n" + "\n".join(extra) + "\n"
-    return aplicar_modo(css, d["modo"])
+    # El modo elegido es solo el de partida: quien visita la web puede cambiarlo con el botón ☀/☾
+    return alternable(css) + MODO_CSS
 
 
 def enlace_fuentes(d: dict) -> str:

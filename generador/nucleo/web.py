@@ -137,6 +137,40 @@ a{color:var(--acento)}
   .paisaje .campana,.paisaje .puerta{fill:#2a2230}
   .cabecera.con-dibujo .sello{color:#f0a37f}
 }
+/* el cielo según la hora de quien visita la web (data-momento lo pone el script) */
+.cabecera.con-dibujo[data-momento]{--colina1:#d9b48a;--colina2:#b98a5e;--colina3:#8f6a45;--pared:#f2e6cf;--pared2:#e9d9bd;
+  --tejado:#a8472a;--tejado2:#b8532f;--tejado3:#c2633a;--ventana:#6b4630;--arbol:#4f6b3a;--camino:#e8d3ae;
+  --tinta:#2a2621;--tinta-2:#5e554a;color:var(--tinta)}
+@media (prefers-color-scheme:dark){
+  .cabecera.con-dibujo[data-momento]:not([data-momento="noche"]) .sello{color:color-mix(in srgb,var(--acento) 55%,#000)}
+}
+.cabecera.con-dibujo[data-momento] .paisaje .astro{transition:transform 1.5s ease,fill 1.5s ease}
+.cabecera.con-dibujo[data-momento="dia"]{--cielo-1:#a9d2ee;--cielo-2:#e4eff1;--astro:#ffd25e;--nube:#ffffff}
+.cabecera.con-dibujo[data-momento="dia"] .paisaje .astro{transform:translate(130px,-40px)}
+.cabecera.con-dibujo[data-momento="dia"] .paisaje .nubes{opacity:.95}
+.cabecera.con-dibujo[data-momento="amanecer"]{--cielo-1:#f2b5a7;--cielo-2:#fbe3c8;--astro:#ffb161;--nube:#ffe6dc}
+.cabecera.con-dibujo[data-momento="amanecer"] .paisaje .astro{transform:translateY(16px)}
+.cabecera.con-dibujo[data-momento="atardecer"]{--cielo-1:#e98a5f;--cielo-2:#f8c58f;--astro:#ef6a3a;--nube:#ffd2b0;
+  --colina1:#c99877;--colina2:#a97553;--colina3:#7f573a;--pared:#efd5b8;--pared2:#e2c2a0;--ventana:#ffcf6b}
+.cabecera.con-dibujo[data-momento="atardecer"] .paisaje .astro{transform:translateY(22px)}
+.cabecera.con-dibujo[data-momento="amanecer"] .paisaje .nubes,.cabecera.con-dibujo[data-momento="atardecer"] .paisaje .nubes{opacity:.8}
+.cabecera.con-dibujo[data-momento="noche"]{--cielo-1:#0f1830;--cielo-2:#1d2236;--astro:#f1e6c8;--nube:#3a3f55;--colina1:#2c2e3b;
+  --colina2:#24252f;--colina3:#1d1d24;--pared:#585060;--pared2:#4b4452;--tejado:#6b3a35;--tejado2:#73403a;--tejado3:#7a4840;
+  --ventana:#ffcf6b;--arbol:#1f2b22;--camino:#3b3a44;--tinta:#f1eadc;--tinta-2:#c3b9a9}
+.cabecera.con-dibujo[data-momento="noche"] .paisaje .astro{transform:translateY(-14px)}
+.cabecera.con-dibujo[data-momento="noche"] .paisaje .estrellas{opacity:.85}.cabecera.con-dibujo[data-momento="noche"] .paisaje .nubes{opacity:.35}
+.cabecera.con-dibujo[data-momento="noche"] .paisaje .campana,.cabecera.con-dibujo[data-momento="noche"] .paisaje .puerta{fill:#2a2230}
+.cabecera.con-dibujo[data-momento="noche"] .sello{color:#f0a37f}
+.cabecera.con-dibujo[data-momento]:not([data-momento="noche"]) .paisaje .estrellas{opacity:0}
+.cabecera.con-dibujo[data-momento]:not([data-momento="noche"]) .paisaje .campana,.cabecera.con-dibujo[data-momento]:not([data-momento="noche"]) .paisaje .puerta{fill:var(--ventana)}
+.cabecera.con-dibujo[data-momento="atardecer"] .paisaje .campana,.cabecera.con-dibujo[data-momento="atardecer"] .paisaje .puerta{fill:#6b4630}
+/* botón claro / oscuro */
+.boton-tema{position:fixed;top:12px;right:12px;z-index:40;width:40px;height:40px;border-radius:50%;
+  border:1px solid var(--linea);background:var(--tarjeta);color:var(--tinta);font-size:19px;line-height:1;cursor:pointer;
+  box-shadow:var(--sombra);display:flex;align-items:center;justify-content:center;opacity:.92;transition:transform .2s}
+.boton-tema:hover{transform:scale(1.08);opacity:1}
+.boton-tema:focus-visible{outline:2px solid var(--acento);outline-offset:2px}
+@media print{.boton-tema{display:none}}
 @media (prefers-reduced-motion:no-preference){
   .paisaje .nubes{animation:nubes 60s linear infinite alternate}
   @keyframes nubes{to{transform:translateX(60px)}}
@@ -489,6 +523,39 @@ def _script_previa(raiz: str) -> str:
             "document.head.appendChild(s);}setInterval(mirar,1200);mirar();})();</script>")
 
 
+JS_TEMA = r"""(function(){
+var b=document.querySelector('.boton-tema');if(!b)return;var h=document.documentElement;
+var mq=window.matchMedia?matchMedia('(prefers-color-scheme: dark)'):null;
+function actual(){var t=h.getAttribute('data-tema');return t||(mq&&mq.matches?'oscuro':'claro');}
+function pintar(){var o=actual()==='oscuro';b.textContent=o?'☀':'☾';
+  b.setAttribute('aria-label',o?'Cambiar a modo claro':'Cambiar a modo oscuro');
+  var m=document.querySelector('meta[name=theme-color]');
+  if(m){var c=getComputedStyle(h).getPropertyValue('--papel').trim();if(c)m.setAttribute('content',c);}}
+b.addEventListener('click',function(){var n=actual()==='oscuro'?'claro':'oscuro';h.setAttribute('data-tema',n);
+  try{localStorage.setItem('pueblos-tema',n)}catch(e){}pintar();});
+if(mq&&mq.addEventListener)mq.addEventListener('change',pintar);pintar();})();
+"""
+
+JS_CIELO = r"""(function(){
+var c=document.querySelector('.cabecera.con-dibujo');if(!c)return;
+var RAD=Math.PI/180,LAT=40.4,LON=-3.7;
+function sol(d){ /* salida y puesta del sol (horas UTC) en el centro de España */
+  var ini=Date.UTC(d.getUTCFullYear(),0,0),n=Math.floor((d-ini)/864e5);
+  var dec=23.44*Math.sin(2*Math.PI*(284+n)/365)*RAD,B=2*Math.PI*(n-81)/364;
+  var E=9.87*Math.sin(2*B)-7.53*Math.cos(B)-1.5*Math.sin(B);
+  var x=(Math.sin(-0.833*RAD)-Math.sin(LAT*RAD)*Math.sin(dec))/(Math.cos(LAT*RAD)*Math.cos(dec));
+  var H=Math.acos(Math.max(-1,Math.min(1,x)))/RAD/15,mediodia=12-LON/15-E/60;
+  return [mediodia-H,mediodia+H];}
+function momento(){var f=(location.search.match(/[?&]momento=(\w+)/)||[])[1];
+  if(f)return f;var d=new Date(),s=sol(d),h=d.getUTCHours()+d.getUTCMinutes()/60;
+  if(h>=s[0]-0.6&&h<s[0]+0.9)return 'amanecer';
+  if(h>=s[1]-1.1&&h<s[1]+0.5)return 'atardecer';
+  return (h>=s[0]&&h<s[1])?'dia':'noche';}
+function poner(){c.setAttribute('data-momento',momento());}
+poner();setInterval(poner,300000);})();
+"""
+
+
 def _pagina(titulo: str, cuerpo: str, raiz: str, descripcion: str = "", js: str = "", scripts=(),
             ruta: str = "", imagen: str = "", cabeza: str = "") -> str:
     icono_ios = "icono-192.png" if _ICONOS else ("logo.png" if _LOGO else "favicon.svg")
@@ -500,15 +567,24 @@ def _pagina(titulo: str, cuerpo: str, raiz: str, descripcion: str = "", js: str 
                   f'<meta name="apple-mobile-web-app-capable" content="yes">\n'
                   f'<meta name="apple-mobile-web-app-title" content="{e(_CFG.get("titulo_web"))}">\n')
     js_inst = X.js_instalar(raiz) if _DISENO["instalable"] and not _PREVIA else ""
+    tema_def = {"claro": "claro", "oscuro": "oscuro"}.get(_DISENO["modo"], "")
+    tema_attr = f' data-tema="{tema_def}"' if tema_def else ""
+    tema_js = ("<script>(function(){var t;try{t=localStorage.getItem('pueblos-tema')}catch(e){}"
+               "if(t==='claro'||t==='oscuro')document.documentElement.setAttribute('data-tema',t);})();</script>"
+               if _DISENO["boton_tema"] else "")
+    boton_tema = (f'<button class="boton-tema" type="button" data-def="{tema_def}" aria-label="Cambiar a modo oscuro" '
+                  f'title="Claro / oscuro">☾</button>' if _DISENO["boton_tema"] else "")
+    js_fondo = (JS_TEMA if _DISENO["boton_tema"] else "") + (JS_CIELO if _DISENO["cielo_hora"] else "")
     return f"""<!doctype html>
-<html lang="es">
+<html lang="es"{tema_attr}>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{e(titulo)}</title>
 <meta name="description" content="{e(descripcion)}">
 <meta name="theme-color" content="{D.color_tema(_DISENO)}">
-<meta name="color-scheme" content="{ {'claro': 'light', 'oscuro': 'dark'}.get(_DISENO['modo'], 'light dark') }">
+<meta name="color-scheme" content="{ {'claro': 'light', 'oscuro': 'dark'}.get(_DISENO['modo'], 'light dark') if not _DISENO['boton_tema'] else 'light dark' }">
+{tema_js}
 <link rel="icon" href="{raiz}{'logo.png' if _LOGO else 'favicon.svg'}?v={_VERSION_RECURSOS}">
 <link rel="apple-touch-icon" href="{raiz}{icono_ios}?v={_VERSION_RECURSOS}">
 {extra}
@@ -518,9 +594,11 @@ def _pagina(titulo: str, cuerpo: str, raiz: str, descripcion: str = "", js: str 
 <link rel="stylesheet" href="{raiz}estilo.css?v={_VERSION_RECURSOS}">
 </head>
 <body class="m-{_DISENO['maqueta']}">
+{boton_tema}
 {cuerpo}
 {''.join(f'<script src="{raiz}{x}?v={_VERSION_RECURSOS}"></script>' for x in scripts)}
 {f'<script>{js}</script>' if js else ''}
+{f'<script>{js_fondo}</script>' if js_fondo else ''}
 {f'<script>{js_inst}</script>' if js_inst else ''}
 {_script_previa(raiz) if _PREVIA else ''}
 </body>

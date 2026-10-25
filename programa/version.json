@@ -1,5 +1,5 @@
 {
-  "version": "1.5.4",
-  "notas": "Icono propio en la ventana y la barra de tareas, y acceso directo «PUEBLOS» en el escritorio y el menú Inicio (se crea solo).",
+  "version": "1.6",
+  "notas": "La cabecera dibujada cambia con la hora (amanecer, día, atardecer, noche) y la web tiene botón ☀/☾ para claro u oscuro.",
   "archivo": "PUEBLOS.zip"
 }
