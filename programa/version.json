@@ -1,5 +1,5 @@
 {
-  "version": "1.6.1",
-  "notas": "Botón «📌 Capturar» en el panel del móvil: apunta con el GPS el pueblo por el que pasas y luego lo revisas en «Revisar».",
+  "version": "1.6.2",
+  "notas": "«📌 Capturar» en el móvil enseña la lista de pueblos posibles antes de confirmar.",
   "archivo": "PUEBLOS.zip"
 }

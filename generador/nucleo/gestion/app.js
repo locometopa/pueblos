@@ -915,12 +915,89 @@
         : 'No he podido saber dónde estás. Prueba otra vez.', true);
       return;
     }
-    if (navigator.vibrate) navigator.vibrate(40);
+    const lat = +pos.coords.latitude.toFixed(6), lon = +pos.coords.longitude.toFixed(6), fecha = ahoraLocal();
+    let opciones = null;
+    try { opciones = await candidatosAqui(lat, lon); } catch (e) { console.warn(e); }   // sin conexión: no hay lista
+    if (boton) { boton.disabled = false; boton.classList.remove('buscando'); }
     const cola = colaCapturas();
-    cola.push({ lat: +pos.coords.latitude.toFixed(6), lon: +pos.coords.longitude.toFixed(6), fecha: ahoraLocal() });
+    if (opciones && opciones.length) {
+      const elegido = await elegirCaptura(opciones);
+      if (!elegido) return;
+      cola.push(Object.assign({ lat, lon, fecha }, elegido.lat != null ? { lat: elegido.lat, lon: elegido.lon } : {},
+        { nombre: elegido.nombre, provincia: elegido.provincia, comunidad: elegido.comunidad, pais: elegido.pais }));
+    } else if (opciones) {
+      aviso('Aquí no reconozco ningún pueblo. Puedes añadirlo con «＋ Pueblo».', true);
+      return;
+    } else {
+      cola.push({ lat, lon, fecha });
+    }
+    if (navigator.vibrate) navigator.vibrate(40);
     ponerCola(cola);
     await procesarCapturas(true);
     if (!E.editor && !$('.dialogo')) pantallaLista();
+  }
+  /* Pueblos posibles donde estás: los de la dirección (aldea, pueblo, municipio…) y los tuyos que están cerca. */
+  async function candidatosAqui(lat, lon) {
+    const js = await nominatim('/reverse', { lat, lon, zoom: 17 });
+    const a = (js && js.address) || {};
+    const base = desdeDireccion(a, lat, lon);
+    const vistos = new Set(), res = [];
+    const poner = (o) => {
+      const k = `${normalizar(o.nombre)}|${normalizar(o.provincia)}`;
+      if (!o.nombre || vistos.has(k)) return;
+      vistos.add(k); res.push(o);
+    };
+    const tipos = [['village', 'Pueblo'], ['town', 'Villa'], ['city', 'Ciudad'], ['hamlet', 'Aldea o barrio'],
+      ['municipality', 'Municipio'], ['suburb', 'Barrio']];
+    for (const [campo, tipo] of tipos) {
+      if (!a[campo]) continue;
+      const ya = buscarPueblo(a[campo], base.provincia);
+      poner(Object.assign({}, base, { nombre: a[campo], tipo: ya ? `${tipo} · ya lo tienes (${ya.estado === 'pendiente' ? 'por visitar' : 'visitado'})` : tipo }));
+    }
+    const km = (p) => {
+      const R = 6371, r = Math.PI / 180, dLa = (p.lat - lat) * r, dLo = (p.lon - lon) * r;
+      const h = Math.sin(dLa / 2) ** 2 + Math.cos(lat * r) * Math.cos(p.lat * r) * Math.sin(dLo / 2) ** 2;
+      return 2 * R * Math.asin(Math.sqrt(h));
+    };
+    Object.values(E.pueblos || {}).filter((p) => p.nombre && p.lat != null).map((p) => [p, km(p)])
+      .filter(([, d]) => d <= 8).sort((x, y) => x[1] - y[1]).slice(0, 4)
+      .forEach(([p, d]) => poner({ nombre: p.nombre, provincia: p.provincia, comunidad: p.comunidad, pais: p.pais,
+        lat: p.lat, lon: p.lon, tipo: `Ya lo tienes (${p.estado === 'pendiente' ? 'por visitar' : 'visitado'}) · a ${d < 1 ? 'menos de 1' : Math.round(d)} km` }));
+    return res;
+  }
+  function elegirCaptura(opciones) {
+    return new Promise((ok) => {
+      let sel = 0;
+      const d = dialogo(`<h2>📌 ¿Qué pueblo capturo?</h2>
+        <p class="sub">Elige el pueblo por el que pasas. Luego lo revisas en «Revisar».</p>
+        <div class="lista-opciones elegible" role="radiogroup">${opciones.map((o, i) => `<button role="radio" data-i="${i}" aria-checked="${i === 0}">
+          <b>${esc(o.nombre)}</b><small>${esc([o.tipo, o.provincia].filter(Boolean).join(' · '))}</small></button>`).join('')}
+          <button role="radio" data-i="otro" aria-checked="false"><b>✏ Otro nombre…</b><small>Escríbelo tú</small></button></div>
+        <label class="campo" id="c-otro-caja" hidden><span>Nombre del pueblo</span><input id="c-otro" autocomplete="off"></label>
+        <div class="fila fin"><button class="btn sec" id="c-no">Cancelar</button><button class="btn capturar-ok" id="c-si">📌 Capturar</button></div>`);
+      const marcar = (i) => {
+        sel = i;
+        $$('.elegible button', d).forEach((b) => b.setAttribute('aria-checked', String(b.dataset.i === String(i))));
+        $('#c-otro-caja', d).hidden = i !== 'otro';
+        if (i === 'otro') setTimeout(() => $('#c-otro', d).focus(), 50);
+      };
+      $$('.elegible button', d).forEach((b) => (b.onclick = () => marcar(b.dataset.i === 'otro' ? 'otro' : +b.dataset.i)));
+      $$('.elegible button', d).forEach((b) => (b.ondblclick = () => { marcar(b.dataset.i === 'otro' ? 'otro' : +b.dataset.i); if (sel !== 'otro') $('#c-si', d).click(); }));
+      $('#c-no', d).onclick = () => { d.remove(); ok(null); };
+      d.addEventListener('click', (ev) => { if (ev.target === d) ok(null); });
+      $('#c-si', d).onclick = () => {
+        if (sel === 'otro') {
+          const nombre = $('#c-otro', d).value.trim();
+          if (!nombre) { $('#c-otro', d).focus(); return; }
+          const o = opciones[0] || {};
+          d.remove();
+          ok({ nombre, provincia: o.provincia || '', comunidad: o.comunidad || '', pais: o.pais || '' });
+          return;
+        }
+        d.remove();
+        ok(opciones[sel]);
+      };
+    });
   }
   let procesando = false;
   async function procesarCapturas(avisar) {

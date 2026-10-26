@@ -179,3 +179,9 @@ h1,h2,h3{font-family:var(--f-titulo);font-weight:600;letter-spacing:-.01em;margi
 .cap-texto small{color:var(--tinta-2);font-size:13px}
 .cap-botones{display:flex;gap:6px;flex-wrap:wrap}
 .cap-botones .btn.fant{min-width:36px;padding:7px 8px}
+.lista-opciones.elegible button{position:relative;padding-left:40px}
+.lista-opciones.elegible button::before{content:"";position:absolute;left:13px;top:50%;width:16px;height:16px;margin-top:-9px;
+  border-radius:50%;border:2px solid var(--linea)}
+.lista-opciones.elegible button[aria-checked="true"]{border-color:#2f6f6a;box-shadow:0 0 0 1px #2f6f6a inset}
+.lista-opciones.elegible button[aria-checked="true"]::before{border-color:#2f6f6a;background:radial-gradient(#2f6f6a 45%,transparent 50%)}
+.btn.capturar-ok{background:#2f6f6a}
