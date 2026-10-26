@@ -345,6 +345,7 @@ a{color:var(--acento)}
   font-size:14px;line-height:1.35;max-width:240px;opacity:0;transform:translate(-50%,calc(-100% - 12px));transition:opacity .12s;z-index:3}
 .globo b{font-family:var(--f-titulo);font-size:16px}
 .globo.ver{opacity:1}
+.globo.abajo{transform:translate(-50%,16px)}
 .mapa-pie{display:flex;gap:18px;flex-wrap:wrap;align-items:center;padding:12px 16px;border-top:1px solid var(--linea);font-size:14px;color:var(--tinta-2)}
 .mapa-pie .muestra{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:-1px;margin-right:6px}
 .mapa-pie .m-vis{background:var(--acento);border:2px solid #fff}
@@ -402,8 +403,12 @@ JS_MAPA = r"""
   pat.append('line').attr('x1',0).attr('y1',0).attr('x2',0).attr('y2',6).attr('style','stroke:var(--rasca-2);stroke-width:1.2');
   var panel=document.querySelector('.panel-prov');
 
-  function verGlobo(ev,html){var r=marco.getBoundingClientRect(); globo.html(html).classed('ver',true)
-     .style('left',(ev.clientX-r.left)+'px').style('top',(ev.clientY-r.top)+'px');}
+  // el globo con el nombre nunca se sale del mapa: si no cabe encima del punto va debajo, y se aparta de los bordes
+  function verGlobo(ev,html){var r=marco.getBoundingClientRect(), x=ev.clientX-r.left, y=ev.clientY-r.top;
+     globo.html(html).classed('ver',true).classed('abajo',false);
+     var n=globo.node(), w=n.offsetWidth, h=n.offsetHeight, abajo=y-h-14<6;
+     x=Math.max(w/2+6,Math.min(r.width-w/2-6,x));
+     globo.classed('abajo',abajo).style('left',x+'px').style('top',y+'px');}
   function ocultar(){globo.classed('ver',false);}
   var tactil=window.matchMedia&&matchMedia('(hover:none)').matches, temporizador=null;
   function avisoTactil(ev,html){ if(!tactil) return; verGlobo(ev,html); clearTimeout(temporizador);
@@ -452,8 +457,13 @@ JS_MAPA = r"""
          location.href=p.url; });
     });
     // encuadre justo (sin mar de sobra), así el mapa se ve grande también en el móvil
-    try{ var bb=capaProv.node().getBBox(), m=8;
-      if(bb.width>0) svg.attr('viewBox',[bb.x-m,bb.y-m,bb.width+2*m,bb.height+2*m].join(' ')); }catch(e){}
+    // con aire arriba (chinchetas y nombres de la costa norte) y a los lados; en el móvil, más (las chinchetas son mayores)
+    var bb=null; try{ bb=capaProv.node().getBBox(); }catch(e){}
+    function encuadrar(){ if(!bb||!bb.width) return; var w=svg.node().getBoundingClientRect().width||W;
+      var k=Math.max(1,Math.min(2.6,(bb.width/w)*(tactil?1.15:0.9)));
+      var m=Math.max(14,bb.width*.025,13*k), arriba=Math.max(46,bb.height*.09,30*k);
+      svg.attr('viewBox',[bb.x-m,bb.y-arriba,bb.width+2*m,bb.height+arriba+m].join(' ')); }
+    encuadrar(); window.addEventListener('resize',encuadrar);
     // chinchetas del mismo tamaño en pantalla, también cuando el mapa se ve pequeño (móvil)
     function tamPins(){ var vb=svg.node().viewBox.baseVal, w=svg.node().getBoundingClientRect().width; if(!w||!vb) return;
       var k=Math.max(1,Math.min(2.6,(vb.width/w)*(tactil?1.15:0.9)));

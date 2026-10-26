@@ -1,5 +1,5 @@
 {
-  "version": "1.6.4",
-  "notas": "Ubicación más precisa al añadir pueblos, mapa pequeño en cada ficha y reubicación automática al cambiar nombre o provincia.",
+  "version": "1.6.5",
+  "notas": "Mapa de la web con más espacio arriba; los nombres de los pueblos ya no se cortan en el borde.",
   "archivo": "PUEBLOS.zip"
 }
