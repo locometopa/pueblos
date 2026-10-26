@@ -1,5 +1,5 @@
 {
-  "version": "1.6.5",
-  "notas": "Mapa de la web con más espacio arriba; los nombres de los pueblos ya no se cortan en el borde.",
+  "version": "1.6.6",
+  "notas": "En el móvil, el crédito de la foto de portada ya no tapa el nombre del pueblo.",
   "archivo": "PUEBLOS.zip"
 }

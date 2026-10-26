@@ -291,6 +291,16 @@ a{color:var(--acento)}
 .credito a{color:inherit}
 .credito-heroe{position:absolute;right:12px;bottom:8px;z-index:1;font-size:11px;opacity:.85;max-width:60%;text-align:right}
 .credito-heroe a{color:inherit}
+/* móvil: el crédito va en una sola línea al pie de la foto, debajo del nombre (sin pisar el texto) */
+@media (max-width:700px){
+  .heroe .envoltorio{padding-bottom:52px}
+  .credito-heroe{left:16px;right:16px;bottom:9px;max-width:none;text-align:left;font-size:10.5px;line-height:1.35;opacity:.8;
+    display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden}
+  .credito-heroe .c-origen{display:none}
+  .m-album .credito-heroe{left:36px;right:36px;bottom:36px}
+  .m-album .heroe .envoltorio{padding-bottom:80px}
+  .m-moderna .credito-heroe{left:20px;right:20px;bottom:12px}
+}
 .vecinos{display:flex;justify-content:space-between;gap:16px;border-top:1px solid var(--linea);padding:22px 20px}
 .vecinos a{text-decoration:none;font-weight:600;max-width:48%}
 .vecinos small{display:block;color:var(--tinta-2);font-weight:500}
@@ -628,7 +638,8 @@ def credito_html(f: dict) -> str:
     lic = e(c.get("licencia"))
     if c.get("url_licencia"):
         lic = f'<a href="{e(c["url_licencia"])}">{lic}</a>'
-    return (f'Foto: <a href="{e(c.get("fuente"))}">{e(c.get("autor"))}</a> · {lic} · {e(c.get("origen") or "Wikimedia Commons")}')
+    return (f'Foto: <a href="{e(c.get("fuente"))}">{e(c.get("autor"))}</a> · {lic}'
+            f'<span class="c-origen"> · {e(c.get("origen") or "Wikimedia Commons")}</span>')
 
 
 def _pie(cfg) -> str:
@@ -849,7 +860,7 @@ def _pagina_pueblo(p: dict, anterior, siguiente, cfg) -> str:
     else:
         heroe = '<header class="heroe sin-foto">'
     portada = next((f for f in p.get("fotos", []) if f["archivo"] == p.get("portada")), None)
-    credito_portada = (f'<div class="credito-heroe">{credito_html(portada)}</div>'
+    credito_portada = (f'<div class="credito-heroe" title="{e(credito_texto(portada))}">{credito_html(portada)}</div>'
                        if portada and portada.get("credito") else "")
     heroe += (f'<a class="volver" href="{volver}">← Todos los pueblos</a><div class="envoltorio">'
               f'<div class="lugar">{e(lugar)}</div><h1>{e(p["nombre"])}</h1>'
