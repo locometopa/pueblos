@@ -444,11 +444,73 @@
     local.set('pueblos-geo', JSON.stringify(cacheGeo));
     return res;
   }
-  async function geoBuscar(texto) {
-    const js = await nominatim('/search', { q: texto, limit: 8 });
-    return (js || []).map((x) => Object.assign(desdeDireccion(x.address, +x.lat, +x.lon),
-      { descripcion: x.display_name || '' }, x.address ? {} : { nombre: x.name || texto }))
-      .map((r) => (r.nombre ? r : Object.assign(r, { nombre: texto })));
+  /* Busca un pueblo y ordena lo encontrado: primero núcleos de población de España con ese nombre exacto
+     (y en la provincia escrita), luego el resto; fuera calles, bares o iglesias que se llamen igual. */
+  const TIPOS_LUGAR = { city: ['Ciudad', 3], town: ['Villa', 3], village: ['Pueblo', 3], hamlet: ['Aldea', 2],
+    isolated_dwelling: ['Caserío', 1], locality: ['Paraje', 0.5], municipality: ['Municipio', 2.5],
+    suburb: ['Barrio', 1], neighbourhood: ['Barrio', 0.5], quarter: ['Barrio', 0.5] };
+  function kmEntre(a, b) {
+    const r = Math.PI / 180, dLa = (b[0] - a[0]) * r, dLo = (b[1] - a[1]) * r;
+    const h = Math.sin(dLa / 2) ** 2 + Math.cos(a[0] * r) * Math.cos(b[0] * r) * Math.sin(dLo / 2) ** 2;
+    return 12742 * Math.asin(Math.sqrt(h));
+  }
+  function ordenarLugares(crudos, nombre, provincia) {
+    const buscado = normalizar(nombre), prov = normalizar(provincia || '');
+    const cand = [];
+    for (const x of crudos || []) {
+      const tipo = x.addresstype || x.type || '', cat = x.category || x.class || '';
+      if (cat && cat !== 'place' && cat !== 'boundary' && !TIPOS_LUGAR[tipo]) continue;   // calles, bares, iglesias…
+      const a = x.address || {};
+      const r = desdeDireccion(a, +x.lat, +x.lon);
+      if (x.name && (normalizar(x.name) === buscado || TIPOS_LUGAR[tipo])) r.nombre = x.name;   // el nombre del propio lugar
+      else if (!r.nombre) r.nombre = x.name || nombre;
+      const [etiqueta, peso] = TIPOS_LUGAR[tipo] || ['Lugar', 0];
+      const n = normalizar(r.nombre);
+      let puntos = peso + (+x.importance || 0) * 2;
+      if (n === buscado) puntos += 4; else if (n.startsWith(buscado) || buscado.startsWith(n)) puntos += 1.5; else if (!n.includes(buscado)) puntos -= 2;
+      if (prov && (normalizar(r.provincia) === prov || normalizar(r.comunidad) === prov)) puntos += 3;
+      if (cat === 'place') puntos += 0.5;
+      const muni = a.municipality || a.city || a.town || '';
+      const larga = ['Aldea', 'Barrio', 'Caserío', 'Paraje'].includes(etiqueta) && muni && normalizar(muni) !== n ? `${etiqueta} de ${muni}` : etiqueta;
+      r.tipo = etiqueta; r.puntos = puntos;
+      r.descripcion = [larga, r.provincia, r.comunidad !== r.provincia ? r.comunidad : '', r.pais && r.pais !== 'España' ? r.pais : ''].filter(Boolean).join(' · ');
+      cand.push(r);
+    }
+    cand.sort((a, b) => b.puntos - a.puntos);
+    const unicos = [];
+    for (const r of cand) {
+      if (!unicos.some((u) => normalizar(u.nombre) === normalizar(r.nombre) && normalizar(u.provincia) === normalizar(r.provincia)
+        && kmEntre([u.lat, u.lon], [r.lat, r.lon]) < 8)) unicos.push(r);
+    }
+    const exactos = unicos.filter((u) => normalizar(u.nombre) === buscado);
+    const enProv = (u) => prov && (normalizar(u.provincia) === prov || normalizar(u.comunidad) === prov);
+    if (unicos.length && normalizar(unicos[0].nombre) === buscado && (exactos.length === 1
+      || exactos[0].puntos - exactos[1].puntos >= 2.5 || (enProv(unicos[0]) && exactos.filter(enProv).length === 1))) unicos[0].seguro = true;
+    // a cuántos km está de tus pueblos (ayuda a elegir)
+    const actual = E.editor && E.editor.slug;
+    const mios = Object.values(E.pueblos || {}).filter((p) => p.lat != null && p.slug !== actual);
+    for (const u of unicos) {
+      if (!mios.length) break;
+      let mejor = null, d = 1e9;
+      for (const p of mios) { const k = kmEntre([u.lat, u.lon], [p.lat, p.lon]); if (k < d) { d = k; mejor = p; } }
+      if (d < 1 && normalizar(mejor.nombre) === normalizar(u.nombre)) u.descripcion += ' · ya lo tienes';
+      else if (d < 150) u.descripcion += ` · a ${d < 1 ? 'menos de 1' : Math.round(d)} km de ${mejor.nombre}`;
+    }
+    return unicos;
+  }
+  async function geoBuscar(texto, provincia, espana) {
+    const nombre = texto.split(',')[0].trim();
+    const q = provincia && !texto.includes(provincia) ? `${nombre}, ${provincia}` : texto;
+    const intentos = [];
+    if (espana !== false) intentos.push({ q, countrycodes: 'es', featureType: 'settlement' }, { q, countrycodes: 'es' });
+    intentos.push({ q });
+    if (q !== nombre) intentos.push(espana !== false ? { q: nombre, countrycodes: 'es', featureType: 'settlement' } : { q: nombre });
+    for (const p of intentos) {
+      const js = await nominatim('/search', Object.assign({ limit: 15, dedupe: 1 }, p));
+      const res = ordenarLugares(js, nombre, provincia);
+      if (res.length) return res.slice(0, 8);
+    }
+    return [];
   }
 
   // ------------------------------------------------------------------ Wikipedia / Wikidata
@@ -1344,7 +1406,7 @@
     const pend = ed.estado === 'pendiente';
     const propias = ed.fotos.filter((f) => !f.credito).length;
     app().innerHTML = `
-      ${cabecera(ed.nombre || 'Pueblo', [ed.provincia, ed.comunidad].filter(Boolean).join(' · '), `<button class="icono" id="volver" aria-label="Volver">${ico('atras')}</button>`)}
+      ${cabecera(ed.nombre || 'Pueblo', [ed.provincia, ed.comunidad !== ed.provincia ? ed.comunidad : ''].filter(Boolean).join(' · '), `<button class="icono" id="volver" aria-label="Volver">${ico('atras')}</button>`)}
       <main class="cont">
         <div class="estado" role="group" aria-label="Estado">
           <button data-e="visitado" aria-pressed="${!pend}">${ico('casa', 'i-teja')} Visitado</button>
@@ -1388,6 +1450,9 @@
             <label class="campo"><span>Latitud</span><input id="f-lat" inputmode="decimal" value="${ed.lat == null ? '' : ed.lat}"></label>
             <label class="campo"><span>Longitud</span><input id="f-lon" inputmode="decimal" value="${ed.lon == null ? '' : ed.lon}"></label>
           </div>
+          ${ed.lat != null ? `<div class="mapita"><iframe title="Mapa de ${esc(ed.nombre)}" loading="lazy" referrerpolicy="no-referrer"
+            src="https://www.openstreetmap.org/export/embed.html?bbox=${ed.lon - 0.06},${ed.lat - 0.035},${ed.lon + 0.06},${ed.lat + 0.035}&amp;layer=mapnik&amp;marker=${ed.lat},${ed.lon}"></iframe></div>`
+            : '<p class="ayuda">Sin ubicación: pulsa «Buscar ubicación» para ponerlo en el mapa.</p>'}
           <div class="fila"><button class="btn peq sec" id="ubicar">${ico('lupa', 'i-azul')} Buscar ubicación</button></div>
           <label class="interruptor"><input type="checkbox" id="f-publicar" ${ed.publicar !== false ? 'checked' : ''}> Publicar en la web</label>
         </section>
@@ -1450,6 +1515,18 @@
     $('#mis-fotos').onclick = () => { leerFormulario(); elegirFotos(anadirMisFotos); };
     $('#internet').onclick = () => { leerFormulario(); dialogoCommons(); };
     $('#ubicar').onclick = () => { leerFormulario(); ubicar(); };
+    ['f-nombre', 'f-provincia'].forEach((id) => {     // nombre o provincia cambiados: la ubicación y el mapa se ponen al día
+      const el = $('#' + id);
+      if (el) el.addEventListener('blur', () => setTimeout(() => {
+        const activo = document.activeElement && document.activeElement.id;
+        if (!E.editor || activo === 'f-nombre' || activo === 'f-provincia') return;   // aún escribiendo nombre/provincia
+        leerFormulario();
+        if (ed.nombre && claveUbicacion(ed) !== (E.editor.ubicadoPara || claveUbicacion(E.editor.orig))) {
+          E.editor.ubicadoPara = claveUbicacion(ed);
+          ubicar(true).then((ok) => { if (ok) aviso(`Ubicación actualizada: ${ed.nombre}, ${ed.provincia}. Recuerda guardar.`); });
+        }
+      }, 250));
+    });
     $('#traer-wiki').onclick = () => { leerFormulario(); traerWiki(); };
     $('#guardar').onclick = () => { leerFormulario(); guardarEditor(); };
     $('#eliminar').onclick = eliminarPueblo;
@@ -1459,6 +1536,10 @@
     const { ed, slug } = E.editor;
     if (!ed.nombre) { aviso('El pueblo necesita un nombre.', true); return false; }
     for (const f of ed.fechas_visita) if (!fechaValida(f)) { aviso(`La fecha «${f}» no es válida. Usa AAAA-MM-DD, AAAA-MM o AAAA.`, true); return false; }
+    if (!silencioso && claveUbicacion(ed) !== (E.editor.ubicadoPara || claveUbicacion(E.editor.orig))) {
+      E.editor.ubicadoPara = claveUbicacion(ed);        // nombre o provincia cambiados: se busca de nuevo dónde está
+      await ubicar(true);
+    }
     const dif = diferencias();
     if (!dif.hay) { if (!silencioso) aviso('No hay cambios que guardar.'); return true; }
     const borrar = [];
@@ -1506,22 +1587,25 @@
     } catch (e) { aviso(e.message, true); }
   }
 
-  async function ubicar() {
+  async function ubicar(automatico) {
     const { ed } = E.editor;
     const texto = [ed.nombre, ed.provincia].filter(Boolean).join(', ');
-    if (!texto) return;
+    if (!texto) return false;
     espera('Buscando en el mapa…');
     let res;
-    try { res = await geoBuscar(texto); } catch (e) { finEspera(); aviso(e.message, true); return; }
+    try { res = await geoBuscar(ed.nombre, ed.provincia, (ed.pais || 'España') === 'España'); } catch (e) { finEspera(); aviso(e.message, true); return false; }
     finEspera();
-    if (!res.length) { aviso(`No encuentro «${texto}» en el mapa.`, true); return; }
-    const r = res.length === 1 ? res[0] : await elegirLugar(res);
-    if (!r) return;
+    if (!res.length) { aviso(`No encuentro «${texto}» en el mapa${automatico ? ': la ubicación sigue como estaba' : ''}.`, true); return false; }
+    const r = res.length === 1 || res[0].seguro ? res[0] : await elegirLugar(res, ed.nombre);
+    if (!r) return false;
     ed.provincia = r.provincia || ed.provincia; ed.comunidad = r.comunidad || ed.comunidad;
     ed.lat = +r.lat.toFixed(6); ed.lon = +r.lon.toFixed(6);
+    E.editor.ubicadoPara = claveUbicacion(ed);
     pintarEditor();
-    aviso(`Ubicado en ${ed.provincia}. Recuerda guardar.`);
+    if (!automatico) aviso(`Ubicado: ${(r.tipo || 'lugar').toLowerCase()} de ${ed.nombre}, ${ed.provincia}. Recuerda guardar.`);
+    return true;
   }
+  function claveUbicacion(p) { return `${normalizar(p.nombre)}|${normalizar(p.provincia)}`; }
 
   async function traerWiki() {
     const { ed } = E.editor;
@@ -1561,9 +1645,9 @@
     return velo;
   }
 
-  function elegirLugar(res) {
+  function elegirLugar(res, nombre) {
     return new Promise((ok) => {
-      const d = dialogo(`<h2>¿Cuál es?</h2><p class="sub">Hay varios lugares con ese nombre.</p>
+      const d = dialogo(`<h2>¿Cuál es?</h2><p class="sub">Hay varios lugares que se llaman «${esc(nombre || res[0].nombre)}». El primero es el más probable.</p>
         <div class="lista-opciones">${res.map((r, i) => `<button data-i="${i}"><b>${esc(r.nombre)}</b><small>${esc(r.descripcion)}</small></button>`).join('')}</div>
         <button class="btn sec ancho" id="cancelar">Cancelar</button>`);
       $$('.lista-opciones button', d).forEach((b) => (b.onclick = () => { d.remove(); ok(res[+b.dataset.i]); }));
@@ -1596,8 +1680,8 @@
       finEspera();
       d.remove();
       let lugar = null;
-      if (res.length === 1) lugar = res[0];
-      else if (res.length > 1) lugar = await elegirLugar(res);
+      if (res.length === 1 || (res[0] && res[0].seguro)) lugar = res[0];
+      else if (res.length > 1) lugar = await elegirLugar(res, nombre);
       if (!lugar && res.length) return;
       if (!lugar) lugar = { nombre, provincia: '', comunidad: '', pais: '', lat: null, lon: null };
       lugar.nombre = lugar.nombre && normalizar(lugar.nombre).includes(normalizar(nombre)) ? lugar.nombre : nombre;
