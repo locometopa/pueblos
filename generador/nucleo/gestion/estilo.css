@@ -160,3 +160,22 @@ h1,h2,h3{font-family:var(--f-titulo);font-weight:600;letter-spacing:-.01em;margi
   border-radius:99px;padding:5px 12px 5px 5px;font:inherit;font-size:14px;cursor:pointer}
 .rev-chip img{width:28px;height:28px;border-radius:50%;object-fit:cover}
 .rev-chip:not(:has(img)){padding-left:12px}
+
+/* ---------- capturar ---------- */
+.acciones{gap:8px;padding-left:10px;padding-right:10px}
+.acciones .btn{position:relative;flex-direction:column;gap:1px;padding:7px 4px;font-size:13px;line-height:1.15;min-height:54px}
+.acciones .btn b{font-size:19px;font-weight:400;line-height:1.1}
+.acciones .btn.capturar{background:#2f6f6a}
+.acciones .btn.capturar:hover{background:#285f5b}
+.acciones .btn.capturar.buscando b{animation:latido 1s ease-in-out infinite}
+@keyframes latido{50%{transform:scale(1.25)}}
+.acciones .cola{position:absolute;top:-6px;right:-4px;min-width:20px;height:20px;border-radius:10px;background:var(--acento);
+  color:#fff;font:600 12px/20px var(--f-texto,system-ui);font-style:normal;padding:0 5px}
+@media (min-width:600px){.acciones .btn{flex-direction:row;gap:8px;font-size:15px;min-height:46px}}
+.capturas .captura{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:10px 0;border-top:1px solid var(--linea)}
+.capturas .captura:first-of-type{border-top:0}
+.cap-texto{flex:1 1 180px;min-width:0}
+.cap-texto b{display:block;font-size:16px}
+.cap-texto small{color:var(--tinta-2);font-size:13px}
+.cap-botones{display:flex;gap:6px;flex-wrap:wrap}
+.cap-botones .btn.fant{min-width:36px;padding:7px 8px}

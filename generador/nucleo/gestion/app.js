@@ -26,6 +26,7 @@
   const RAW = window.PUEBLOS_RAW || 'https://raw.githubusercontent.com';
   const SPARQL = window.PUEBLOS_SPARQL || 'https://query.wikidata.org/sparql';
   const MARGEN_HORAS = 2;
+  const RUTA_CAPTURAS = 'capturas.json';
   const COMUNIDADES = ['Andalucía', 'Aragón', 'Asturias', 'Islas Baleares', 'Canarias', 'Cantabria',
     'Castilla-La Mancha', 'Castilla y León', 'Cataluña', 'Comunidad Valenciana', 'Extremadura', 'Galicia',
     'Comunidad de Madrid', 'Región de Murcia', 'Navarra', 'País Vasco', 'La Rioja', 'Ceuta', 'Melilla', 'Fuera de España'];
@@ -229,6 +230,9 @@
       E.shaFotos = commit;   // las fotos ya existentes se piden siempre a esta versión (así se aprovecha la caché)
       E.archivos = {};
       const jsons = [];
+      E.capturas = [];
+      const cap = lista.find((it) => it.path === RUTA_CAPTURAS && it.type === 'blob');
+      if (cap) { try { E.capturas = JSON.parse(await E.gh.blobTexto(cap.sha)) || []; } catch (e) { console.warn(e); } }
       for (const it of lista) {
         const m = /^datos\/([^/]+)\/(.+)$/.exec(it.path);
         if (!m || m[1].startsWith('_') || it.type !== 'blob') continue;
@@ -276,7 +280,12 @@
         }
         for (const ruta in shas) entradas.push({ path: ruta, mode: '100644', type: 'blob', sha: shas[ruta] });
         for (const ruta of borrar) entradas.push({ path: ruta, mode: '100644', type: 'blob', sha: null });
-        for (const t of textos) entradas.push({ path: t.ruta, mode: '100644', type: 'blob', content: t.contenido });
+        for (const t of textos) {
+          const contenido = t.aplicar ? t.aplicar(await E.gh.leerJson(t.ruta, commit)) : t.contenido;
+          if (contenido == null) continue;
+          if (t.aplicar) t.resultado = contenido;
+          entradas.push({ path: t.ruta, mode: '100644', type: 'blob', content: contenido });
+        }
         if (!entradas.length) return {};
         const nuevoArbol = await E.gh.crearArbol(arbol, entradas);
         const nuevo = await E.gh.crearCommit(mensaje, nuevoArbol, commit);
@@ -824,7 +833,7 @@
         <div class="pestanas" role="tablist">
           <button data-v="visitados" aria-pressed="${E.vista === 'visitados'}">🏘 Visitados <small>${vis.length}</small></button>
           <button data-v="pendientes" aria-pressed="${E.vista === 'pendientes'}">📌 Por visitar <small>${pen.length}</small></button>
-          <button data-v="revisar" aria-pressed="${E.vista === 'revisar'}">✔ Revisar <small>${revisiones(todos).total}</small></button>
+          <button data-v="revisar" aria-pressed="${E.vista === 'revisar'}">✔ Revisar <small>${revisiones(todos).total + (E.capturas || []).length}</small></button>
         </div>
         ${E.vista === 'revisar' ? pintarRevisar(todos) : `
         <input class="buscar" id="buscar" type="search" placeholder="🔎 Buscar pueblo o provincia…" value="${esc(E.filtro)}">
@@ -833,13 +842,16 @@
           E.vista === 'visitados' ? 'Todavía no hay pueblos. Sube las fotos de un viaje o añade uno.' : 'Tu lista de pendientes está vacía.'}</p>`}</div>`}
       </main>
       <nav class="acciones">
-        <button class="btn sec" id="nuevo">＋ Pueblo</button>
-        <button class="btn aqui" id="aqui">📍 Estoy aquí</button>
-        <button class="btn sec" id="subir">📷 Fotos</button>
+        <button class="btn sec" id="nuevo"><b>＋</b><span>Pueblo</span></button>
+        <button class="btn capturar" id="capturar" title="Guarda el pueblo por el que pasas, para verlo luego"><b>📌</b><span>Capturar</span>${colaCapturas().length ? `<i class="cola">${colaCapturas().length}</i>` : ''}</button>
+        <button class="btn aqui" id="aqui"><b>📍</b><span>Estoy aquí</span></button>
+        <button class="btn sec" id="subir"><b>📷</b><span>Fotos</span></button>
       </nav>`;
     $$('.pestanas button').forEach((b) => (b.onclick = () => { E.vista = b.dataset.v; pantallaLista(); }));
     $$('.rev-chip').forEach((b) => (b.onclick = () => abrirEditor(b.dataset.slug)));
     $('#aqui').onclick = estoyAqui;
+    $('#capturar').onclick = capturar;
+    $$('[data-cap]').forEach((b) => (b.onclick = () => accionCaptura(b.dataset.cap, b.dataset.que)));
     if ($('#buscar')) $('#buscar').oninput = (ev) => {
       E.filtro = ev.target.value;
       const pos = ev.target.selectionStart;
@@ -870,12 +882,164 @@
   function pintarRevisar(todos) {
     const { grupos, total } = revisiones(todos);
     const con = grupos.filter((g) => g.lista.length);
-    if (!con.length) return '<p class="vacio">¡Todo completo! Tu web está al día. 🎉</p>';
-    return `<p class="resumen">${total ? `${total} cosas por completar. Toca un pueblo para arreglarlo.` : 'Solo quedan cosas opcionales.'}</p>` +
+    const caps = pintarCapturas();
+    if (!con.length) return caps + (caps ? '' : '<p class="vacio">¡Todo completo! Tu web está al día. 🎉</p>');
+    return caps + `<p class="resumen">${total ? `${total} cosas por completar. Toca un pueblo para arreglarlo.` : 'Solo quedan cosas opcionales.'}</p>` +
       con.map((g) => `<section class="tarjeta revisar"><h2>${esc(g.texto)} <small>${g.lista.length}</small></h2><div class="rev-chips">` +
         g.lista.sort((a, b) => normalizar(a.nombre).localeCompare(normalizar(b.nombre))).map((p) =>
           `<button class="rev-chip" data-slug="${esc(p.slug)}">${p.portada ? `<img src="${esc(urlFoto(p.slug, p.portada))}" alt="">` : ''}${esc(p.nombre)}</button>`).join('') +
         '</div></section>').join('');
+  }
+
+  // ------------------------------------------------------------------ «Capturar»: apunta el pueblo por el que pasas
+  /* Funciona sin cobertura: la posición se guarda en el móvil y, cuando hay internet, se busca el nombre
+     del pueblo y se sube a capturas.json (lo ven el panel y el programa del PC, en «Revisar»). */
+  function colaCapturas() { try { return JSON.parse(local.get('pueblos-capturas-cola') || '[]'); } catch (e) { return []; } }
+  function ponerCola(c) { if (c.length) local.set('pueblos-capturas-cola', JSON.stringify(c)); else local.del('pueblos-capturas-cola'); }
+  function claveCaptura(c) { return `${normalizar(c.nombre)}|${normalizar(c.provincia)}|${(c.fecha || '').slice(0, 10)}`; }
+  function ahoraLocal() {
+    const d = new Date(), dos = (n) => String(n).padStart(2, '0');
+    return `${hoyLocal()} ${dos(d.getHours())}:${dos(d.getMinutes())}`;
+  }
+  async function capturar() {
+    if (!navigator.geolocation) { aviso('Este navegador no puede dar tu ubicación.', true); return; }
+    const boton = $('#capturar');
+    if (boton) { boton.disabled = true; boton.classList.add('buscando'); }
+    let pos;
+    try {
+      pos = await new Promise((ok, mal) => navigator.geolocation.getCurrentPosition(ok, mal,
+        { enableHighAccuracy: true, timeout: 20000, maximumAge: 5000 }));
+    } catch (e) {
+      if (boton) { boton.disabled = false; boton.classList.remove('buscando'); }
+      aviso(e && e.code === 1 ? 'No tengo permiso para ver tu ubicación. Actívalo para esta web en los ajustes del navegador.'
+        : 'No he podido saber dónde estás. Prueba otra vez.', true);
+      return;
+    }
+    if (navigator.vibrate) navigator.vibrate(40);
+    const cola = colaCapturas();
+    cola.push({ lat: +pos.coords.latitude.toFixed(6), lon: +pos.coords.longitude.toFixed(6), fecha: ahoraLocal() });
+    ponerCola(cola);
+    await procesarCapturas(true);
+    if (!E.editor && !$('.dialogo')) pantallaLista();
+  }
+  let procesando = false;
+  async function procesarCapturas(avisar) {
+    if (procesando || !colaCapturas().length) return;
+    procesando = true;
+    try {
+      const cola = colaCapturas(), listas = [];
+      for (const c of cola) {
+        if (!c.nombre) {
+          try {
+            const l = await geoInverso(c.lat, c.lon);
+            if (!l || !l.nombre) { c.nombre = ''; c.sinNombre = true; } else Object.assign(c, { nombre: l.nombre, provincia: l.provincia, comunidad: l.comunidad, pais: l.pais });
+          } catch (e) { break; }            // sin conexión: se queda en el móvil para luego
+        }
+        listas.push(c);
+      }
+      const buenas = listas.filter((c) => c.nombre);
+      const restantes = cola.filter((c) => !listas.includes(c));
+      let subidas = [];
+      if (buenas.length && E.gh) {
+        try {
+          const nuevas = buenas.map((c) => {
+            const ya = buscarPueblo(c.nombre, c.provincia);
+            return { id: `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`, nombre: c.nombre,
+              provincia: c.provincia || '', comunidad: c.comunidad || '', pais: c.pais || '', lat: c.lat, lon: c.lon, fecha: c.fecha,
+              ya: ya ? (ya.estado === 'pendiente' ? 'pendiente' : 'visitado') : '' };
+          });
+          const texto = { ruta: RUTA_CAPTURAS, aplicar: (fresco) => {
+            subidas = [];
+            const lista = Array.isArray(fresco) ? fresco : [];
+            const vistas = new Set(lista.map(claveCaptura));
+            for (const n of nuevas) if (!vistas.has(claveCaptura(n))) { lista.push(n); vistas.add(claveCaptura(n)); subidas.push(n); }
+            return subidas.length ? JSON.stringify(lista, null, 2) : null;
+          } };
+          await guardar([], [], [], `Capturado desde el móvil: ${buenas.map((c) => c.nombre).join(', ')}`, [texto]);
+          if (texto.resultado) E.capturas = JSON.parse(texto.resultado);
+          ponerCola(restantes);
+          if (avisar) {
+            const ult = buenas[buenas.length - 1];
+            aviso(subidas.length ? `📌 ${ult.nombre} capturado. Lo tienes en «Revisar».` : `📌 ${ult.nombre} ya estaba capturado hoy.`);
+          }
+        } catch (e) {
+          ponerCola(listas.concat(restantes));
+          if (avisar) aviso(`📌 ${buenas[buenas.length - 1].nombre} guardado en el móvil; se subirá cuando haya conexión.`);
+        }
+      } else {
+        const sinNombre = listas.filter((c) => c.sinNombre);
+        ponerCola(restantes.concat(listas.filter((c) => !c.sinNombre)));
+        if (avisar) aviso(sinNombre.length && !restantes.length ? 'Aquí no hay ningún pueblo reconocible; no lo he guardado.'
+          : '📌 Posición guardada en el móvil. Buscaré el pueblo cuando haya conexión.', !!sinNombre.length);
+      }
+    } finally { procesando = false; }
+  }
+  function pintarCapturas() {
+    const caps = (E.capturas || []).slice().sort((a, b) => (b.fecha || '').localeCompare(a.fecha || ''));
+    const cola = colaCapturas().length;
+    if (!caps.length && !cola) return '';
+    return `<section class="tarjeta revisar capturas"><h2>📌 Capturados por el camino <small>${caps.length}</small></h2>
+      ${cola ? `<p class="resumen">${cola} ${cola === 1 ? 'captura espera' : 'capturas esperan'} conexión para buscar el pueblo.</p>` : ''}
+      ${caps.map((c) => `<div class="captura">
+        <div class="cap-texto"><b>${esc(c.nombre)}</b><small>${esc([c.provincia, fechaBonita((c.fecha || '').slice(0, 10)) + ((c.fecha || '').length > 10 ? ' · ' + c.fecha.slice(11, 16) : '')].filter(Boolean).join(' · '))}${c.ya ? ` · ya lo tienes (${c.ya === 'pendiente' ? 'por visitar' : 'visitado'})` : ''}</small></div>
+        <div class="cap-botones">
+          <button class="btn peq" data-cap="${esc(c.id)}" data-que="visitado" title="Lo visité ese día">✓ Visitado</button>
+          <button class="btn peq pend" data-cap="${esc(c.id)}" data-que="pendiente" title="Volver otro día">Por visitar</button>
+          <button class="btn peq fant" data-cap="${esc(c.id)}" data-que="mapa" title="Ver en el mapa" aria-label="Ver en el mapa">🗺</button>
+          <button class="btn peq fant" data-cap="${esc(c.id)}" data-que="quitar" title="Descartar" aria-label="Descartar">✕</button>
+        </div></div>`).join('')}</section>`;
+  }
+  async function quitarCaptura(id) {
+    const texto = { ruta: RUTA_CAPTURAS, aplicar: (fresco) => JSON.stringify((Array.isArray(fresco) ? fresco : []).filter((x) => x.id !== id), null, 2) };
+    return texto;
+  }
+  async function accionCaptura(id, que) {
+    const c = (E.capturas || []).find((x) => x.id === id);
+    if (!c) return;
+    if (que === 'mapa') { window.open(`https://www.openstreetmap.org/?mlat=${c.lat}&mlon=${c.lon}#map=14/${c.lat}/${c.lon}`, '_blank', 'noopener'); return; }
+    const quitar = await quitarCaptura(id);
+    const fecha = (c.fecha || hoyLocal()).slice(0, 10);
+    let slug = null, yaEra = '';
+    try {
+      if (que === 'quitar') {
+        await guardar([], [], [], `Captura descartada: ${c.nombre}`, [quitar]);
+      } else {
+        const existente = buscarPueblo(c.nombre, c.provincia);
+        if (existente) {
+          slug = existente.slug;
+          yaEra = existente.estado === 'pendiente' ? 'pendiente' : 'visitado';
+          await guardar([{ slug, aplicar: (fresco) => {
+            const p = fresco || clonar(existente);
+            if (que === 'visitado') {
+              p.fechas_visita = (p.fechas_visita || []).concat([fecha]);
+              p.estado = 'visitado';
+            }
+            if (p.lat == null) { p.lat = c.lat; p.lon = c.lon; }
+            return p;
+          } }], [], [], `${c.nombre}: ${que === 'visitado' ? 'visitado el ' + fecha : 'captura revisada'} (desde el móvil)`, [quitar]);
+        } else {
+          const p = puebloVacio(c.nombre);
+          Object.assign(p, { provincia: c.provincia, comunidad: c.comunidad, pais: c.pais || 'España', estado: que,
+            lat: c.lat, lon: c.lon, fechas_visita: que === 'visitado' ? [fecha] : [] });
+          espera('Consultando Wikipedia…');
+          try { aplicarWiki(p, await wikiTodo(p.nombre, p.provincia, p.lat, p.lon)); } catch (e) { console.warn(e); }
+          finEspera();
+          p.lat = c.lat; p.lon = c.lon;
+          slug = slugLibre(p.nombre, p.provincia);
+          p.slug = slug;
+          await guardar([{ slug, aplicar: (fresco) => fresco || p }], [], [],
+            `Nuevo pueblo: ${p.nombre} (${que === 'visitado' ? 'visitado' : 'por visitar'}, capturado en el móvil)`, [quitar]);
+        }
+      }
+    } catch (e) { finEspera(); aviso(e.message, true); return; }
+    E.capturas = (E.capturas || []).filter((x) => x.id !== id);
+    if (slug) {
+      abrirEditor(slug);
+      aviso(que === 'visitado' ? `${c.nombre}: visitado el ${fechaBonita(fecha)}.`
+        : yaEra === 'visitado' ? `${c.nombre} ya estaba entre tus visitados.`
+        : yaEra ? `${c.nombre} ya estaba en «Por visitar».` : `${c.nombre} añadido a «Por visitar».`);
+    }
+    else pantallaLista();
   }
 
   // ------------------------------------------------------------------ «Estoy aquí»: el pueblo donde estás, visitado hoy
@@ -1609,7 +1773,11 @@
     } catch (e) { aviso(e.message, true); if (/token/i.test(e.message)) { pantallaAcceso(e.message); return; } }
     const slug = decodeURIComponent(location.hash.slice(1));
     if (slug && E.pueblos[slug]) abrirEditor(slug, false); else pantallaLista();
+    if (colaCapturas().length) procesarCapturas(true).then(() => { if (!E.editor && !$('.dialogo')) pantallaLista(); });
   }
+  window.addEventListener('online', () => {
+    if (E.gh && colaCapturas().length) procesarCapturas(true).then(() => { if (!E.editor && !$('.dialogo')) pantallaLista(); });
+  });
 
   window.addEventListener('popstate', () => {
     if (!E.gh) return;

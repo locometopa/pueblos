@@ -1,5 +1,5 @@
 {
-  "version": "1.6",
-  "notas": "La cabecera dibujada cambia con la hora (amanecer, día, atardecer, noche) y la web tiene botón ☀/☾ para claro u oscuro.",
+  "version": "1.6.1",
+  "notas": "Botón «📌 Capturar» en el panel del móvil: apunta con el GPS el pueblo por el que pasas y luego lo revisas en «Revisar».",
   "archivo": "PUEBLOS.zip"
 }
