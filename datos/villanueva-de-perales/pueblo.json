@@ -36,10 +36,37 @@
   },
   "texto_ia": "",
   "notas": "",
-  "fotos": [],
-  "portada": "",
+  "fotos": [
+    {
+      "archivo": "wmvpquhar000.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "https://commons.wikimedia.org/wiki/File:Iglesia_en_Villanueva_de_Perales.jpg",
+      "credito": {
+        "autor": "Dirección General de Turismo. Consejería de Economía e Innovación Tecnológica. Comunidad de Madrid.",
+        "licencia": "CC BY 3.0 es",
+        "url_licencia": "https://creativecommons.org/licenses/by/3.0/es/deed.en",
+        "fuente": "https://commons.wikimedia.org/wiki/File:Iglesia_en_Villanueva_de_Perales.jpg",
+        "origen": "Wikimedia Commons"
+      }
+    },
+    {
+      "archivo": "wmvpquiq9001.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "https://commons.wikimedia.org/wiki/File:Fuente_en_Villanueva_de_Perales.jpg",
+      "credito": {
+        "autor": "Dirección General de Turismo. Consejería de Economía e Innovación Tecnológica. Comunidad de Madrid.",
+        "licencia": "CC BY 3.0 es",
+        "url_licencia": "https://creativecommons.org/licenses/by/3.0/es/deed.en",
+        "fuente": "https://commons.wikimedia.org/wiki/File:Fuente_en_Villanueva_de_Perales.jpg",
+        "origen": "Wikimedia Commons"
+      }
+    }
+  ],
+  "portada": "wmvpquhar000.jpg",
   "publicar": true,
   "estado": "visitado",
   "creado": "2026-10-26 22:02",
-  "modificado": "2026-10-26 22:02"
+  "modificado": "2026-10-26 22:03"
 }
