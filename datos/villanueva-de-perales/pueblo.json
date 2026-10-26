@@ -1,0 +1,45 @@
+{
+  "slug": "villanueva-de-perales",
+  "nombre": "Villanueva de Perales",
+  "provincia": "Comunidad de Madrid",
+  "comunidad": "Comunidad de Madrid",
+  "pais": "España",
+  "lat": 40.347238,
+  "lon": -4.097368,
+  "fechas_visita": [
+    "2026-10-26"
+  ],
+  "wiki": {
+    "titulo": "Villanueva de Perales",
+    "url": "https://es.wikipedia.org/wiki/Villanueva_de_Perales",
+    "extracto": "Villanueva de Perales es un municipio de España perteneciente a la Comunidad de Madrid. En 2025 contaba con una población de 1715 habitantes.",
+    "desambiguacion": false,
+    "wikidata": "Q1999682",
+    "poblacion": 1715,
+    "poblacion_anio": "2025",
+    "altitud": 595,
+    "superficie": 31,
+    "escudo": "https://commons.wikimedia.org/wiki/Special:FilePath/Escudo_de_Villanueva_de_Perales.svg?width=160",
+    "web": "https://www.villanuevadeperales.es/",
+    "secciones": [
+      {
+        "clave": "historia",
+        "titulo": "Historia",
+        "texto": "Hacia mediados del siglo XIX, la villa tenía contabilizada una población de 236 habitantes.​ Aparece descrita en el decimosegundo volumen del Diccionario geográfico-estadístico-histórico de España y sus posesiones de Ultramar de Pascual Madoz de la siguiente manera:"
+      },
+      {
+        "clave": "patrimonio",
+        "titulo": "Patrimonio",
+        "texto": "El edificio de su Ayuntamiento y la Casa de la Cultura son obra del arquitecto Miguel Fisac.​​"
+      }
+    ]
+  },
+  "texto_ia": "",
+  "notas": "",
+  "fotos": [],
+  "portada": "",
+  "publicar": true,
+  "estado": "visitado",
+  "creado": "2026-10-26 22:02",
+  "modificado": "2026-10-26 22:02"
+}
