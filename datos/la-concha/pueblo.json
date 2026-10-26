@@ -1,0 +1,76 @@
+{
+  "slug": "la-concha",
+  "nombre": "La concha",
+  "provincia": "Málaga",
+  "comunidad": "Andalucía",
+  "pais": "España",
+  "lat": 36.551077,
+  "lon": -4.925294,
+  "fechas_visita": [
+    "2026-10-25"
+  ],
+  "wiki": {
+    "titulo": "Manuel Gutiérrez de la Concha e Irigoyen",
+    "url": "https://es.wikipedia.org/wiki/Manuel_Guti%C3%A9rrez_de_la_Concha_e_Irigoyen",
+    "extracto": "No confundir con Manuel de la Concha.\nManuel Gutiérrez de la Concha e Irigoyen (Córdoba del Tucumán, Virreinato del Río de la Plata, 3 de abril de 1808 - Abárzuza, 27 de junio de 1874), i marqués del Duero y grande de España, fue un militar y político español, de tendencia liberal-moderada, notable por su combate contra las insurrecciones carlistas.​",
+    "desambiguacion": false,
+    "wikidata": "Q325762"
+  },
+  "texto_ia": "",
+  "notas": "",
+  "fotos": [
+    {
+      "archivo": "wmvpoif82000.jpg",
+      "fecha": "2026-10-25",
+      "pie": "",
+      "original": "1000087474.jpg|5357367"
+    },
+    {
+      "archivo": "wmvpoiffd001.jpg",
+      "fecha": "2026-10-25",
+      "pie": "",
+      "original": "1000087473.jpg|5030571"
+    },
+    {
+      "archivo": "wmvpoifny002.jpg",
+      "fecha": "2026-10-25",
+      "pie": "",
+      "original": "1000087472.jpg|5917801"
+    },
+    {
+      "archivo": "wmvpoifv7003.jpg",
+      "fecha": "2026-10-25",
+      "pie": "",
+      "original": "1000087471.jpg|4624487"
+    },
+    {
+      "archivo": "wmvpoig30004.jpg",
+      "fecha": "2026-10-25",
+      "pie": "",
+      "original": "1000087470.jpg|5680105"
+    },
+    {
+      "archivo": "wmvpoiga1005.jpg",
+      "fecha": "2026-10-25",
+      "pie": "",
+      "original": "1000087467.jpg|4455286"
+    },
+    {
+      "archivo": "wmvpoighh006.jpg",
+      "fecha": "2026-10-25",
+      "pie": "",
+      "original": "1000087466.jpg|4783332"
+    },
+    {
+      "archivo": "wmvpoigqd007.jpg",
+      "fecha": "2026-10-25",
+      "pie": "",
+      "original": "1000087465.jpg|5787006"
+    }
+  ],
+  "portada": "wmvpoif82000.jpg",
+  "publicar": true,
+  "estado": "visitado",
+  "creado": "2026-10-26 20:57",
+  "modificado": "2026-10-26 20:58"
+}
