@@ -1,20 +1,29 @@
 {
   "slug": "la-concha",
   "nombre": "La concha",
-  "provincia": "Málaga",
-  "comunidad": "Andalucía",
+  "provincia": "Cantabria",
+  "comunidad": "Cantabria",
   "pais": "España",
-  "lat": 36.551077,
-  "lon": -4.925294,
+  "lat": 43.208874,
+  "lon": -3.702848,
   "fechas_visita": [
     "2026-10-25"
   ],
   "wiki": {
-    "titulo": "Manuel Gutiérrez de la Concha e Irigoyen",
-    "url": "https://es.wikipedia.org/wiki/Manuel_Guti%C3%A9rrez_de_la_Concha_e_Irigoyen",
-    "extracto": "No confundir con Manuel de la Concha.\nManuel Gutiérrez de la Concha e Irigoyen (Córdoba del Tucumán, Virreinato del Río de la Plata, 3 de abril de 1808 - Abárzuza, 27 de junio de 1874), i marqués del Duero y grande de España, fue un militar y político español, de tendencia liberal-moderada, notable por su combate contra las insurrecciones carlistas.​",
+    "titulo": "La Concha (San Roque de Riomiera)",
+    "url": "https://es.wikipedia.org/wiki/La_Concha_(San_Roque_de_Riomiera)",
+    "extracto": "La Concha es una localidad del municipio de San Roque de Riomiera (Cantabria, España). En el año 2022 contaba con una población de 82 habitantes (INE). La localidad se encuentra a 573 metros de altitud sobre el nivel del mar, y a 4 kilómetros de la capital municipal, La Pedrosa.\nAquí empieza la subida al Portillo de Lunada y al Alto del Caracol.",
     "desambiguacion": false,
-    "wikidata": "Q325762"
+    "wikidata": "Q5962975",
+    "poblacion": 90,
+    "poblacion_anio": "2024",
+    "altitud": 573,
+    "que_ver": [
+      {
+        "nombre": "Centro de interpretación Casa del Pasiego",
+        "url": "https://www.wikidata.org/wiki/Q125858044"
+      }
+    ]
   },
   "texto_ia": "",
   "notas": "",
@@ -72,5 +81,5 @@
   "publicar": true,
   "estado": "visitado",
   "creado": "2026-10-26 20:57",
-  "modificado": "2026-10-26 20:58"
+  "modificado": "2026-10-26 21:02"
 }
