@@ -26,6 +26,30 @@
   const RAW = window.PUEBLOS_RAW || 'https://raw.githubusercontent.com';
   const SPARQL = window.PUEBLOS_SPARQL || 'https://query.wikidata.org/sparql';
   const MARGEN_HORAS = 2;
+  const ICONOS = {
+    casa: 'M12 3 2 11h3v9h5v-6h4v6h5v-9h3z',
+    chincheta: 'M16 3H8v2l1 1v5l-3 3v2h5v5l1 1 1-1v-5h5v-2l-3-3V6l1-1z',
+    lugar: 'M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.6a2.6 2.6 0 1 1 0-5.2 2.6 2.6 0 0 1 0 5.2z',
+    revisar: 'M9 2h6a1 1 0 0 1 1 1v1h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2V3a1 1 0 0 1 1-1zm1 2v2h4V4zm6.3 6.3L11 15.6l-2.3-2.3-1.4 1.4 3.7 3.7 6.7-6.7z',
+    hecho: 'M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z',
+    mas: 'M10.5 4h3v6.5H20v3h-6.5V20h-3v-6.5H4v-3h6.5z',
+    camara: 'M9 4 7.2 6H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3.2L15 4zm3 4.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9zm0 2a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z',
+    globo: 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm6.9 9h-3a15 15 0 0 0-1.4-5.7A8 8 0 0 1 18.9 11zM12 4.1c.9 1.2 1.8 3.5 2 6.9h-4c.2-3.4 1.1-5.7 2-6.9zM9.5 5.3A15 15 0 0 0 8.1 11h-3a8 8 0 0 1 4.4-5.7zM5.1 13h3a15 15 0 0 0 1.4 5.7A8 8 0 0 1 5.1 13zm6.9 6.9c-.9-1.2-1.8-3.5-2-6.9h4c-.2 3.4-1.1 5.7-2 6.9zm2.5-1.2a15 15 0 0 0 1.4-5.7h3a8 8 0 0 1-4.4 5.7z',
+    ajustes: 'M17.4 13a5.6 5.6 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7 7 0 0 0-1.7-1L13 3h-2l-.3 2.9a7 7 0 0 0-1.7 1l-2.5-1-2 3.5L6.6 11a5.6 5.6 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1c.5.4 1.1.7 1.7 1L11 21h2l.3-2.9c.6-.3 1.2-.6 1.7-1l2.5 1 2-3.5zM12 15a3 3 0 1 1 0-6 3 3 0 0 1 0 6z',
+    lupa: 'M10 3a7 7 0 0 1 5.6 11.2l5.1 5.1-1.4 1.4-5.1-5.1A7 7 0 1 1 10 3zm0 2a5 5 0 1 0 0 10 5 5 0 0 0 0-10z',
+    mapa: 'M9 4 3 6v14l6-2 6 2 6-2V4l-6 2zm1 2.4 4 1.3v11.9l-4-1.3z',
+    cerrar: 'M6.4 5 12 10.6 17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6L6.4 19 5 17.6l5.6-5.6L5 6.4z',
+    lapiz: 'M14.1 5.9l4 4L8 20H4v-4zM15.5 4.5 17 3l4 4-1.5 1.5z',
+    calendario: 'M7 2h2v2h6V2h2v2h2a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2zM5 9v10h14V9zm2 2h4v4H7z',
+    guardar: 'M5 3h11l5 5v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm2 2v4h8V5zm5 8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z',
+    estrella: 'M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z',
+    atras: 'M11 5 4 12l7 7 1.4-1.4L7.8 13H20v-2H7.8l4.6-4.6z',
+    movil: 'M8 2h8a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 3v12h8V5zm4 13.5a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4z',
+    llave: 'M14.5 3a6.5 6.5 0 1 1-2 12.7L11 17H9v2H7v2H3v-4l6.3-6.3A6.5 6.5 0 0 1 14.5 3zm1.5 3a2 2 0 1 0 0 4 2 2 0 0 0 0-4z',
+    recargar: 'M12 4a8 8 0 0 1 7.4 5H22l-3.5 4.5L15 9h2.2A6 6 0 1 0 18 14h2.1A8 8 0 1 1 12 4z',
+    luna: 'M14.5 2.5a9.5 9.5 0 1 0 7 15.9A8 8 0 0 1 14.5 2.5z',
+  };
+  const ico = (n, c) => `<svg class="ico${c ? ' ' + c : ''}" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="${ICONOS[n]}"/></svg>`;
   const RUTA_CAPTURAS = 'capturas.json';
   const COMUNIDADES = ['Andalucía', 'Aragón', 'Asturias', 'Islas Baleares', 'Canarias', 'Cantabria',
     'Castilla-La Mancha', 'Castilla y León', 'Cataluña', 'Comunidad Valenciana', 'Extremadura', 'Galicia',
@@ -705,8 +729,8 @@
     const cab = $('.cab'); if (!cab || $('#instalar-aviso')) return;
     const div = document.createElement('div');
     div.id = 'instalar-aviso'; div.className = 'instalar-aviso';
-    div.innerHTML = `<div class="fila-inst"><span>📲 Instala el panel en tu móvil y ábrelo como una app.</span>
-      <button class="btn" id="inst-si">Instalar</button><button class="icono" id="inst-no" aria-label="No mostrar más">✕</button></div>
+    div.innerHTML = `<div class="fila-inst"><span>${ico('movil', 'i-azul')} Instala el panel en tu móvil y ábrelo como una app.</span>
+      <button class="btn" id="inst-si">Instalar</button><button class="icono" id="inst-no" aria-label="No mostrar más">${ico('cerrar')}</button></div>
       <p class="ayuda" id="inst-ios" hidden>${AYUDA_IOS}</p>`;
     cab.after(div);
     $('#inst-si').onclick = () => instalar($('#inst-ios'));
@@ -716,6 +740,16 @@
   // ------------------------------------------------------------------ pantallas
   const app = () => $('#app');
 
+  // aspecto: de noche (por defecto), de día o como el móvil
+  function temaPanel() { const t = local.get('pueblos-panel-tema'); return ['claro', 'oscuro', 'auto'].includes(t) ? t : 'oscuro'; }
+  function ponerTemaPanel(t) {
+    if (t) local.set('pueblos-panel-tema', t);
+    const v = temaPanel(), h = document.documentElement;
+    if (v === 'auto') h.removeAttribute('data-tema'); else h.setAttribute('data-tema', v);
+    const m = document.querySelector('meta[name=theme-color]');
+    if (m) m.setAttribute('content', getComputedStyle(h).getPropertyValue('--lateral').trim() || '#2e4a62');
+  }
+  ponerTemaPanel();
   function cabecera(titulo, sub, izquierda, derecha) {
     return `<header class="cab">${izquierda || ''}<h1>${esc(titulo)}${sub ? `<small>${esc(sub)}</small>` : ''}</h1>${derecha || ''}</header>`;
   }
@@ -828,24 +862,24 @@
       .sort((a, b) => normalizar(a.nombre).localeCompare(normalizar(b.nombre)));
     const web = `https://${E.repo.split('/')[0]}.github.io/${E.repo.split('/')[1]}/`;
     app().innerHTML = `
-      ${cabecera('Mis pueblos', 'panel de gestión', '', `<a class="icono" href="${esc(web)}" target="_blank" rel="noopener" title="Ver mi web" aria-label="Ver mi web" style="text-decoration:none">🌐</a><button class="icono" id="ajustes" title="Ajustes" aria-label="Ajustes">⚙</button>`)}
+      ${cabecera('Mis pueblos', 'panel de gestión', '', `<a class="icono" href="${esc(web)}" target="_blank" rel="noopener" title="Ver mi web" aria-label="Ver mi web" style="text-decoration:none">${ico('globo')}</a><button class="icono" id="ajustes" title="Ajustes" aria-label="Ajustes">${ico('ajustes')}</button>`)}
       <main class="cont">
         <div class="pestanas" role="tablist">
-          <button data-v="visitados" aria-pressed="${E.vista === 'visitados'}">🏘 Visitados <small>${vis.length}</small></button>
-          <button data-v="pendientes" aria-pressed="${E.vista === 'pendientes'}">📌 Por visitar <small>${pen.length}</small></button>
-          <button data-v="revisar" aria-pressed="${E.vista === 'revisar'}">✔ Revisar <small>${revisiones(todos).total + (E.capturas || []).length}</small></button>
+          <button data-v="visitados" aria-pressed="${E.vista === 'visitados'}">${ico('casa', 'i-teja')} Visitados <small>${vis.length}</small></button>
+          <button data-v="pendientes" aria-pressed="${E.vista === 'pendientes'}">${ico('chincheta', 'i-verde')} Por visitar <small>${pen.length}</small></button>
+          <button data-v="revisar" aria-pressed="${E.vista === 'revisar'}">${ico('revisar', 'i-mostaza')} Revisar <small>${revisiones(todos).total + (E.capturas || []).length}</small></button>
         </div>
         ${E.vista === 'revisar' ? pintarRevisar(todos) : `
-        <input class="buscar" id="buscar" type="search" placeholder="🔎 Buscar pueblo o provincia…" value="${esc(E.filtro)}">
+        <input class="buscar" id="buscar" type="search" placeholder="Buscar pueblo o provincia…" value="${esc(E.filtro)}">
         ${E.vista === 'visitados' && sinPropias ? `<p class="resumen">${sinPropias} ${sinPropias === 1 ? 'pueblo visitado' : 'pueblos visitados'} sin fotos tuyas todavía.</p>` : ''}
         <div class="rejilla">${lista.map(ficha).join('') || `<p class="vacio" style="grid-column:1/-1">${E.filtro ? 'No hay pueblos que coincidan.' :
           E.vista === 'visitados' ? 'Todavía no hay pueblos. Sube las fotos de un viaje o añade uno.' : 'Tu lista de pendientes está vacía.'}</p>`}</div>`}
       </main>
       <nav class="acciones">
-        <button class="btn sec" id="nuevo"><b>＋</b><span>Pueblo</span></button>
-        <button class="btn capturar" id="capturar" title="Guarda el pueblo por el que pasas, para verlo luego"><b>📌</b><span>Capturar</span>${colaCapturas().length ? `<i class="cola">${colaCapturas().length}</i>` : ''}</button>
-        <button class="btn aqui" id="aqui"><b>📍</b><span>Estoy aquí</span></button>
-        <button class="btn sec" id="subir"><b>📷</b><span>Fotos</span></button>
+        <button class="btn sec" id="nuevo"><b>${ico('mas', 'i-mostaza')}</b><span>Pueblo</span></button>
+        <button class="btn capturar" id="capturar" title="Guarda el pueblo por el que pasas, para verlo luego"><b>${ico('chincheta', 'i-verde')}</b><span>Capturar</span>${colaCapturas().length ? `<i class="cola">${colaCapturas().length}</i>` : ''}</button>
+        <button class="btn aqui" id="aqui"><b>${ico('lugar', 'i-teja')}</b><span>Estoy aquí</span></button>
+        <button class="btn sec" id="subir"><b>${ico('camara', 'i-azul')}</b><span>Fotos</span></button>
       </nav>`;
     $$('.pestanas button').forEach((b) => (b.onclick = () => { E.vista = b.dataset.v; pantallaLista(); }));
     $$('.rev-chip').forEach((b) => (b.onclick = () => abrirEditor(b.dataset.slug)));
@@ -968,13 +1002,13 @@
   function elegirCaptura(opciones) {
     return new Promise((ok) => {
       let sel = 0;
-      const d = dialogo(`<h2>📌 ¿Qué pueblo capturo?</h2>
+      const d = dialogo(`<h2>${ico('chincheta', 'i-verde')} ¿Qué pueblo capturo?</h2>
         <p class="sub">Elige el pueblo por el que pasas. Luego lo revisas en «Revisar».</p>
         <div class="lista-opciones elegible" role="radiogroup">${opciones.map((o, i) => `<button role="radio" data-i="${i}" aria-checked="${i === 0}">
           <b>${esc(o.nombre)}</b><small>${esc([o.tipo, o.provincia].filter(Boolean).join(' · '))}</small></button>`).join('')}
-          <button role="radio" data-i="otro" aria-checked="false"><b>✏ Otro nombre…</b><small>Escríbelo tú</small></button></div>
+          <button role="radio" data-i="otro" aria-checked="false"><b>${ico('lapiz', 'i-mostaza')} Otro nombre…</b><small>Escríbelo tú</small></button></div>
         <label class="campo" id="c-otro-caja" hidden><span>Nombre del pueblo</span><input id="c-otro" autocomplete="off"></label>
-        <div class="fila fin"><button class="btn sec" id="c-no">Cancelar</button><button class="btn capturar-ok" id="c-si">📌 Capturar</button></div>`);
+        <div class="fila fin"><button class="btn sec" id="c-no">Cancelar</button><button class="btn capturar-ok" id="c-si">${ico('chincheta')} Capturar</button></div>`);
       const marcar = (i) => {
         sel = i;
         $$('.elegible button', d).forEach((b) => b.setAttribute('aria-checked', String(b.dataset.i === String(i))));
@@ -1055,15 +1089,15 @@
     const caps = (E.capturas || []).slice().sort((a, b) => (b.fecha || '').localeCompare(a.fecha || ''));
     const cola = colaCapturas().length;
     if (!caps.length && !cola) return '';
-    return `<section class="tarjeta revisar capturas"><h2>📌 Capturados por el camino <small>${caps.length}</small></h2>
+    return `<section class="tarjeta revisar capturas"><h2>${ico('chincheta', 'i-verde')} Capturados por el camino <small>${caps.length}</small></h2>
       ${cola ? `<p class="resumen">${cola} ${cola === 1 ? 'captura espera' : 'capturas esperan'} conexión para buscar el pueblo.</p>` : ''}
       ${caps.map((c) => `<div class="captura">
         <div class="cap-texto"><b>${esc(c.nombre)}</b><small>${esc([c.provincia, fechaBonita((c.fecha || '').slice(0, 10)) + ((c.fecha || '').length > 10 ? ' · ' + c.fecha.slice(11, 16) : '')].filter(Boolean).join(' · '))}${c.ya ? ` · ya lo tienes (${c.ya === 'pendiente' ? 'por visitar' : 'visitado'})` : ''}</small></div>
         <div class="cap-botones">
-          <button class="btn peq" data-cap="${esc(c.id)}" data-que="visitado" title="Lo visité ese día">✓ Visitado</button>
+          <button class="btn peq" data-cap="${esc(c.id)}" data-que="visitado" title="Lo visité ese día">${ico('hecho')} Visitado</button>
           <button class="btn peq pend" data-cap="${esc(c.id)}" data-que="pendiente" title="Volver otro día">Por visitar</button>
-          <button class="btn peq fant" data-cap="${esc(c.id)}" data-que="mapa" title="Ver en el mapa" aria-label="Ver en el mapa">🗺</button>
-          <button class="btn peq fant" data-cap="${esc(c.id)}" data-que="quitar" title="Descartar" aria-label="Descartar">✕</button>
+          <button class="btn peq fant" data-cap="${esc(c.id)}" data-que="mapa" title="Ver en el mapa" aria-label="Ver en el mapa">${ico('mapa', 'i-azul')}</button>
+          <button class="btn peq fant" data-cap="${esc(c.id)}" data-que="quitar" title="Descartar" aria-label="Descartar">${ico('cerrar')}</button>
         </div></div>`).join('')}</section>`;
   }
   async function quitarCaptura(id) {
@@ -1145,7 +1179,7 @@
     const hoy = hoyLocal();
     const existente = buscarPueblo(lugar.nombre, lugar.provincia);
     const ya = existente && (existente.fechas_visita || []).includes(hoy);
-    const d = dialogo(`<h2>📍 ${esc(lugar.nombre)}</h2>
+    const d = dialogo(`<h2>${ico('lugar', 'i-teja')} ${esc(lugar.nombre)}</h2>
       <p class="sub">${esc([lugar.provincia, lugar.comunidad].filter(Boolean).join(' · '))}</p>
       <p>${ya ? 'Ya lo tienes como visitado hoy.' : existente ? (existente.estado === 'pendiente'
         ? '¡Estaba en tu lista «Por visitar»! Lo paso a visitado con la fecha de hoy.' : 'Ya lo tienes: le añado la visita de hoy.')
@@ -1194,14 +1228,14 @@
     const foto = p.portada ? `<img src="${esc(urlFoto(p.slug, p.portada))}" alt="" loading="lazy">` : `<span>${esc(p.nombre.slice(0, 1))}</span>`;
     const ultima = (p.fechas_visita || []).slice(-1)[0];
     const sub = pend ? (p.provincia || 'Por visitar')
-      : [p.provincia || p.comunidad, ultima ? fechaCorta(ultima) : '', p.fotos.some((f) => !f.credito) ? '' : '🌐 sin fotos tuyas'].filter(Boolean).join(' · ');
+      : [p.provincia || p.comunidad, ultima ? fechaCorta(ultima) : '', p.fotos.some((f) => !f.credito) ? '' : 'sin fotos tuyas'].filter(Boolean).join(' · ');
     return `<button class="ficha${pend ? ' pend' : ''}" data-slug="${esc(p.slug)}"><div class="foto">${foto}</div>
       <div class="txt"><b>${esc(p.nombre)}</b><small>${esc(sub)}</small></div></button>`;
   }
 
   function pantallaAjustes() {
     app().innerHTML = `
-      ${cabecera('Ajustes', '', '<button class="icono" id="volver" aria-label="Volver">←</button>')}
+      ${cabecera('Ajustes', '', `<button class="icono" id="volver" aria-label="Volver">${ico('atras')}</button>`)}
       <main class="cont">
         <div class="tarjeta">
           <h2>Conexión</h2>
@@ -1209,21 +1243,28 @@
           <p class="ayuda">Los cambios se guardan en GitHub y la web se actualiza sola en 1–2 minutos.
             El programa de Windows los recibe la próxima vez que lo abras.</p>
           <div class="fila" style="margin-top:12px">
-            <button class="btn sec" id="recargar">⟳ Recargar datos</button>
+            <button class="btn sec" id="recargar">${ico('recargar', 'i-azul')} Recargar datos</button>
             <button class="btn peligro" id="salir">Cerrar sesión en este navegador</button>
+          </div>
+        </div>
+        <div class="tarjeta">
+          <h2>Aspecto</h2>
+          <div class="estado aspecto" role="group" aria-label="Aspecto">
+            ${[['oscuro', 'luna', 'Noche'], ['claro', 'estrella', 'Día'], ['auto', 'movil', 'Automático']].map(([v, i, t]) =>
+              `<button data-tema="${v}" aria-pressed="${temaPanel() === v}">${ico(i, 'i-mostaza')} ${t}</button>`).join('')}
           </div>
         </div>
         <div class="tarjeta">
           <h2>Contraseña</h2>
           <p class="ayuda">${E.acceso ? 'Tienes una contraseña para entrar al panel desde cualquier dispositivo sin el token.' : 'Aún no tienes contraseña: en otros dispositivos te pedirá el token.'}
             Si cambias el token (por ejemplo, al caducar), vuelve a guardar la contraseña aquí.</p>
-          <div class="fila" style="margin-top:10px"><button class="btn sec" id="clave">🔑 ${E.acceso ? 'Cambiar la contraseña' : 'Poner contraseña'}</button></div>
+          <div class="fila" style="margin-top:10px"><button class="btn sec" id="clave">${ico('llave', 'i-mostaza')} ${E.acceso ? 'Cambiar la contraseña' : 'Poner contraseña'}</button></div>
         </div>
         <div class="tarjeta">
           <h2>Instalar en el móvil</h2>
-          ${INST.instalada() ? '<p class="ayuda">✅ Estás usando el panel instalado.</p>'
+          ${INST.instalada() ? `<p class="ayuda">${ico('hecho', 'i-verde')} Estás usando el panel instalado.</p>`
             : `<p class="ayuda">Pon el panel en la pantalla de inicio con su propio icono («Gestión») y ábrelo a pantalla completa, como una app.</p>
-          <div class="fila" style="margin-top:10px"><button class="btn sec" id="instalar">📲 Instalar el panel</button></div>
+          <div class="fila" style="margin-top:10px"><button class="btn sec" id="instalar">${ico('movil', 'i-azul')} Instalar el panel</button></div>
           <p class="ayuda" id="instalar-ios" hidden>${INST.ev ? '' : (INST.ios ? AYUDA_IOS
             : 'Abre el menú del navegador (⋮) y elige <b>«Instalar aplicación»</b> o <b>«Añadir a pantalla de inicio»</b>.')}</p>`}
         </div>
@@ -1234,6 +1275,7 @@
         </div>
       </main>`;
     $('#volver').onclick = pantallaLista;
+    $$('.aspecto button').forEach((b) => (b.onclick = () => { ponerTemaPanel(b.dataset.tema); pantallaAjustes(); }));
     $('#recargar').onclick = async () => { await cargarTodo(); pantallaLista(); };
     $('#clave').onclick = () => dialogoContrasena(false);
     if ($('#instalar')) $('#instalar').onclick = () => instalar($('#instalar-ios'));
@@ -1302,29 +1344,29 @@
     const pend = ed.estado === 'pendiente';
     const propias = ed.fotos.filter((f) => !f.credito).length;
     app().innerHTML = `
-      ${cabecera(ed.nombre || 'Pueblo', [ed.provincia, ed.comunidad].filter(Boolean).join(' · '), '<button class="icono" id="volver" aria-label="Volver">←</button>')}
+      ${cabecera(ed.nombre || 'Pueblo', [ed.provincia, ed.comunidad].filter(Boolean).join(' · '), `<button class="icono" id="volver" aria-label="Volver">${ico('atras')}</button>`)}
       <main class="cont">
         <div class="estado" role="group" aria-label="Estado">
-          <button data-e="visitado" aria-pressed="${!pend}">✓ Visitado</button>
-          <button data-e="pendiente" class="pend" aria-pressed="${pend}">📌 Por visitar</button>
+          <button data-e="visitado" aria-pressed="${!pend}">${ico('casa', 'i-teja')} Visitado</button>
+          <button data-e="pendiente" class="pend" aria-pressed="${pend}">${ico('chincheta', 'i-verde')} Por visitar</button>
         </div>
 
         <section class="tarjeta">
           <h2>Fotos <small style="font:500 14px var(--f-texto);color:var(--tinta-2)">${ed.fotos.length}${ed.fotos.length && !propias ? ' · todas de internet' : ''}</small></h2>
           ${sel.size ? `<div class="barra-sel">
-            <button class="btn peq sec" id="portada" ${sel.size !== 1 ? 'disabled' : ''}>★ Portada</button>
-            <button class="btn peq sec" id="pie" ${sel.size !== 1 ? 'disabled' : ''}>✎ Pie de foto</button>
+            <button class="btn peq sec" id="portada" ${sel.size !== 1 ? 'disabled' : ''}>${ico('estrella', 'i-mostaza')} Portada</button>
+            <button class="btn peq sec" id="pie" ${sel.size !== 1 ? 'disabled' : ''}>${ico('lapiz', 'i-azul')} Pie de foto</button>
             <button class="btn peq peligro" id="quitar">Quitar ${sel.size}</button>
             <button class="btn peq fant" id="nosel">Cancelar</button></div>` : ''}
           <div class="galeria">${ed.fotos.map((f) => `
             <button class="miniatura${sel.has(f.archivo) ? ' sel' : ''}" data-a="${esc(f.archivo)}" aria-label="Foto ${esc(f.pie || '')}">
               <img src="${esc(urlFoto(ed.slug, f.archivo))}" alt="" loading="lazy">
-              ${f.archivo === ed.portada ? '<span class="marca">★</span>' : ''}${f.credito ? '<span class="web">🌐</span>' : ''}
+              ${f.archivo === ed.portada ? `<span class="marca">${ico('estrella')}</span>` : ''}${f.credito ? `<span class="web">${ico('globo')}</span>` : ''}
             </button>`).join('')}</div>
           ${!ed.fotos.length ? `<p class="ayuda">${pend ? 'Puedes poner fotos de internet para tu lista de pendientes.' : '¿Aún no tienes fotos tuyas? Pon alguna de internet mientras tanto.'}</p>` : ''}
           <div class="fila" style="margin-top:8px">
-            <button class="btn peq" id="mis-fotos">📷 Mis fotos</button>
-            <button class="btn peq sec" id="internet">🌐 Fotos de internet</button>
+            <button class="btn peq" id="mis-fotos">${ico('camara')} Mis fotos</button>
+            <button class="btn peq sec" id="internet">${ico('globo', 'i-azul')} Fotos de internet</button>
           </div>
         </section>
 
@@ -1341,12 +1383,12 @@
           <label class="campo" ${pend ? 'hidden' : ''}><span>Fechas de visita</span>
             <input id="f-fechas" value="${esc(ed.fechas_visita.join(', '))}" placeholder="2024-05-12, 2019 (vacío si no lo recuerdas)">
             <span class="ayuda">AAAA-MM-DD, o solo AAAA-MM o AAAA. Separadas por comas.</span></label>
-          <div class="fila" ${pend ? 'hidden' : ''} style="margin:-4px 0 10px"><button class="btn peq fant" id="hoy">📅 Añadir hoy</button></div>
+          <div class="fila" ${pend ? 'hidden' : ''} style="margin:-4px 0 10px"><button class="btn peq fant" id="hoy">${ico('calendario', 'i-teja')} Añadir hoy</button></div>
           <div class="dos">
             <label class="campo"><span>Latitud</span><input id="f-lat" inputmode="decimal" value="${ed.lat == null ? '' : ed.lat}"></label>
             <label class="campo"><span>Longitud</span><input id="f-lon" inputmode="decimal" value="${ed.lon == null ? '' : ed.lon}"></label>
           </div>
-          <div class="fila"><button class="btn peq sec" id="ubicar">🔎 Buscar ubicación</button></div>
+          <div class="fila"><button class="btn peq sec" id="ubicar">${ico('lupa', 'i-azul')} Buscar ubicación</button></div>
           <label class="interruptor"><input type="checkbox" id="f-publicar" ${ed.publicar !== false ? 'checked' : ''}> Publicar en la web</label>
         </section>
 
@@ -1365,7 +1407,7 @@
 
         <button class="btn peligro ancho" id="eliminar" style="margin-top:6px">Eliminar este pueblo</button>
       </main>
-      <nav class="acciones"><button class="btn" id="guardar">💾 Guardar</button></nav>`;
+      <nav class="acciones"><button class="btn" id="guardar">${ico('guardar')} Guardar</button></nav>`;
 
     $('#volver').onclick = () => {
       if (E.editor.empujado) { history.back(); return; }
@@ -1571,8 +1613,8 @@
     const d = dialogo(`<h2>${esc(lugar.nombre)}</h2>
       <p class="sub">${esc([lugar.provincia, lugar.comunidad].filter(Boolean).join(' · ') || 'Sin ubicación')}</p>
       <div class="estado" role="group">
-        <button data-e="visitado" aria-pressed="${estadoFijo !== 'pendiente'}">✓ Ya lo visité</button>
-        <button data-e="pendiente" class="pend" aria-pressed="${estadoFijo === 'pendiente'}">📌 Quiero visitarlo</button>
+        <button data-e="visitado" aria-pressed="${estadoFijo !== 'pendiente'}">${ico('casa', 'i-teja')} Ya lo visité</button>
+        <button data-e="pendiente" class="pend" aria-pressed="${estadoFijo === 'pendiente'}">${ico('chincheta', 'i-verde')} Quiero visitarlo</button>
       </div>
       <div id="n-cuando" ${estadoFijo === 'pendiente' ? 'hidden' : ''}>
         <label class="campo"><span>¿Cuándo? (opcional)</span><input id="n-fecha" placeholder="2024-05-12, 2024-05 o 2019" inputmode="numeric"></label>
@@ -1616,8 +1658,8 @@
       <p class="sub">${estado === 'visitado' ? '¿Le pones ya alguna foto? Si no tienes fotos tuyas, puedes usar fotos libres de internet.'
         : 'Puedes ponerle fotos de internet para tu lista de pendientes.'}</p>
       <div class="lista-opciones">
-        <button id="o-internet">🌐 <b>Fotos de internet</b><small>Fotos libres de Wikimedia Commons, Flickr y más, con su autor citado</small></button>
-        ${estado === 'visitado' ? '<button id="o-mias">📷 <b>Mis fotos</b><small>Desde la galería del móvil</small></button>' : ''}
+        <button id="o-internet">${ico('globo', 'i-azul')} <b>Fotos de internet</b><small>Fotos libres de Wikimedia Commons, Flickr y más, con su autor citado</small></button>
+        ${estado === 'visitado' ? `<button id="o-mias">${ico('camara', 'i-teja')} <b>Mis fotos</b><small>Desde la galería del móvil</small></button>` : ''}
       </div>
       <button class="btn sec ancho" id="o-luego">Más tarde</button>`);
     $('#o-internet', d).onclick = () => { d.remove(); dialogoCommons(); };
