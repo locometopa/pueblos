@@ -1,5 +1,5 @@
 {
-  "version": "1.6.6",
-  "notas": "En el móvil, el crédito de la foto de portada ya no tapa el nombre del pueblo.",
+  "version": "1.6.7",
+  "notas": "Arreglado el fallo al sincronizar en un PC nuevo (carpeta «repo» vacía).",
   "archivo": "PUEBLOS.zip"
 }
