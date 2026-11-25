@@ -1331,6 +1331,13 @@
             : 'Abre el menú del navegador (⋮) y elige <b>«Instalar aplicación»</b> o <b>«Añadir a pantalla de inicio»</b>.')}</p>`}
         </div>
         <div class="tarjeta">
+          <h2>Inteligencia artificial</h2>
+          <p class="ayuda">Opcional: escribir el texto de un pueblo con IA desde el móvil. Las fuentes gratuitas (Wikipedia) van siempre primero.
+            ${iaConfigurada() ? `Ahora usas <b>${esc(IA_PROV[iaProv()].nombre)}</b>.` : 'Aún no está configurada.'}</p>
+          <p class="ayuda">En el móvil, <b>Gemini</b> es la opción más segura (uso gratis y funciona en el navegador). DeepSeek u OpenAI puede que el navegador los bloquee; para esos, usa el programa del PC.</p>
+          <div class="fila" style="margin-top:10px"><button class="btn sec" id="config-ia">${ico('lapiz', 'i-mostaza')} ${iaConfigurada() ? 'Cambiar IA' : 'Configurar IA'}</button></div>
+        </div>
+        <div class="tarjeta">
           <h2>Fotos</h2>
           <p class="ayuda">Las fotos se reducen y se les quita la ubicación GPS en tu móvil antes de subirlas.
             Las de internet son de Wikimedia Commons y en la web se cita su autor y licencia.</p>
@@ -1341,6 +1348,7 @@
     $('#recargar').onclick = async () => { await cargarTodo(); pantallaLista(); };
     $('#clave').onclick = () => dialogoContrasena(false);
     if ($('#instalar')) $('#instalar').onclick = () => instalar($('#instalar-ios'));
+    $('#config-ia').onclick = () => dialogoIA();
     $('#salir').onclick = () => {
       if (!confirm('¿Olvidar el token en este navegador?')) return;
       local.del('pueblos-token'); E.gh = null; pantallaAcceso();
@@ -1397,6 +1405,7 @@
     ed.lon = num(v('f-lon'), ed.lon);
     if ($('#f-publicar')) ed.publicar = $('#f-publicar').checked;
     ed.notas = v('f-notas');
+    if ($('#f-texto-ia')) ed.texto_ia = v('f-texto-ia');
     const extracto = v('f-wiki');
     if ((ed.wiki.extracto || '') !== extracto) ed.wiki = Object.assign({}, ed.wiki, { extracto });
   }
@@ -1470,6 +1479,13 @@
           <button class="btn peq sec" id="traer-wiki">⬇ Traer de Wikipedia</button>
         </section>
 
+        <section class="tarjeta">
+          <h2>Texto del pueblo</h2>
+          <p class="ayuda" style="margin:0 0 8px">El texto que sale en la web. Escríbelo tú o pídeselo a la IA (parte de los datos de Wikipedia de arriba).</p>
+          <label class="campo"><textarea id="f-texto-ia" placeholder="Un par de párrafos sobre el pueblo…">${esc(ed.texto_ia || '')}</textarea></label>
+          <button class="btn peq sec" id="escribir-ia">✍ Escribir con IA</button>
+        </section>
+
         <button class="btn peligro ancho" id="eliminar" style="margin-top:6px">Eliminar este pueblo</button>
       </main>
       <nav class="acciones"><button class="btn" id="guardar">${ico('guardar')} Guardar</button></nav>`;
@@ -1528,6 +1544,7 @@
       }, 250));
     });
     $('#traer-wiki').onclick = () => { leerFormulario(); traerWiki(); };
+    $('#escribir-ia').onclick = escribirIA;
     $('#guardar').onclick = () => { leerFormulario(); guardarEditor(); };
     $('#eliminar').onclick = eliminarPueblo;
   }
@@ -1606,6 +1623,122 @@
     return true;
   }
   function claveUbicacion(p) { return `${normalizar(p.nombre)}|${normalizar(p.provincia)}`; }
+
+  // ------------------------------------------------------------------ IA (opcional): escribir el texto del pueblo
+  const IA_PROV = {
+    gemini:   { nombre: 'Gemini (Google)',     modelo: 'gemini-3.6-flash',  clave: 'https://aistudio.google.com/apikey',               nav: true },
+    claude:   { nombre: 'Claude (Anthropic)',  modelo: 'claude-haiku-5-5',  clave: 'https://console.anthropic.com/settings/keys',       nav: true },
+    deepseek: { nombre: 'DeepSeek',            modelo: 'deepseek-chat',     clave: 'https://platform.deepseek.com/api_keys',            nav: false },
+    chatgpt:  { nombre: 'ChatGPT (OpenAI)',    modelo: 'gpt-5.4-mini',      clave: 'https://platform.openai.com/api-keys',              nav: false },
+  };
+  const IA_BASE = { chatgpt: 'https://api.openai.com/v1', deepseek: 'https://api.deepseek.com/v1' };
+  function iaCfg() { try { return JSON.parse(local.get('pueblos-ia') || '{}'); } catch (e) { return {}; } }
+  function iaProv() { const c = iaCfg(); return IA_PROV[c.prov] ? c.prov : 'gemini'; }
+  function iaConfigurada() { return !!(iaCfg().clave || '').trim(); }
+
+  async function iaError(r, prov) {
+    if (r.status === 401 || r.status === 403) return new Error(`${IA_PROV[prov].nombre}: la clave no es válida o no tiene permiso.`);
+    if (r.status === 429) return new Error(`${IA_PROV[prov].nombre}: has llegado al límite de uso o no tienes saldo.`);
+    let m = ''; try { const j = await r.json(); m = (j.error && (j.error.message || j.error)) || ''; } catch (e) { /* nada */ }
+    return new Error(`${IA_PROV[prov].nombre} (${r.status}): ${String(m).slice(0, 200)}`);
+  }
+  async function iaPreguntar(prompt) {
+    const c = iaCfg(), prov = iaProv(), clave = (c.clave || '').trim(), modelo = (c.modelo || '').trim() || IA_PROV[prov].modelo;
+    if (!clave) throw new Error('Falta la clave de la IA (Ajustes).');
+    let texto = '';
+    try {
+      if (prov === 'claude') {
+        const r = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST', headers: {
+          'x-api-key': clave, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true',
+          'content-type': 'application/json' }, body: JSON.stringify({ model: modelo, max_tokens: 1200,
+          messages: [{ role: 'user', content: prompt }] }) });
+        if (!r.ok) throw await iaError(r, prov);
+        texto = ((await r.json()).content || []).filter((b) => b.type === 'text').map((b) => b.text).join('\n');
+      } else if (prov === 'gemini') {
+        const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent`,
+          { method: 'POST', headers: { 'x-goog-api-key': clave, 'content-type': 'application/json' },
+            body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: prompt }] }],
+              generationConfig: { maxOutputTokens: 3600 } }) });
+        if (!r.ok) throw await iaError(r, prov);
+        const cand = ((await r.json()).candidates || [{}])[0];
+        texto = ((cand.content || {}).parts || []).filter((p) => !p.thought).map((p) => p.text || '').join('');
+      } else {
+        const r = await fetch(`${IA_BASE[prov]}/chat/completions`, { method: 'POST',
+          headers: { 'content-type': 'application/json', authorization: `Bearer ${clave}` },
+          body: JSON.stringify({ model: modelo, messages: [{ role: 'user', content: prompt }], max_tokens: 1200 }) });
+        if (!r.ok) throw await iaError(r, prov);
+        texto = ((((await r.json()).choices || [{}])[0].message) || {}).content || '';
+      }
+    } catch (e) {
+      if (e instanceof TypeError) {           // «Failed to fetch» = el navegador lo bloquea (CORS) o no hay red
+        throw new Error(`No he podido usar ${IA_PROV[prov].nombre} desde el móvil (el navegador puede bloquearlo). `
+          + 'En el teléfono, Gemini funciona seguro y tiene uso gratis; o escribe el texto desde el programa del PC.');
+      }
+      throw e;
+    }
+    if (!texto.trim()) throw new Error(`${IA_PROV[prov].nombre} no ha devuelto texto.`);
+    return texto.trim();
+  }
+  function iaContexto(p) {
+    const w = p.wiki || {}, datos = [];
+    [['poblacion', 'Población'], ['altitud', 'Altitud (m)'], ['superficie', 'Superficie (km²)'],
+     ['gentilicio', 'Gentilicio'], ['patron', 'Patrón']].forEach(([k, et]) => { if (w[k]) datos.push(`${et}: ${w[k]}`); });
+    const secc = (w.secciones || []).slice(0, 4).map((x) => `${x.titulo}: ${(x.texto || '').slice(0, 1500)}`).join('\n\n');
+    const quever = (w.que_ver || []).slice(0, 12).map((l) => l.nombre || '').filter(Boolean).join(', ');
+    return `Pueblo: ${p.nombre}\nProvincia: ${p.provincia} · Comunidad: ${p.comunidad}\n${datos.join('\n')}\n`
+      + `Fechas de visita: ${(p.fechas_visita || []).join(', ') || 'sin fecha'}\n\n`
+      + `Información de Wikipedia (úsala como base de hechos):\n${w.extracto || '(no hay texto de Wikipedia)'}\n${secc}\n`
+      + `${quever ? 'Lugares de interés: ' + quever : ''}\n\n`
+      + `Notas personales del viajero (inspírate en el tono, pero no las copies):\n${p.notas || '(sin notas)'}`;
+  }
+  function iaPrompt(p) {
+    return 'Escribe en castellano un texto breve para la web personal de un viajero que recopila los pueblos que ha visitado.\n\n'
+      + iaContexto(p) + '\n\nInstrucciones:\n- 2 o 3 párrafos, unas 180-250 palabras en total.\n'
+      + '- Tono cercano y evocador, de cuaderno de viaje, sin exagerar.\n'
+      + '- No inventes datos: si algo no está en la información de arriba, no lo afirmes.\n'
+      + '- Sin título, sin listas, sin markdown. Separa los párrafos con una línea en blanco.';
+  }
+  async function escribirIA() {
+    const { ed } = E.editor;
+    leerFormulario();
+    if (!iaConfigurada()) { dialogoIA(); return; }
+    if ((ed.texto_ia || '').trim() && !confirm('Ya hay un texto escrito. ¿Lo sustituyo?')) return;
+    espera(`Escribiendo con ${IA_PROV[iaProv()].nombre}…`);
+    try {
+      ed.texto_ia = await iaPreguntar(iaPrompt(ed));
+      finEspera(); pintarEditor(); aviso('Texto escrito. Revísalo y guarda.');
+    } catch (e) { finEspera(); aviso(e.message, true); }
+  }
+  function dialogoIA() {
+    const c = iaCfg(), prov = iaProv();
+    const d = dialogo(`<h2>Inteligencia artificial</h2>
+      <p class="sub">Para escribir el texto de un pueblo con IA. Opcional; las fuentes gratuitas van siempre primero.</p>
+      <label class="campo"><span>Usar</span><select id="ia-prov">${Object.keys(IA_PROV).map((k) =>
+        `<option value="${k}" ${k === prov ? 'selected' : ''}>${esc(IA_PROV[k].nombre)}</option>`).join('')}</select></label>
+      <label class="campo"><span>Clave</span><input id="ia-clave" type="password" autocomplete="off"
+        value="${esc(c.clave || '')}" placeholder="pega aquí tu clave"></label>
+      <label class="campo"><span>Modelo</span><input id="ia-modelo" autocomplete="off" value="${esc(c.modelo || IA_PROV[prov].modelo)}"></label>
+      <p class="sub" id="ia-nota"></p>
+      <div class="fila fin"><button class="btn sec" id="ia-no">Cancelar</button><button class="btn capturar-ok" id="ia-si">Guardar</button></div>`);
+    const prv = $('#ia-prov', d), mod = $('#ia-modelo', d), nota = $('#ia-nota', d);
+    const modelos = Object.values(IA_PROV).map((p) => p.modelo);
+    function pinta() {
+      const k = prv.value;
+      if (!mod.value.trim() || modelos.includes(mod.value.trim())) mod.value = IA_PROV[k].modelo;
+      nota.innerHTML = (IA_PROV[k].nav
+        ? '✓ Funciona desde el móvil. '
+        : '⚠ Puede que el navegador lo bloquee en el móvil; si falla, úsalo desde el PC. ')
+        + `<a href="${IA_PROV[k].clave}" target="_blank" rel="noopener">Conseguir la clave</a>.`;
+    }
+    prv.onchange = pinta; pinta();
+    $('#ia-no', d).onclick = () => d.remove();
+    $('#ia-si', d).onclick = () => {
+      local.set('pueblos-ia', JSON.stringify({ prov: prv.value, clave: $('#ia-clave', d).value.trim(), modelo: mod.value.trim() }));
+      d.remove();
+      if (E.editor) pintarEditor(); else pantallaAjustes();
+      aviso('IA guardada.');
+    };
+  }
 
   async function traerWiki() {
     const { ed } = E.editor;

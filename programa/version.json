@@ -1,5 +1,5 @@
 {
-  "version": "1.7.2",
-  "notas": "Nuevo «Resumen de viaje» y filtro por comunidad y orden en las listas.",
+  "version": "1.7.3",
+  "notas": "En el panel del móvil ya se puede escribir el texto de un pueblo con IA (Gemini, Claude, DeepSeek…).",
   "archivo": "PUEBLOS.zip"
 }
