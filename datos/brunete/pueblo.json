@@ -1,0 +1,99 @@
+{
+  "slug": "brunete",
+  "nombre": "Brunete",
+  "provincia": "Comunidad de Madrid",
+  "comunidad": "Comunidad de Madrid",
+  "pais": "España",
+  "lat": 40.385534,
+  "lon": -3.976081,
+  "fechas_visita": [
+    "2026-10-26"
+  ],
+  "wiki": {
+    "titulo": "Brunete",
+    "url": "https://es.wikipedia.org/wiki/Brunete",
+    "extracto": "Brunete es un municipio de España perteneciente a la Comunidad de Madrid. Tiene una población de 11 287  habitantes (INE 2025).",
+    "desambiguacion": false,
+    "wikidata": "Q1647090",
+    "poblacion": 11287,
+    "poblacion_anio": "2025",
+    "altitud": 656,
+    "superficie": 49.0,
+    "escudo": "https://commons.wikimedia.org/wiki/Special:FilePath/Escudo_de_Brunete.svg?width=160",
+    "web": "http://www.brunete.org"
+  },
+  "texto_ia": "",
+  "notas": "",
+  "fotos": [
+    {
+      "archivo": "0001.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "https://commons.wikimedia.org/wiki/File:Iglesia_y_Plaza_Mayor_de_Brunete.jpg",
+      "credito": {
+        "autor": "Dirección General de Turismo. Consejería de Economía e Innovación Tecnológica. Comunidad de Madrid.",
+        "licencia": "CC BY 3.0 es",
+        "url_licencia": "https://creativecommons.org/licenses/by/3.0/es/deed.en",
+        "fuente": "https://commons.wikimedia.org/wiki/File:Iglesia_y_Plaza_Mayor_de_Brunete.jpg",
+        "origen": "Wikimedia Commons"
+      }
+    },
+    {
+      "archivo": "0002.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "https://commons.wikimedia.org/wiki/File:Templete_del_Parque_Municipal_de_Brunete.jpg",
+      "credito": {
+        "autor": "Dirección General de Turismo. Consejería de Economía e Innovación Tecnológica. Comunidad de Madrid.",
+        "licencia": "CC BY 3.0 es",
+        "url_licencia": "https://creativecommons.org/licenses/by/3.0/es/deed.en",
+        "fuente": "https://commons.wikimedia.org/wiki/File:Templete_del_Parque_Municipal_de_Brunete.jpg",
+        "origen": "Wikimedia Commons"
+      }
+    },
+    {
+      "archivo": "0003.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "https://commons.wikimedia.org/wiki/File:Ayuntamiento_y_Plaza_Mayor_de_Brunete.jpg",
+      "credito": {
+        "autor": "Dirección General de Turismo. Consejería de Economía e Innovación Tecnológica. Comunidad de Madrid.",
+        "licencia": "CC BY 3.0 es",
+        "url_licencia": "https://creativecommons.org/licenses/by/3.0/es/deed.en",
+        "fuente": "https://commons.wikimedia.org/wiki/File:Ayuntamiento_y_Plaza_Mayor_de_Brunete.jpg",
+        "origen": "Wikimedia Commons"
+      }
+    },
+    {
+      "archivo": "0004.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "https://commons.wikimedia.org/wiki/File:CUENCA_DEL_R%C3%8DO_GUADARRAMA_ES3110005_33965.9900HA_Mayo_(79).jpg",
+      "credito": {
+        "autor": "Efraín Bonilla",
+        "licencia": "CC BY-SA 4.0",
+        "url_licencia": "https://creativecommons.org/licenses/by-sa/4.0",
+        "fuente": "https://commons.wikimedia.org/wiki/File:CUENCA_DEL_R%C3%8DO_GUADARRAMA_ES3110005_33965.9900HA_Mayo_(79).jpg",
+        "origen": "Wikimedia Commons"
+      }
+    },
+    {
+      "archivo": "0005.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "https://commons.wikimedia.org/wiki/File:CUENCA_DEL_R%C3%8DO_GUADARRAMA_ES3110005_33965.9900HA_Mayo_(53).jpg",
+      "credito": {
+        "autor": "Efraín Bonilla",
+        "licencia": "CC BY-SA 4.0",
+        "url_licencia": "https://creativecommons.org/licenses/by-sa/4.0",
+        "fuente": "https://commons.wikimedia.org/wiki/File:CUENCA_DEL_R%C3%8DO_GUADARRAMA_ES3110005_33965.9900HA_Mayo_(53).jpg",
+        "origen": "Wikimedia Commons"
+      }
+    }
+  ],
+  "portada": "0001.jpg",
+  "publicar": true,
+  "estado": "visitado",
+  "creado": "2026-11-26 00:15",
+  "modificado": "2026-11-26 00:39"
+}
