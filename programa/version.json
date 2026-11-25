@@ -1,5 +1,5 @@
 {
-  "version": "1.6.8",
-  "notas": "El PUEBLOS.exe (opcional) ya se crea completo; se arreglaba el error «No module named requests» al abrirlo.",
+  "version": "1.7.0",
+  "notas": "Menús y Ajustes reorganizados: Ajustes en pestañas (GitHub · IA · Copias · Programa) y sin opciones repetidas.",
   "archivo": "PUEBLOS.zip"
 }
