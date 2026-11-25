@@ -1,11 +1,7 @@
 {
-  "titulo_web": "Esos pueblos",
-  "subtitulo_web": "He ido, me gustaria, volvere...",
-  "autor": "Ruben Blanco",
+  "titulo_web": "Mis pueblos",
+  "subtitulo_web": "Cuaderno de los pueblos que he visitado",
+  "autor": "",
   "mostrar_pendientes": true,
-  "diseno": {
-    "cabecera": "dibujo",
-    "maqueta": "clasica",
-    "modo": "claro"
-  }
+  "diseno": {}
 }
