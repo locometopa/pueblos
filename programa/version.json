@@ -1,5 +1,5 @@
 {
-  "version": "1.6.7",
-  "notas": "Arreglado el fallo al sincronizar en un PC nuevo (carpeta «repo» vacía).",
+  "version": "1.6.8",
+  "notas": "El PUEBLOS.exe (opcional) ya se crea completo; se arreglaba el error «No module named requests» al abrirlo.",
   "archivo": "PUEBLOS.zip"
 }
