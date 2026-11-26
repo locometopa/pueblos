@@ -1,0 +1,44 @@
+{
+  "slug": "sevilla-la-nueva",
+  "nombre": "Sevilla la nueva",
+  "provincia": "Comunidad de Madrid",
+  "comunidad": "Comunidad de Madrid",
+  "pais": "España",
+  "lat": 40.347245,
+  "lon": -4.097351,
+  "fechas_visita": [
+    "2026-11-26"
+  ],
+  "wiki": {
+    "titulo": "Sevilla la Nueva",
+    "url": "https://es.wikipedia.org/wiki/Sevilla_la_Nueva",
+    "extracto": "Sevilla la Nueva es un municipio de España perteneciente a la Comunidad de Madrid. Se encuentra en el suroeste de la comunidad autónoma, entre Navalcarnero y Brunete. El término municipal cuenta con una población de 9802 habitantes (INE 2025).",
+    "desambiguacion": false,
+    "wikidata": "Q1641045",
+    "poblacion": 9802,
+    "poblacion_anio": "2025",
+    "altitud": 675,
+    "superficie": 25,
+    "web": "https://www.sevillalanueva.es",
+    "secciones": [
+      {
+        "clave": "historia",
+        "titulo": "Historia",
+        "texto": "Su fundación pudo datar del siglo XII, debida a unos vecinos de Sevilleja de la Jara, en Toledo, fue integrada en el Sexmo de Casarrubios, Comunidad de Ciudad y Tierra de Segovia hasta la división provincial de 1833.​\n\nFue en la elección del primer Concejo propio el 23 de diciembre de 1544 cuando la población gana cierta autonomía, esta elección tuvo lugar en la casa de Antón Sevillano y de sus primeros alcaldes, el propio Antón Sevillano Buzón y Pedro Serrano. Apenas creado el nuevo concejo se inició una feroz oposición contra el incipiente núcleo vecinal por parte del conde de Chinchón y de su villa de Brunete. Los pleitos y sentencias que se sucedieron, destacando especialmente una Ejecutoria de la Audiencia Real, que ampara a Segovia y Sevilla la Nueva en sus pretensiones fundacionales, se sustanciaron diez años más tarde en la segunda fundación (refundación) del concejo el 14 de abril de 1554 con señalamiento de solar para iglesia, elección de Concejo, entrega de solares para casas y donación de tierras laborables a los pobladores.\nHasta la reforma de la nomenclatura municipal de 1916 el municipio se llamaba Sevilla la Nueva ó Sevilleja. En dicha fecha su nombre fue modificado por el de Sevilla la Nueva.​"
+      },
+      {
+        "clave": "cultura",
+        "titulo": "Cultura",
+        "texto": "▸ Patrimonio\n\nPalacio de Baena.\nIglesia de Santiago Apóstol.\nEl hórreo.\nMonumento de la Bicicleta.\nTorre del Océano.\nMural del Abuelo.\nFragmento del Canal del Real Monasterio de Sam Lorenzo del Escorial.\nMonumento de Benito Pérez Galdós.\nMonolito Víctimas del Covid.\nViviendas de finales del siglo XIX.\nBiblioteca Municipal José Ángel Mañas.\nDehesa Boyal.\nCharca de la Garza.\nFuente del Testero.\nCasa de San Juan.\nFuente de la Bañuela.\nAbrevadero de los Pozos del Tejar.\n\n▸ Fiestas\nFeria Andaluza: Celebrada en el mes de mayo, recuperando la esencia del arte y la cultura flamenca.\nFeria de San Isidro: Celebrada el 15 de mayo, con actos religiosos, bendición de campos y reunión popular en la pradera de San Isidro de la Dehesa Boyal.\nMechanics Fest: Reúne a los amantes del motor, la cultura pin up y rockera. Suele celebrarse en el mes de mayo.\nFeria del Libro: Con la participación de autores locales y externos en el mes de junio.\nFiestas patronales en honor al Santísimo Cristo del Consuelo: Celebradas el 14 de septiembre, con bailes populares, suelta de vaquillas, conciertos y actividades religiosas, culturales y deportivas.\nFrikiCon: Celebrada en el mes de octubre. Reúne a los amantes del mundo de fantasía, cómics, cine, manga, anime. rol, cosplay o máquinas arcade.\nSanta Bárbara: En el mes de diciembre y en honor a la patrona. Actos religiosos y bendición del fuego. Posteriormente encendido de luminaria y reparto de chocolate con bizcochos. También se ha recuperado la tradición del baile popular con orquesta."
+      }
+    ]
+  },
+  "texto_ia": "",
+  "notas": "",
+  "fotos": [],
+  "portada": "",
+  "publicar": true,
+  "estado": "visitado",
+  "creado": "2026-11-26 03:36",
+  "modificado": "2026-11-26 03:36"
+}
