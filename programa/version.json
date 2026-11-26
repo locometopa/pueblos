@@ -1,5 +1,5 @@
 {
-  "version": "1.9.2",
-  "notas": "Nuevo distintivo «Pueblo Mágico de España» (sello propio) en la web, el programa y el panel, con interruptor en el editor para marcarlos a mano. Un pueblo puede llevar Bonito y Mágico a la vez.",
+  "version": "1.9.3",
+  "notas": "Arreglado el error al subir fotos propias desde el panel del móvil (abre más formatos y fotos grandes; avisa mejor si son HEIC).",
   "archivo": "PUEBLOS.zip"
 }

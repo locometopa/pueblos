@@ -364,31 +364,42 @@
   const nombreFoto = () => `w${Date.now().toString(36)}${(contadorFotos++).toString(36).padStart(3, '0')}.jpg`;
 
   // ------------------------------------------------------------------ imágenes
-  function cargarImagen(blob) {
-    return new Promise((ok, mal) => {
-      const url = URL.createObjectURL(blob);
-      const img = new Image();
-      img.onload = () => ok({ img, url });
-      img.onerror = () => { URL.revokeObjectURL(url); mal(new Error('No puedo abrir esta imagen (¿formato HEIC?)')); };
-      img.src = url;
-    });
+  async function abrirImagen(blob) {
+    // createImageBitmap abre más formatos y respeta la orientación; si no, se prueba con <img>
+    if (window.createImageBitmap) {
+      try {
+        const bm = await createImageBitmap(blob, { imageOrientation: 'from-image' });
+        return { w: bm.width, h: bm.height, pinta: (ctx, w, h) => ctx.drawImage(bm, 0, 0, w, h), cierra: () => bm.close() };
+      } catch (e) { /* probamos con <img> */ }
+    }
+    const url = URL.createObjectURL(blob);
+    try {
+      const img = await new Promise((ok, mal) => {
+        const im = new Image();
+        im.onload = () => ok(im);
+        im.onerror = () => mal(new Error('formato no compatible'));
+        im.src = url;
+      });
+      return { w: img.naturalWidth, h: img.naturalHeight, pinta: (ctx, w, h) => ctx.drawImage(img, 0, 0, w, h),
+        cierra: () => URL.revokeObjectURL(url) };
+    } catch (e) { URL.revokeObjectURL(url); throw e; }
   }
-  function reducir(img, lado, calidad) {
-    const esc = Math.min(1, lado / Math.max(img.naturalWidth, img.naturalHeight));
+  function reducir(im, lado, calidad) {
+    const esc = Math.min(1, lado / Math.max(im.w, im.h));
     const c = document.createElement('canvas');
-    c.width = Math.max(1, Math.round(img.naturalWidth * esc));
-    c.height = Math.max(1, Math.round(img.naturalHeight * esc));
+    c.width = Math.max(1, Math.round(im.w * esc));
+    c.height = Math.max(1, Math.round(im.h * esc));
     const ctx = c.getContext('2d');
     ctx.imageSmoothingQuality = 'high';
-    ctx.drawImage(img, 0, 0, c.width, c.height);
-    return new Promise((r) => c.toBlob(r, 'image/jpeg', calidad));
+    im.pinta(ctx, c.width, c.height);
+    return new Promise((r, x) => c.toBlob((b) => (b ? r(b) : x(new Error('no pude procesar la imagen'))), 'image/jpeg', calidad));
   }
   /* Copia reducida y sin metadatos (el lienzo no conserva el GPS) */
   async function prepararFoto(blob) {
-    const { img, url } = await cargarImagen(blob);
+    const im = await abrirImagen(blob);
     try {
-      return { grande: await reducir(img, 1600, 0.85), mini: await reducir(img, 600, 0.8) };
-    } finally { URL.revokeObjectURL(url); }
+      return { grande: await reducir(im, 1600, 0.85), mini: await reducir(im, 600, 0.8) };
+    } finally { im.cierra(); }
   }
   const aBase64 = (blob) => new Promise((ok, mal) => {
     const fr = new FileReader();
@@ -1626,7 +1637,7 @@
       } catch (e) { fallos++; }
     }
     finEspera();
-    if (!nuevas.length) { aviso(fallos ? 'No se pudo abrir ninguna foto.' : 'Esas fotos ya estaban.', !!fallos); return; }
+    if (!nuevas.length) { aviso(fallos ? 'No pude abrir esas fotos (¿son HEIC?). Prueba con la cámara en «JPG/Compatible» o añádelas desde el programa del PC.' : 'Esas fotos ya estaban.', !!fallos); return; }
     const marcar = ed.estado === 'pendiente' && confirm('Has añadido fotos tuyas. ¿Lo marco como visitado?');
     try {
       const res = await guardar([opEditor(nuevas, ed.estado === 'pendiente' && !marcar ? [] : fechas, marcar)], binarios, [], `${ed.nombre}: ${nuevas.length} fotos desde el panel`);
@@ -2166,7 +2177,7 @@
           return p;
         },
       }));
-      if (!ops.length) { aviso(fallos ? 'No se pudo abrir ninguna foto.' : 'Esas fotos ya estaban subidas.', !!fallos); return; }
+      if (!ops.length) { aviso(fallos ? 'No pude abrir esas fotos (¿son HEIC?). Prueba con la cámara en «JPG/Compatible» o añádelas desde el programa del PC.' : 'Esas fotos ya estaban subidas.', !!fallos); return; }
       await guardar(ops, binarios, [], `Fotos de viaje desde el panel (${ops.length} pueblos)`);
       E.vista = 'visitados';
       pantallaLista();
