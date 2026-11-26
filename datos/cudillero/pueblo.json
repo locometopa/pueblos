@@ -6,7 +6,9 @@
   "pais": "España",
   "lat": 43.543357,
   "lon": -6.193631,
-  "fechas_visita": [],
+  "fechas_visita": [
+    "2023-08-20"
+  ],
   "wiki": {
     "titulo": "Cudillero",
     "url": "https://es.wikipedia.org/wiki/Cudillero",
@@ -161,5 +163,5 @@
   "revisado": false,
   "wikidata": "",
   "creado": "2026-11-26 03:49",
-  "modificado": "2026-11-26 04:06"
+  "modificado": "2026-11-26 04:14"
 }
