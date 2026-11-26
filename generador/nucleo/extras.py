@@ -345,15 +345,13 @@ def bloque_tiempo(lat, lon) -> str:
 def bloque_mapa(lat, lon, nombre) -> str:
     if lat is None or lon is None:
         return ""
-    d = 0.035
-    bbox = f"{lon - d * 1.4},{lat - d},{lon + d * 1.4},{lat + d}"
     return (f'<section class="caja mapa-pueblo"><h3>Dónde está</h3>'
-            f'<iframe title="Mapa de {e(nombre)}" loading="lazy" referrerpolicy="no-referrer" '
-            f'src="https://www.openstreetmap.org/export/embed.html?bbox={bbox}&amp;layer=mapnik&amp;marker={lat},{lon}"></iframe>'
+            f'<iframe title="Mapa de {e(nombre)}" loading="lazy" '
+            f'src="https://maps.google.com/maps?q={lat},{lon}&amp;z=14&amp;hl=es&amp;output=embed"></iframe>'
             f'<div class="fila-botones"><a class="boton" target="_blank" rel="noopener" '
             f'href="https://www.google.com/maps/dir/?api=1&amp;destination={lat},{lon}">🚗 Cómo llegar</a>'
             f'<a class="boton sec" target="_blank" rel="noopener" '
-            f'href="https://www.openstreetmap.org/?mlat={lat}&amp;mlon={lon}#map=14/{lat}/{lon}">Mapa grande</a></div></section>')
+            f'href="https://www.google.com/maps?q={lat},{lon}">Ver en Google Maps</a></div></section>')
 
 
 def distancia_km(a, b) -> float:

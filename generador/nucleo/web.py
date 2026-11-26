@@ -102,6 +102,13 @@ a{color:var(--acento)}
 .cifras div{font:600 30px/1 var(--f-titulo)}
 .cifras span{display:block;font:500 13px/1.4 var(--f-texto);color:var(--tinta-2);text-transform:uppercase;letter-spacing:.08em;margin-top:6px}
 
+/* ---- cabecera con el mapa de España de protagonista ---- */
+.cabecera.con-mapa{padding:46px 0 0;border-bottom:0}
+.cabecera.con-mapa .cifras{margin-top:18px;margin-bottom:4px}
+.cabecera.con-mapa .mapa-sec{padding-top:18px}
+.cabecera.con-mapa .mapa-cab h2{font-size:clamp(20px,2.4vw,26px)}
+@media (max-width:760px){.cabecera.con-mapa{padding-top:30px}}
+
 /* ---- cabecera con dibujo (de día; de noche en modo oscuro) ---- */
 .cabecera.con-dibujo{position:relative;overflow:hidden;padding-bottom:0;border-bottom:0;
   background:linear-gradient(180deg,var(--cielo-1),var(--cielo-2) 55%,var(--papel))}
@@ -760,7 +767,13 @@ def _indice(pueblos: list, cfg, pendientes=()) -> str:
     estilo = _DISENO["cabecera"]
     if estilo in ("foto", "collage") and not con_foto:
         estilo = "dibujo"
-    if estilo == "foto":
+    if estilo == "mapa" and not _DISENO["mostrar_mapa"]:
+        estilo = "dibujo"
+    if estilo == "mapa":
+        cabecera = (f'<header class="cabecera con-mapa"><div class="envoltorio">{textos}</div>'
+                    f'{seccion_mapa}</header>')
+        seccion_mapa = ""        # ya está arriba, de protagonista
+    elif estilo == "foto":
         fotos = [{"src": f"pueblos/{p['slug']}/fotos/{p['portada']}", "nombre": p["nombre"],
                   "url": f"pueblos/{p['slug']}/index.html"} for p in con_foto[:40]]
         lista = json.dumps(fotos, ensure_ascii=False).replace("</", "<\\/")

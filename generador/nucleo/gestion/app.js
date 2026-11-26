@@ -1459,8 +1459,8 @@
             <label class="campo"><span>Latitud</span><input id="f-lat" inputmode="decimal" value="${ed.lat == null ? '' : ed.lat}"></label>
             <label class="campo"><span>Longitud</span><input id="f-lon" inputmode="decimal" value="${ed.lon == null ? '' : ed.lon}"></label>
           </div>
-          ${ed.lat != null ? `<div class="mapita"><iframe title="Mapa de ${esc(ed.nombre)}" loading="lazy" referrerpolicy="no-referrer"
-            src="https://www.openstreetmap.org/export/embed.html?bbox=${ed.lon - 0.06},${ed.lat - 0.035},${ed.lon + 0.06},${ed.lat + 0.035}&amp;layer=mapnik&amp;marker=${ed.lat},${ed.lon}"></iframe></div>`
+          ${ed.lat != null ? `<div class="mapita"><iframe title="Mapa de ${esc(ed.nombre)}" loading="lazy"
+            src="https://maps.google.com/maps?q=${ed.lat},${ed.lon}&amp;z=14&amp;hl=es&amp;output=embed"></iframe></div>`
             : '<p class="ayuda">Sin ubicación: pulsa «Buscar ubicación» para ponerlo en el mapa.</p>'}
           <div class="fila"><button class="btn peq sec" id="ubicar">${ico('lupa', 'i-azul')} Buscar ubicación</button></div>
           <label class="interruptor"><input type="checkbox" id="f-publicar" ${ed.publicar !== false ? 'checked' : ''}> Publicar en la web</label>

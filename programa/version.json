@@ -1,5 +1,5 @@
 {
-  "version": "1.7.5",
-  "notas": "Papelera para recuperar pueblos borrados, y botones Pulir/Acortar para retocar el texto con IA.",
+  "version": "1.8.0",
+  "notas": "La web estrena el mapa de España que se destapa de protagonista, y el mapa de cada pueblo pasa a Google Maps.",
   "archivo": "PUEBLOS.zip"
 }

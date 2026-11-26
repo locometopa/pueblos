@@ -3,7 +3,7 @@ import re
 from urllib.parse import quote
 
 DEFECTO = {
-    "cabecera": "dibujo",        # dibujo | foto | collage | sencilla
+    "cabecera": "mapa",          # mapa | dibujo | foto | collage | sencilla
     "paleta": "teja",            # teja | mediterraneo | norte | piedra | lavanda
     "modo": "auto",              # auto | claro | oscuro
     "tipografia": "clasica",     # clasica | moderna | redonda | elegante | sencilla
@@ -28,6 +28,7 @@ DEFECTO = {
 }
 
 CABECERAS = {
+    "mapa": ("Mapa de España", "El mapa que se destapa, de protagonista arriba"),
     "dibujo": ("Dibujo", "Un pueblo dibujado; amanece, anochece… según la hora"),
     "foto": ("Foto grande", "Una de tus fotos a lo ancho, distinta en cada visita"),
     "collage": ("Collage", "Tus fotos como polaroids junto al título"),
