@@ -1871,9 +1871,14 @@
       + `${quever ? 'Lugares de interés: ' + quever : ''}\n\n`
       + `Notas personales del viajero (inspírate en el tono, pero no las copies):\n${p.notas || '(sin notas)'}`;
   }
-  function iaPrompt(p) {
+  function iaPrompt(p, aportacion) {
+    const ap = (aportacion || '').trim();
+    const extra = ap ? ('\n\nVivencia personal del viajero que DEBES incluir y desarrollar con naturalidad dentro del texto '
+      + '(en primera persona, como parte del relato; no la copies literal, tejela e intégrala y amplíala con algo más de '
+      + `detalle, pero sin inventar hechos nuevos que no se deduzcan de ella):\n«${ap}»`) : '';
     return 'Escribe en castellano un texto breve para la web personal de un viajero que recopila los pueblos que ha visitado.\n\n'
-      + iaContexto(p) + '\n\nInstrucciones:\n- 2 o 3 párrafos, unas 180-250 palabras en total.\n'
+      + iaContexto(p) + extra + '\n\nInstrucciones:\n- 2 o 3 párrafos, unas 180-250 palabras en total.'
+      + (ap ? ' Entrelaza la vivencia personal de forma natural en el relato.' : '') + '\n'
       + '- Tono cercano y evocador, de cuaderno de viaje, sin exagerar.\n'
       + '- No inventes datos: si algo no está en la información de arriba, no lo afirmes.\n'
       + '- Sin título, sin listas, sin markdown. Separa los párrafos con una línea en blanco.';
@@ -1883,11 +1888,21 @@
     leerFormulario();
     if (!iaConfigurada()) { dialogoIA(); return; }
     if ((ed.texto_ia || '').trim() && !confirm('Ya hay un texto escrito. ¿Lo sustituyo?')) return;
-    espera(`Escribiendo con ${IA_PROV[iaProv()].nombre}…`);
-    try {
-      ed.texto_ia = await iaPreguntar(iaPrompt(ed));
-      finEspera(); pintarEditor(); aviso('Texto escrito. Revísalo y guarda.');
-    } catch (e) { finEspera(); aviso(e.message, true); }
+    const d = dialogo(`<h2>✨ Escribir con IA</h2>
+      <p class="sub">¿Quieres añadir algo tuyo para que lo incluya y lo amplíe? (opcional) — por ejemplo «fuimos con mi mujer en primavera».</p>
+      <label class="campo"><textarea id="ia-aporta" placeholder="Algo tuyo que quieras que aparezca en el texto…"></textarea></label>
+      <div class="fila fin"><button class="btn sec" id="ia-a-no">Cancelar</button><button class="btn" id="ia-a-si">✨ Generar</button></div>`);
+    $('#ia-a-no', d).onclick = () => d.remove();
+    $('#ia-a-si', d).onclick = async () => {
+      const ap = $('#ia-aporta', d).value;
+      d.remove();
+      espera(`Escribiendo con ${IA_PROV[iaProv()].nombre}…`);
+      try {
+        ed.texto_ia = await iaPreguntar(iaPrompt(ed, ap));
+        finEspera(); pintarEditor(); aviso('Texto escrito. Revísalo y guarda.');
+      } catch (e) { finEspera(); aviso(e.message, true); }
+    };
+    setTimeout(() => { const t = $('#ia-aporta', d); if (t) t.focus(); }, 60);
   }
   function iaMejorarPrompt(texto, modo) {
     const instr = modo === 'acortar'

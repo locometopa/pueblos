@@ -1,5 +1,5 @@
 {
-  "version": "1.9.5",
-  "notas": "Guarda varias IAs (Gemini, DeepSeek…) y cambia entre ellas al vuelo donde escribes el texto, sin tocar Ajustes. Útil si Gemini está saturada.",
+  "version": "1.9.6",
+  "notas": "Al generar el texto con IA puedes añadir algo tuyo (p. ej. «fuimos con mi mujer») y la IA lo integra y lo amplía en el texto.",
   "archivo": "PUEBLOS.zip"
 }
