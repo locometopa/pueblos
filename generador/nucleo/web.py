@@ -129,10 +129,12 @@ a{color:var(--acento)}
   .paisaje{margin-top:10px}
   .paisaje svg{width:185%;margin-left:-43%}
 }
-:root{--cielo-1:#f7d9a8;--cielo-2:#f8ead2;--astro:#f3a65f;--nube:#fffaf0;--colina1:#d9b48a;--colina2:#b98a5e;--colina3:#8f6a45;
-  --pared:#f2e6cf;--pared2:#e9d9bd;--tejado:#a8472a;--tejado2:#b8532f;--tejado3:#c2633a;--ventana:#6b4630;--arbol:#4f6b3a;--camino:#e8d3ae}
+:root{--cielo-1:#bfe0ea;--cielo-2:#e7f1ec;--astro:#ffd25e;--nube:#fffaf0;--colina1:#a9c58a;--colina2:#7fa455;--colina3:#5a803a;
+  --montana:#a7b6c6;--tronco:#6b5236;
+  --pared:#f3ebdc;--pared2:#e8ddc8;--tejado:#a8472a;--tejado2:#b8532f;--tejado3:#8d5a43;--ventana:#6b4630;--arbol:#3f6b2b;--camino:#cdb88f}
 .paisaje .astro{fill:var(--astro)}.paisaje .nubes{fill:var(--nube);opacity:.75}.paisaje .estrellas{fill:#fff;opacity:0}
 .paisaje .colina1{fill:var(--colina1)}.paisaje .colina2{fill:var(--colina2)}.paisaje .colina3{fill:var(--colina3)}
+.paisaje .montana{fill:var(--montana)}.paisaje .tronco{fill:var(--tronco)}
 .paisaje .pared{fill:var(--pared)}.paisaje .pared2{fill:var(--pared2)}.paisaje .tejado{fill:var(--tejado)}
 .paisaje .tejado2{fill:var(--tejado2)}.paisaje .tejado3{fill:var(--tejado3)}.paisaje .ventana,.paisaje .campana,.paisaje .puerta{fill:var(--ventana)}
 .paisaje .arbol{fill:var(--arbol)}.paisaje .camino{stroke:var(--camino);stroke-width:10;fill:none;stroke-linecap:round;opacity:.8}
@@ -150,15 +152,16 @@ a{color:var(--acento)}
 }
 @media (prefers-reduced-motion:reduce){.paisaje .humo circle{animation:none;opacity:.3;transform:translate(3px,-14px) scale(1.1)}}
 @media (prefers-color-scheme:dark){
-  :root{--cielo-1:#0f1830;--cielo-2:#1d2236;--astro:#f1e6c8;--nube:#3a3f55;--colina1:#2c2e3b;--colina2:#24252f;--colina3:#1d1d24;
-    --pared:#585060;--pared2:#4b4452;--tejado:#6b3a35;--tejado2:#73403a;--tejado3:#7a4840;--ventana:#ffcf6b;--arbol:#1f2b22;--camino:#3b3a44}
+  :root{--cielo-1:#0f1830;--cielo-2:#1d2236;--astro:#f1e6c8;--nube:#3a3f55;--colina1:#273029;--colina2:#1f2823;--colina3:#17201a;
+    --montana:#222a3a;--tronco:#2e2820;
+    --pared:#585060;--pared2:#4b4452;--tejado:#6b3a35;--tejado2:#73403a;--tejado3:#5a4438;--ventana:#ffcf6b;--arbol:#16231a;--camino:#3b3a44}
   .paisaje .estrellas{opacity:.85}.paisaje .nubes{opacity:.35}
   .paisaje .campana,.paisaje .puerta{fill:#2a2230}
   .cabecera.con-dibujo .sello{color:#f0a37f}
 }
 /* el cielo según la hora de quien visita la web (data-momento lo pone el script) */
-.cabecera.con-dibujo[data-momento]{--colina1:#d9b48a;--colina2:#b98a5e;--colina3:#8f6a45;--pared:#f2e6cf;--pared2:#e9d9bd;
-  --tejado:#a8472a;--tejado2:#b8532f;--tejado3:#c2633a;--ventana:#6b4630;--arbol:#4f6b3a;--camino:#e8d3ae;
+.cabecera.con-dibujo[data-momento]{--colina1:#a9c58a;--colina2:#7fa455;--colina3:#5a803a;--montana:#a7b6c6;--tronco:#6b5236;
+  --pared:#f3ebdc;--pared2:#e8ddc8;--tejado:#a8472a;--tejado2:#b8532f;--tejado3:#8d5a43;--ventana:#6b4630;--arbol:#3f6b2b;--camino:#cdb88f;
   --tinta:#2a2621;--tinta-2:#5e554a;color:var(--tinta)}
 @media (prefers-color-scheme:dark){
   .cabecera.con-dibujo[data-momento]:not([data-momento="noche"]) .sello{color:color-mix(in srgb,var(--acento) 55%,#000)}
@@ -170,12 +173,12 @@ a{color:var(--acento)}
 .cabecera.con-dibujo[data-momento="amanecer"]{--cielo-1:#f2b5a7;--cielo-2:#fbe3c8;--astro:#ffb161;--nube:#ffe6dc}
 .cabecera.con-dibujo[data-momento="amanecer"] .paisaje .astro{transform:translateY(16px)}
 .cabecera.con-dibujo[data-momento="atardecer"]{--cielo-1:#e98a5f;--cielo-2:#f8c58f;--astro:#ef6a3a;--nube:#ffd2b0;
-  --colina1:#c99877;--colina2:#a97553;--colina3:#7f573a;--pared:#efd5b8;--pared2:#e2c2a0;--ventana:#ffcf6b}
+  --colina1:#93a068;--colina2:#6f8545;--colina3:#4e6531;--montana:#c3a08f;--pared:#efd5b8;--pared2:#e2c2a0;--ventana:#ffcf6b}
 .cabecera.con-dibujo[data-momento="atardecer"] .paisaje .astro{transform:translateY(22px)}
 .cabecera.con-dibujo[data-momento="amanecer"] .paisaje .nubes,.cabecera.con-dibujo[data-momento="atardecer"] .paisaje .nubes{opacity:.8}
-.cabecera.con-dibujo[data-momento="noche"]{--cielo-1:#0f1830;--cielo-2:#1d2236;--astro:#f1e6c8;--nube:#3a3f55;--colina1:#2c2e3b;
-  --colina2:#24252f;--colina3:#1d1d24;--pared:#585060;--pared2:#4b4452;--tejado:#6b3a35;--tejado2:#73403a;--tejado3:#7a4840;
-  --ventana:#ffcf6b;--arbol:#1f2b22;--camino:#3b3a44;--tinta:#f1eadc;--tinta-2:#c3b9a9}
+.cabecera.con-dibujo[data-momento="noche"]{--cielo-1:#0f1830;--cielo-2:#1d2236;--astro:#f1e6c8;--nube:#3a3f55;--colina1:#273029;
+  --colina2:#1f2823;--colina3:#17201a;--montana:#1e2636;--tronco:#2e2820;--pared:#585060;--pared2:#4b4452;--tejado:#6b3a35;--tejado2:#73403a;--tejado3:#5a4438;
+  --ventana:#ffcf6b;--arbol:#16231a;--camino:#3b3a44;--tinta:#f1eadc;--tinta-2:#c3b9a9}
 .cabecera.con-dibujo[data-momento="noche"] .paisaje .astro{transform-box:fill-box;transform-origin:center;
   transform:translate(-415px,-14px) scale(.55);filter:drop-shadow(0 0 7px rgba(255,246,222,.55))}
 .cabecera.con-dibujo[data-momento="noche"] .paisaje .estrellas{opacity:.85}.cabecera.con-dibujo[data-momento="noche"] .paisaje .nubes{opacity:.35}
@@ -830,6 +833,7 @@ def _indice(pueblos: list, cfg, pendientes=()) -> str:
   <div class="paisaje" aria-hidden="true"><svg viewBox="0 96 1440 204" preserveAspectRatio="xMidYMax meet">
     <g class="estrellas"><circle cx="140" cy="100" r="1.6"/><circle cx="260" cy="130" r="1.2"/><circle cx="420" cy="96" r="1.4"/><circle cx="610" cy="112" r="1.1"/>
       <circle cx="760" cy="98" r="1.6"/><circle cx="930" cy="126" r="1.2"/><circle cx="1010" cy="100" r="1.4"/><circle cx="1290" cy="104" r="1.6"/><circle cx="1380" cy="130" r="1.1"/></g>
+    <path class="montana" d="M0 130 L120 102 L210 124 L320 100 L440 126 L560 106 L690 128 L800 104 L930 122 L1050 100 L1180 126 L1300 104 L1440 122 V300 H0Z"/>
     <circle class="astro" cx="1150" cy="138" r="38"/>
     <g class="nubes"><ellipse cx="320" cy="122" rx="70" ry="12"/><ellipse cx="380" cy="112" rx="50" ry="10"/><ellipse cx="900" cy="104" rx="60" ry="10"/></g>
     <path class="colina1" d="M0 190 C180 120 300 150 460 120 C620 90 760 150 900 118 C1060 82 1220 130 1440 100 V300 H0Z"/>
@@ -849,10 +853,15 @@ def _indice(pueblos: list, cfg, pendientes=()) -> str:
       <rect class="pared2" x="318" y="100" width="48" height="30"/><path class="tejado3" d="M314 102 L342 82 L370 102Z"/>
       <rect class="ventana" x="336" y="110" width="10" height="11"/>
       <rect class="pared2" x="-70" y="104" width="66" height="26"/><path class="tejado3" d="M-74 106 L-37 86 L0 106Z"/>
-      <path class="arbol" d="M392 130 C380 90 388 60 396 40 C404 60 412 90 400 130Z"/>
-      <path class="arbol" d="M-96 130 C-106 98 -100 74 -92 58 C-84 74 -78 98 -88 130Z"/>
+      <rect class="tronco" x="-99" y="108" width="6" height="24" rx="2"/>
+      <circle class="arbol" cx="-96" cy="100" r="18"/><circle class="arbol" cx="-112" cy="110" r="12"/><circle class="arbol" cx="-80" cy="110" r="12"/><circle class="arbol" cx="-96" cy="86" r="13"/>
+      <rect class="tronco" x="389" y="106" width="6" height="26" rx="2"/>
+      <circle class="arbol" cx="392" cy="96" r="19"/><circle class="arbol" cx="375" cy="108" r="13"/><circle class="arbol" cx="409" cy="108" r="13"/><circle class="arbol" cx="392" cy="80" r="14"/>
+      <circle class="arbol" cx="-42" cy="126" r="10"/><circle class="arbol" cx="-30" cy="129" r="7"/>
     </g>
     <path class="colina3" d="M0 260 C240 225 420 262 640 238 C860 214 1040 262 1240 236 C1330 225 1400 232 1440 228 V300 H0Z"/>
+    <g class="arbol"><circle cx="118" cy="252" r="13"/><circle cx="138" cy="256" r="9"/><circle cx="96" cy="258" r="8"/>
+      <circle cx="1328" cy="250" r="13"/><circle cx="1308" cy="256" r="9"/><circle cx="1352" cy="257" r="8"/></g>
     <path class="camino" d="M700 300 C720 270 690 255 740 238"/>
     <path class="suelo" d="M0 300 V285 C300 270 600 292 900 280 C1150 270 1300 288 1440 282 V300Z"/>
   </svg></div>
