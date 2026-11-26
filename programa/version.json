@@ -1,5 +1,5 @@
 {
-  "version": "1.7.4",
-  "notas": "La IA reintenta sola si está saturada (error 503) o falla un momento, en el programa y en el panel.",
+  "version": "1.7.5",
+  "notas": "Papelera para recuperar pueblos borrados, y botones Pulir/Acortar para retocar el texto con IA.",
   "archivo": "PUEBLOS.zip"
 }

@@ -1483,7 +1483,11 @@
           <h2>Texto del pueblo</h2>
           <p class="ayuda" style="margin:0 0 8px">El texto que sale en la web. Escríbelo tú o pídeselo a la IA (parte de los datos de Wikipedia de arriba).</p>
           <label class="campo"><textarea id="f-texto-ia" placeholder="Un par de párrafos sobre el pueblo…">${esc(ed.texto_ia || '')}</textarea></label>
-          <button class="btn peq sec" id="escribir-ia">✍ Escribir con IA</button>
+          <div class="fila" style="flex-wrap:wrap">
+            <button class="btn peq sec" id="escribir-ia">✍ Escribir con IA</button>
+            <button class="btn peq sec" id="pulir-ia">✨ Pulir</button>
+            <button class="btn peq sec" id="acortar-ia">✂ Acortar</button>
+          </div>
         </section>
 
         <button class="btn peligro ancho" id="eliminar" style="margin-top:6px">Eliminar este pueblo</button>
@@ -1545,6 +1549,8 @@
     });
     $('#traer-wiki').onclick = () => { leerFormulario(); traerWiki(); };
     $('#escribir-ia').onclick = escribirIA;
+    $('#pulir-ia').onclick = () => mejorarIA('pulir');
+    $('#acortar-ia').onclick = () => mejorarIA('acortar');
     $('#guardar').onclick = () => { leerFormulario(); guardarEditor(); };
     $('#eliminar').onclick = eliminarPueblo;
   }
@@ -1724,6 +1730,28 @@
     try {
       ed.texto_ia = await iaPreguntar(iaPrompt(ed));
       finEspera(); pintarEditor(); aviso('Texto escrito. Revísalo y guarda.');
+    } catch (e) { finEspera(); aviso(e.message, true); }
+  }
+  function iaMejorarPrompt(texto, modo) {
+    const instr = modo === 'acortar'
+      ? 'Resúmelo a un solo párrafo de unas 80-120 palabras, quedándote con lo esencial.'
+      : 'Mejóralo: corrige lo que haga falta, dale un tono cercano y evocador de cuaderno de viaje y hazlo fluido. '
+        + 'Mantén los hechos y una longitud parecida.';
+    return `Eres el editor de un cuaderno de viaje personal. ${instr}\n\n`
+      + 'No inventes datos nuevos ni añadas nada que no esté en el texto. Devuelve solo el texto resultante, en castellano, '
+      + 'sin título, sin listas y sin markdown; separa los párrafos con una línea en blanco.\n\n'
+      + `Texto:\n${texto}`;
+  }
+  async function mejorarIA(modo) {
+    const { ed } = E.editor;
+    leerFormulario();
+    const texto = (ed.texto_ia || '').trim();
+    if (!texto) { aviso('Primero escribe o genera un texto; luego puedo pulirlo o acortarlo.', true); return; }
+    if (!iaConfigurada()) { dialogoIA(); return; }
+    espera(`${modo === 'acortar' ? 'Acortando' : 'Puliendo'} con ${IA_PROV[iaProv()].nombre}…`);
+    try {
+      ed.texto_ia = await iaPreguntar(iaMejorarPrompt(texto, modo));
+      finEspera(); pintarEditor(); aviso(`Texto ${modo === 'acortar' ? 'acortado' : 'pulido'}. Revísalo y guarda.`);
     } catch (e) { finEspera(); aviso(e.message, true); }
   }
   function dialogoIA() {
