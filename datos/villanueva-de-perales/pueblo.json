@@ -57,6 +57,24 @@
   "notas": "",
   "fotos": [
     {
+      "archivo": "wmwxe77vb000.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "1000089862.jpg|39738"
+    },
+    {
+      "archivo": "wmwxe77y4001.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "1000089864.jpg|56265"
+    },
+    {
+      "archivo": "wmwxe781a002.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "1000089865.jpg|34770"
+    },
+    {
       "archivo": "wmvpquhar000.jpg",
       "fecha": "",
       "pie": "",
@@ -126,8 +144,9 @@
   "publicar": true,
   "estado": "visitado",
   "bonito": false,
+  "magico": false,
   "revisado": false,
   "wikidata": "",
   "creado": "2026-10-26 22:02",
-  "modificado": "2026-11-26 07:24"
+  "modificado": "2026-11-26 11:11"
 }
