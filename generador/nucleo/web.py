@@ -176,7 +176,8 @@ a{color:var(--acento)}
 .cabecera.con-dibujo[data-momento="noche"]{--cielo-1:#0f1830;--cielo-2:#1d2236;--astro:#f1e6c8;--nube:#3a3f55;--colina1:#2c2e3b;
   --colina2:#24252f;--colina3:#1d1d24;--pared:#585060;--pared2:#4b4452;--tejado:#6b3a35;--tejado2:#73403a;--tejado3:#7a4840;
   --ventana:#ffcf6b;--arbol:#1f2b22;--camino:#3b3a44;--tinta:#f1eadc;--tinta-2:#c3b9a9}
-.cabecera.con-dibujo[data-momento="noche"] .paisaje .astro{transform:translateY(-14px)}
+.cabecera.con-dibujo[data-momento="noche"] .paisaje .astro{transform-box:fill-box;transform-origin:center;
+  transform:translate(-384px,-20px) scale(.66);filter:drop-shadow(0 0 7px rgba(255,246,222,.55))}
 .cabecera.con-dibujo[data-momento="noche"] .paisaje .estrellas{opacity:.85}.cabecera.con-dibujo[data-momento="noche"] .paisaje .nubes{opacity:.35}
 .cabecera.con-dibujo[data-momento="noche"] .paisaje .campana,.cabecera.con-dibujo[data-momento="noche"] .paisaje .puerta{fill:#2a2230}
 .cabecera.con-dibujo[data-momento="noche"] .sello{color:#f0a37f}
@@ -193,6 +194,10 @@ a{color:var(--acento)}
 @media (prefers-reduced-motion:no-preference){
   .paisaje .nubes{animation:nubes 60s linear infinite alternate}
   @keyframes nubes{to{transform:translateX(60px)}}
+  .cabecera.con-dibujo[data-momento="noche"] .paisaje .estrellas circle{animation:titila 4.6s ease-in-out infinite}
+  .cabecera.con-dibujo[data-momento="noche"] .paisaje .estrellas circle:nth-child(3n){animation-duration:6s;animation-delay:1.4s}
+  .cabecera.con-dibujo[data-momento="noche"] .paisaje .estrellas circle:nth-child(3n+2){animation-duration:5.2s;animation-delay:2.6s}
+  @keyframes titila{0%,100%{opacity:.9}50%{opacity:.18}}
 }
 
 /* ---- cabecera: foto grande ---- */
