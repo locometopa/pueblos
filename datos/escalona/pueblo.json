@@ -1,0 +1,89 @@
+{
+  "slug": "escalona",
+  "nombre": "Escalona",
+  "provincia": "Toledo",
+  "comunidad": "Castilla-La Mancha",
+  "pais": "España",
+  "lat": 40.166558,
+  "lon": -4.403861,
+  "fechas_visita": [],
+  "wiki": {
+    "titulo": "Escalona (Toledo)",
+    "url": "https://es.wikipedia.org/wiki/Escalona_(Toledo)",
+    "extracto": "Escalona es un municipio y localidad española de la provincia de Toledo, en la comunidad autónoma de Castilla-La Mancha. El término municipal cuenta con una población de 3987 habitantes (INE 2025).",
+    "desambiguacion": false,
+    "wikidata": "Q616621",
+    "poblacion": 3987,
+    "poblacion_anio": "2025",
+    "altitud": 550,
+    "superficie": 73,
+    "escudo": "https://commons.wikimedia.org/wiki/Special:FilePath/Escudo_de_Escalona.svg?width=160",
+    "web": "http://www.ayto-escalona.com/",
+    "secciones": [
+      {
+        "clave": "historia",
+        "titulo": "Historia",
+        "texto": "Se han encontrado restos arqueológicos celtas, romanos y visigodos.\nEn la Edad Media, fue reconquistada a los musulmanes por el rey Alfonso VI a su paso hacia Toledo, tal vez en la campaña de 1083. Su situación estratégica, rodeada en una gran parte por el Alberche, le hizo ser una plaza casi inexpugnable y alcanzar gran importancia militar. Fue cabeza de la Comunidad de villa y tierra de Escalona, perteneciente a la Extremadura castellana. En el año 1118, el rey Alfonso VII le concedió fuero real y, en 1130, fue entregada a los hermanos Diego y Domingo Álvarez para pasar al infante don Manuel de Castilla, hermano de Alfonso X de Castilla, en 1281.\n\nEn 1136 el almorávide Tashfin Ibn Ali, hijo del emir que gobernó la vida al-Ándalus musulmana desde Granada en los años 1128-1138, asaltó la villa, mató a todos los varones que encontró y mandó a Córdoba como trofeo a las mujeres y las campanas de la iglesia. (Según Derek W. Lomax \"la Reconquista \" editorial crítica, edición 1984, pág. 116)​\nEn 1423 pasó a la corona de Juan II, quien la donó a Álvaro de Luna, su favorito, en recompensa de la villa de Alfaro que la había tomado para sí. Al caer en desgracia Álvaro de Luna, Escalona fue sitiada por las tropas del rey en 1453 y, tras ser ajusticiado en Valladolid, la fortaleza se entregó después de veinte días de resistencia dirigida por su viuda Juana Pimentel, conocida por «la triste condesa». …"
+      },
+      {
+        "clave": "patrimonio",
+        "titulo": "Patrimonio",
+        "texto": "Castillo de Escalona\n\nEntre sus monumentos hay que citar el castillo-palacio de Escalona del siglo XV, de estilo mudéjar. Considerado por algunos como de los más hermosos de la provincia de Toledo, en su recinto se han tenido lugar relevantes hechos históricos. Está compuesto de dos secciones, una que es el verdadero castillo y una segunda que es una especie de palacio, la cual ha sido restaurada y es de propiedad privada.\nLa población conserva una buena parte de la antigua muralla, visible desde los alrededores. Igualmente hay que citar el convento de la concepcionistas, fundado por Teresa Enríquez en el siglo XVI.\nLa película Villa cabalga de Buzz Kulik, 1968, protagonizada por Yul Brynner y Robert Michum fue rodada parcialmente en Escalona, pudiendo verse su silueta amurallada, puente y riberas del río.[cita requerida]"
+      },
+      {
+        "clave": "fiestas",
+        "titulo": "Fiestas",
+        "texto": "15 y 16 de agosto: Virgen de la Asunción y San Roque. En estas fechas se realizan numerosos actos culturales, taurinos y de otras variadas actividades.\n8 y 9 de diciembre: Inmaculada Concepción."
+      }
+    ],
+    "gentilicio": "Escalonero",
+    "patron": "Roque de Montpellier",
+    "que_ver": [
+      {
+        "nombre": "castillo de Escalona",
+        "url": "https://es.wikipedia.org/wiki/Castillo-palacio_de_Escalona",
+        "imagen": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f5/Castillo_de_Escalona_3.jpg/500px-Castillo_de_Escalona_3.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "credito": {
+          "autor": "Jim Anzalone",
+          "licencia": "CC BY-SA 2.0",
+          "url_licencia": "https://creativecommons.org/licenses/by-sa/2.0",
+          "fuente": "https://commons.wikimedia.org/wiki/File:Castillo_de_Escalona_3.jpg"
+        }
+      },
+      {
+        "nombre": "convento de las Concepcionistas Franciscanas",
+        "url": "https://es.wikipedia.org/wiki/Convento_de_las_Concepcionistas_Franciscanas_(Escalona)",
+        "imagen": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e4/Convento_concepcionistas_franciscanas_2018.jpg/500px-Convento_concepcionistas_franciscanas_2018.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "credito": {
+          "autor": "Perikotita",
+          "licencia": "CC BY-SA 4.0",
+          "url_licencia": "https://creativecommons.org/licenses/by-sa/4.0",
+          "fuente": "https://commons.wikimedia.org/wiki/File:Convento_concepcionistas_franciscanas_2018.jpg"
+        }
+      },
+      {
+        "nombre": "iglesia de San Miguel",
+        "url": "https://www.wikidata.org/wiki/Q99470373",
+        "imagen": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/86/IglesiaDeSanMiguelEscalonaP1140489-P1140490.jpg/500px-IglesiaDeSanMiguelEscalonaP1140489-P1140490.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "credito": {
+          "autor": "Rowanwindwhistler",
+          "licencia": "CC BY-SA 3.0",
+          "url_licencia": "https://creativecommons.org/licenses/by-sa/3.0",
+          "fuente": "https://commons.wikimedia.org/wiki/File:IglesiaDeSanMiguelEscalonaP1140489-P1140490.jpg"
+        }
+      }
+    ]
+  },
+  "texto_ia": "",
+  "notas": "",
+  "fotos": [],
+  "portada": "",
+  "publicar": true,
+  "estado": "visitado",
+  "bonito": false,
+  "magico": false,
+  "revisado": false,
+  "wikidata": "",
+  "creado": "2026-11-26 11:12",
+  "modificado": "2026-11-26 11:12"
+}
