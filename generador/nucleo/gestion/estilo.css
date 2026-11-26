@@ -255,6 +255,24 @@ body{background-color:var(--papel);background-image:repeating-linear-gradient(tr
 .mapita iframe{width:100%;height:100%;border:0;display:block}
 :root[data-tema="oscuro"] .mapita iframe{filter:brightness(.85) contrast(1.05)}
 
+/* ---------- Bonitos cerca de ti ---------- */
+.btn.descubre{width:100%;margin:2px 0 14px;justify-content:center;gap:8px;
+  background:color-mix(in srgb,var(--acento) 13%,var(--tarjeta));color:var(--acento-h);
+  border:1px solid color-mix(in srgb,var(--acento) 32%,transparent)}
+.btn.descubre .ico{width:18px;height:18px}
+.cerca-lista{max-height:62vh;overflow:auto;margin:6px 0 12px;display:flex;flex-direction:column;gap:6px}
+.cerca-item{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--papel-2);
+  border:1px solid var(--linea);border-radius:12px;padding:10px 12px;color:var(--tinta);cursor:pointer;font:inherit}
+.cerca-item:active{transform:scale(.99)}
+.cerca-item.ya{opacity:.72}
+.cerca-km{flex:none;min-width:50px;text-align:center;font:700 19px/1 var(--f-titulo);color:var(--acento)}
+.cerca-km small{display:block;font:500 11px/1.4 var(--f-texto);color:var(--tinta-2)}
+.cerca-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.cerca-txt b{font-weight:600}
+.cerca-txt small{color:var(--tinta-2);font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cerca-tag{flex:none;font-size:12.5px;font-weight:600;color:var(--acento-h)}
+.cerca-item.ya .cerca-tag{color:var(--pendiente)}
+
 /* ---------- adaptación a PC (ratón, sin GPS útil) ---------- */
 :root[data-disp="pc"] .acciones{position:static;background:none;padding:6px 16px 24px;justify-content:flex-start;max-width:980px;margin:0 auto}
 :root[data-disp="pc"] .acciones .btn{flex:0 0 auto;max-width:none;flex-direction:row;gap:8px;font-size:15px;min-height:44px;padding:9px 18px}

@@ -941,6 +941,107 @@
     };
   }
 
+  // ------------------------------------------------------------------ «Los Pueblos más Bonitos» cerca de ti (por GPS)
+  async function listaBonitos() {
+    let cache = null;
+    try { cache = JSON.parse(localStorage.getItem('pueblos-bonitos-lista') || 'null'); } catch (e) { /* nada */ }
+    if (cache && cache.lista && cache.lista.length && Date.now() - cache.t < 30 * 864e5) return cache.lista;
+    // 1) QID de la asociación en Wikidata
+    const rs = await fetch('https://www.wikidata.org/w/api.php?' + new URLSearchParams({
+      action: 'wbsearchentities', search: 'Los Pueblos más Bonitos de España',
+      language: 'es', type: 'item', limit: '5', format: 'json', origin: '*' }));
+    const js = await rs.json();
+    let qid = '';
+    for (const x of (js.search || [])) { if (normalizar(x.label || '').includes('bonitos')) { qid = x.id; break; } }
+    if (!qid) throw new Error('No pude encontrar la lista en Wikidata.');
+    // 2) miembros (P463) con coordenadas (P625)
+    const q = `SELECT ?item ?itemLabel ?coord ?zonaLabel WHERE {
+      ?item wdt:P463 wd:${qid} ; wdt:P625 ?coord .
+      OPTIONAL { ?item wdt:P131 ?zona }
+      SERVICE wikibase:label { bd:serviceParam wikibase:language "es,en". } }`;
+    const r = await fetch('https://query.wikidata.org/sparql?format=json&query=' + encodeURIComponent(q),
+      { headers: { Accept: 'application/sparql-results+json' } });
+    if (!r.ok) throw new Error('Wikidata no responde ahora mismo.');
+    const d = await r.json();
+    const vistos = new Set(), lista = [];
+    for (const b of ((d.results && d.results.bindings) || [])) {
+      const nombre = (b.itemLabel && b.itemLabel.value) || '';
+      const m = /Point\(([-\d.]+) ([-\d.]+)\)/.exec((b.coord && b.coord.value) || '');
+      const qd = b.item.value.split('/').pop();
+      if (!nombre || /^Q\d+$/.test(nombre) || !m || vistos.has(qd)) continue;
+      vistos.add(qd);
+      lista.push({ nombre, lat: +(+m[2]).toFixed(6), lon: +(+m[1]).toFixed(6), wikidata: qd, zona: (b.zonaLabel && b.zonaLabel.value) || '' });
+    }
+    if (!lista.length) throw new Error('No pude cargar la lista ahora mismo.');
+    try { localStorage.setItem('pueblos-bonitos-lista', JSON.stringify({ t: Date.now(), lista })); } catch (e) { /* nada */ }
+    return lista;
+  }
+
+  function posicionActual() {
+    return new Promise((ok, mal) => {
+      if (!navigator.geolocation) { mal(new Error('Este dispositivo no da la ubicación.')); return; }
+      navigator.geolocation.getCurrentPosition(ok, () => mal(new Error('No pude obtener tu ubicación. ¿Diste permiso?')),
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 });
+    });
+  }
+
+  function slugDe(x) {
+    for (const p of Object.values(E.pueblos)) {
+      if ((x.wikidata && p.wikidata === x.wikidata) || normalizar(p.nombre) === normalizar(x.nombre)) return p.slug;
+    }
+    return '';
+  }
+
+  async function anadirBonito(x, d) {
+    const p = puebloVacio(x.nombre);
+    Object.assign(p, { provincia: x.zona || '', pais: 'España', estado: 'pendiente', bonito: true, wikidata: x.wikidata, lat: x.lat, lon: x.lon });
+    const slug = slugLibre(p.nombre, p.provincia); p.slug = slug;
+    espera('Añadiendo…');
+    try {
+      await guardar([{ slug, aplicar: (fresco) => fresco || p }], [], [], `Nuevo (Bonito cercano): ${p.nombre}`);
+      finEspera();
+      if (d) d.remove();
+      E.vista = 'pendientes'; pantallaLista();
+      aviso(`Añadido «${p.nombre}» a «Por visitar». 🏅`);
+    } catch (e) { finEspera(); aviso(e.message, true); }
+  }
+
+  function pintarBonitosCercanos(lista) {
+    const fila = (x, i) => `<button class="cerca-item${x.tengo ? ' ya' : ''}" data-i="${i}">
+      <span class="cerca-km">${x.km < 1 ? '<1' : Math.round(x.km)}<small>km</small></span>
+      <span class="cerca-txt"><b>${esc(x.nombre)}</b>${x.zona ? `<small>${esc(x.zona)}</small>` : ''}</span>
+      <span class="cerca-tag">${x.tengo ? '✓ lo tienes' : '+ añadir'}</span></button>`;
+    const d = dialogo(`<h2>🏅 Bonitos cerca de ti</h2>
+      <p class="sub">Los Pueblos más Bonitos de España, por distancia. ✓ los que ya tienes; «+ añadir» lo guarda en «Por visitar».</p>
+      <div class="cerca-lista">${lista.slice(0, 30).map(fila).join('')}</div>
+      <div class="fila fin"><button class="btn sec" id="c-cerrar">Cerrar</button></div>`);
+    $('#c-cerrar', d).onclick = () => d.remove();
+    $$('.cerca-item', d).forEach((b) => (b.onclick = () => {
+      const x = lista[+b.dataset.i];
+      if (x.tengo) { const slug = slugDe(x); if (slug) { d.remove(); abrirEditor(slug); } return; }
+      anadirBonito(x, d);
+    }));
+  }
+
+  async function bonitosCercanos() {
+    espera('Buscando tu ubicación…');
+    let pos, lista;
+    try { pos = await posicionActual(); } catch (e) { finEspera(); aviso(e.message, true); return; }
+    espera('Cargando Los Pueblos más Bonitos…');
+    try { lista = await listaBonitos(); } catch (e) { finEspera(); aviso(e.message, true); return; }
+    finEspera();
+    const yo = [pos.coords.latitude, pos.coords.longitude];
+    const mios = Object.values(E.pueblos).filter((p) => p.nombre);
+    const qids = new Set(mios.filter((p) => p.wikidata).map((p) => p.wikidata));
+    const nombres = new Set(mios.map((p) => normalizar(p.nombre)));
+    lista.forEach((x) => {
+      x.km = kmEntre(yo, [x.lat, x.lon]);
+      x.tengo = (x.wikidata && qids.has(x.wikidata)) || nombres.has(normalizar(x.nombre));
+    });
+    lista.sort((a, b) => a.km - b.km);
+    pintarBonitosCercanos(lista);
+  }
+
   function pantallaLista() {
     E.editor = null;
     const todos = Object.values(E.pueblos).filter((p) => p.nombre);
@@ -961,6 +1062,7 @@
         </div>
         ${E.vista === 'revisar' ? pintarRevisar(todos) : `
         <input class="buscar" id="buscar" type="search" placeholder="Buscar pueblo o provincia…" value="${esc(E.filtro)}">
+        ${E.vista === 'pendientes' && GPS_OK ? `<button class="btn descubre" id="bonito-cerca">${ico('lugar')} Pueblos más Bonitos cerca de mí</button>` : ''}
         ${E.vista === 'visitados' && sinPropias ? `<p class="resumen">${sinPropias} ${sinPropias === 1 ? 'pueblo visitado' : 'pueblos visitados'} sin fotos tuyas todavía.</p>` : ''}
         <div class="rejilla">${lista.map(ficha).join('') || `<p class="vacio" style="grid-column:1/-1">${E.filtro ? 'No hay pueblos que coincidan.' :
           E.vista === 'visitados' ? 'Todavía no hay pueblos. Sube las fotos de un viaje o añade uno.' : 'Tu lista de pendientes está vacía.'}</p>`}</div>`}
@@ -975,6 +1077,7 @@
     $$('.rev-chip').forEach((b) => (b.onclick = () => abrirEditor(b.dataset.slug)));
     if ($('#aqui')) $('#aqui').onclick = estoyAqui;
     if ($('#capturar')) $('#capturar').onclick = capturar;
+    if ($('#bonito-cerca')) $('#bonito-cerca').onclick = bonitosCercanos;
     $$('[data-cap]').forEach((b) => (b.onclick = () => accionCaptura(b.dataset.cap, b.dataset.que)));
     if ($('#buscar')) $('#buscar').oninput = (ev) => {
       E.filtro = ev.target.value;
