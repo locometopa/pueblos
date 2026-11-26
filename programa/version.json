@@ -1,5 +1,5 @@
 {
-  "version": "1.8.0",
-  "notas": "La web estrena el mapa de España que se destapa de protagonista, y el mapa de cada pueblo pasa a Google Maps.",
+  "version": "1.8.1",
+  "notas": "Vuelve el dibujo de la cabecera que cambia con la hora como portada por defecto, con el mapa de España que se destapa justo debajo, de protagonista. La cabecera «solo mapa» sigue en Diseño.",
   "archivo": "PUEBLOS.zip"
 }

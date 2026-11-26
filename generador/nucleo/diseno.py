@@ -3,7 +3,7 @@ import re
 from urllib.parse import quote
 
 DEFECTO = {
-    "cabecera": "mapa",          # mapa | dibujo | foto | collage | sencilla
+    "cabecera": "dibujo",        # dibujo | mapa | foto | collage | sencilla
     "paleta": "teja",            # teja | mediterraneo | norte | piedra | lavanda
     "modo": "auto",              # auto | claro | oscuro
     "tipografia": "clasica",     # clasica | moderna | redonda | elegante | sencilla

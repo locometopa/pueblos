@@ -833,13 +833,14 @@ def _indice(pueblos: list, cfg, pendientes=()) -> str:
     if _DISENO["fiestas"]:
         lista_pueblos = X.seccion_proximas(pueblos + list(pendientes)) + lista_pueblos
     ultima = X.bloque_ultima(pueblos, fecha_larga) if _DISENO["ultima_visita"] else ""
-    partes = [seccion_mapa, lista_pueblos] if _DISENO["mapa_primero"] else [lista_pueblos, seccion_mapa]
-    if _DISENO["cronologia"]:
-        partes.append(X.cronologia(pueblos))
+    cola = [X.cronologia(pueblos)] if _DISENO["cronologia"] else []
+    if _DISENO["mapa_primero"]:
+        medio = [seccion_mapa, ultima, lista_pueblos] + cola   # el mapa, de protagonista justo tras la cabecera
+    else:
+        medio = [ultima, lista_pueblos, seccion_mapa] + cola
     cuerpo = f"""
 {cabecera}
-{ultima}
-{''.join(partes)}
+{''.join(medio)}
 {_pie(cfg)}"""
     desc = cfg.get("subtitulo_web") or ""
     resumen = f"{len(pueblos)} {'pueblo' if len(pueblos) == 1 else 'pueblos'} en {len(prov_visitadas)} " \
