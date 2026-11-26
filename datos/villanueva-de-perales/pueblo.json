@@ -18,7 +18,7 @@
     "poblacion": 1715,
     "poblacion_anio": "2025",
     "altitud": 595,
-    "superficie": 31.0,
+    "superficie": 31,
     "escudo": "https://commons.wikimedia.org/wiki/Special:FilePath/Escudo_de_Villanueva_de_Perales.svg?width=160",
     "web": "https://www.villanuevadeperales.es/",
     "secciones": [
@@ -81,11 +81,53 @@
         "fuente": "https://commons.wikimedia.org/wiki/File:Fuente_en_Villanueva_de_Perales.jpg",
         "origen": "Wikimedia Commons"
       }
+    },
+    {
+      "archivo": "wmwx63qe6002.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "https://commons.wikimedia.org/wiki/File:R%C3%ADo_Perales_2.jpg",
+      "credito": {
+        "autor": "Riozujar",
+        "licencia": "CC BY-SA 4.0",
+        "url_licencia": "https://creativecommons.org/licenses/by-sa/4.0",
+        "fuente": "https://commons.wikimedia.org/wiki/File:R%C3%ADo_Perales_2.jpg",
+        "origen": "Wikimedia Commons"
+      }
+    },
+    {
+      "archivo": "wmwx63qqx003.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "https://commons.wikimedia.org/wiki/File:Ayuntamiento_de_Villanueva_de_Perales.jpg",
+      "credito": {
+        "autor": "Dirección General de Turismo. Consejería de Economía e Innovación Tecnológica. Comunidad de Madrid.",
+        "licencia": "CC BY 3.0 es",
+        "url_licencia": "https://creativecommons.org/licenses/by/3.0/es/deed.en",
+        "fuente": "https://commons.wikimedia.org/wiki/File:Ayuntamiento_de_Villanueva_de_Perales.jpg",
+        "origen": "Wikimedia Commons"
+      }
+    },
+    {
+      "archivo": "wmwx63rei004.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "https://commons.wikimedia.org/wiki/File:Casa_de_cultura_en_Villanueva_de_Perales.jpg",
+      "credito": {
+        "autor": "Dirección General de Turismo. Consejería de Economía e Innovación Tecnológica. Comunidad de Madrid.",
+        "licencia": "CC BY 3.0 es",
+        "url_licencia": "https://creativecommons.org/licenses/by/3.0/es/deed.en",
+        "fuente": "https://commons.wikimedia.org/wiki/File:Casa_de_cultura_en_Villanueva_de_Perales.jpg",
+        "origen": "Wikimedia Commons"
+      }
     }
   ],
   "portada": "wmvpquhar000.jpg",
   "publicar": true,
   "estado": "visitado",
+  "bonito": false,
+  "revisado": false,
+  "wikidata": "",
   "creado": "2026-10-26 22:02",
-  "modificado": "2026-11-26 03:05"
+  "modificado": "2026-11-26 07:24"
 }
