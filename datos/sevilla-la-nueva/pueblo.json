@@ -33,12 +33,52 @@
       }
     ]
   },
-  "texto_ia": "",
+  "texto_ia": "A finales de noviembre de 2026 me acerqué a Sevilla la Nueva, un municipio madrileño situado a 675 metros de altitud, en el suroeste de la región, entre Navalcarnero y Brunete. Con sus 25 kilómetros cuadrados de extensión y rozando los diez mil habitantes, este rincón conserva el poso de una historia singular que arranca en la Edad Media y que en el siglo XVI vio la refundación de su concejo gracias a vecinos como Antón Sevillano, tras vencer la oposición de la villa de Brunete y del conde de Chinchón.\n\nPasear por el casco urbano lleva a descubrir elementos como el Palacio de Baena, la Iglesia de Santiago Apóstol o un llamativo hórreo, además de restos con historia propia como el fragmento del Canal del Real Monasterio de San Lorenzo del Escorial. Hacia las afueras, el paisaje se abre hacia parajes como la Dehesa Boyal o la Charca de la Garza, lugares ideales para detener la marcha y respirar aire puro.\n\nResulta interesante recordar que hasta la reforma municipal de 1916 la localidad aún compartía el nombre de Sevilleja. Hoy día destaca por un espíritu comunitario donde se alternan fiestas tradicionales, como las de Santa Bárbara o San Isidro, con eventos variados que van desde la Feria Andaluza hasta la Mechanics Fest o la FrikiCon. Sin duda, una visita muy completa en la geografía madrileña.",
   "notas": "",
-  "fotos": [],
-  "portada": "",
+  "fotos": [
+    {
+      "archivo": "wmwwy7pj6000.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "https://commons.wikimedia.org/wiki/File:Ayuntamiento_de_Sevilla_la_Nueva.jpg",
+      "credito": {
+        "autor": "Dirección General de Turismo. Consejería de Economía e Innovación Tecnológica. Comunidad de Madrid.",
+        "licencia": "CC BY 3.0 es",
+        "url_licencia": "https://creativecommons.org/licenses/by/3.0/es/deed.en",
+        "fuente": "https://commons.wikimedia.org/wiki/File:Ayuntamiento_de_Sevilla_la_Nueva.jpg",
+        "origen": "Wikimedia Commons"
+      }
+    },
+    {
+      "archivo": "wmwwy7q0c001.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "https://commons.wikimedia.org/wiki/File:Centro_Cultural_La_Casa_Grande_de_Sevilla_la_Nueva.jpg",
+      "credito": {
+        "autor": "Dirección General de Turismo. Consejería de Economía e Innovación Tecnológica. Comunidad de Madrid.",
+        "licencia": "CC BY 3.0 es",
+        "url_licencia": "https://creativecommons.org/licenses/by/3.0/es/deed.en",
+        "fuente": "https://commons.wikimedia.org/wiki/File:Centro_Cultural_La_Casa_Grande_de_Sevilla_la_Nueva.jpg",
+        "origen": "Wikimedia Commons"
+      }
+    },
+    {
+      "archivo": "wmwwy7qoq002.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "https://commons.wikimedia.org/wiki/File:Parque_Regional_del_Guadarrama_Sevilla_la_Nueva.jpg",
+      "credito": {
+        "autor": "Esetena",
+        "licencia": "CC BY-SA 3.0",
+        "url_licencia": "https://creativecommons.org/licenses/by-sa/3.0",
+        "fuente": "https://commons.wikimedia.org/wiki/File:Parque_Regional_del_Guadarrama_Sevilla_la_Nueva.jpg",
+        "origen": "Wikimedia Commons"
+      }
+    }
+  ],
+  "portada": "wmwwy7pj6000.jpg",
   "publicar": true,
   "estado": "visitado",
   "creado": "2026-11-26 03:36",
-  "modificado": "2026-11-26 03:36"
+  "modificado": "2026-11-26 03:43"
 }
