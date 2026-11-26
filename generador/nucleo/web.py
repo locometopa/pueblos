@@ -278,13 +278,16 @@ a{color:var(--acento)}
 .ficha.nofoto .pie p{color:var(--tinta-2)}
 .ficha.nofoto .cinta{color:var(--acento-2);background:color-mix(in srgb,var(--acento-2) 15%,var(--tarjeta));backdrop-filter:none}
 .sello-ico{width:1.1em;height:1.25em;flex:none;vertical-align:-.28em}
-.ficha .sello-mini{position:absolute;top:10px;right:10px;z-index:2;width:30px;height:30px;display:grid;place-items:center;
+.ficha .sellos{position:absolute;top:10px;right:10px;z-index:2;display:flex;gap:6px}
+.ficha .sello-mini{width:30px;height:30px;display:grid;place-items:center;
   background:rgba(18,12,6,.42);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);border-radius:50%}
 .ficha .sello-mini .sello-ico{width:19px;height:21px;vertical-align:0}
 .ficha.nofoto .sello-mini{background:color-mix(in srgb,#e0b23e 22%,var(--tarjeta))}
-.sello-bonito{display:inline-flex;align-items:center;gap:7px;margin-top:14px;font:600 13px/1.1 var(--f-texto);
+.ficha.nofoto .sello-mini.magico{background:color-mix(in srgb,#6c3fb3 24%,var(--tarjeta))}
+.sello-bonito{display:inline-flex;align-items:center;gap:7px;margin:14px 8px 0 0;font:600 13px/1.1 var(--f-texto);
   color:#fff;background:rgba(0,0,0,.32);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);padding:7px 13px 7px 9px;border-radius:999px}
 .heroe.sin-foto .sello-bonito{color:var(--tinta);background:color-mix(in srgb,#e0b23e 20%,var(--tarjeta))}
+.heroe.sin-foto .sello-bonito.magico{background:color-mix(in srgb,#6c3fb3 20%,var(--tarjeta))}
 .vacio{padding:60px 0;text-align:center;color:var(--tinta-2)}
 
 /* ---- página de pueblo ---- */
@@ -710,6 +713,13 @@ SELLO_BONITO = ('<svg class="sello-ico" viewBox="0 0 24 24" aria-hidden="true">'
                 '<path d="M12 5.2l1.35 2.73 3.01.44-2.18 2.12.51 3-2.69-1.42-2.69 1.42.51-3-2.18-2.12 3.01-.44z" fill="#fff8e6"/>'
                 '</svg>')
 
+# sello de «Pueblos Mágicos de España» (una estrella/destello propio; no es el logo oficial)
+SELLO_MAGICO = ('<svg class="sello-ico magico-ico" viewBox="0 0 24 24" aria-hidden="true">'
+                '<circle cx="12" cy="12" r="11" fill="#6c3fb3"/>'
+                '<path d="M12 3.6l1.9 5.3 5.3 1.9-5.3 1.9L12 18l-1.9-5.3L4.8 10.8l5.3-1.9z" fill="#f4e9ff"/>'
+                '<circle cx="18" cy="6" r="1.3" fill="#f4e9ff"/><circle cx="6.2" cy="17" r="1" fill="#f4e9ff"/>'
+                '</svg>')
+
 
 # ---------------------------------------------------------------------------- índice
 def _ficha(p: dict) -> str:
@@ -729,9 +739,15 @@ def _ficha(p: dict) -> str:
     else:
         visita = "Visitado"
     cinta = f'<span class="cinta">{e(lugar)}</span>' if lugar else ""
-    sello = f'<span class="sello-mini" title="Uno de los Pueblos más Bonitos de España">{SELLO_BONITO}</span>' if p.get("bonito") else ""
+    sellos = ""
+    if p.get("bonito"):
+        sellos += f'<span class="sello-mini" title="Uno de los Pueblos más Bonitos de España">{SELLO_BONITO}</span>'
+    if p.get("magico"):
+        sellos += f'<span class="sello-mini magico" title="Pueblo Mágico de España">{SELLO_MAGICO}</span>'
+    if sellos:
+        sellos = f'<div class="sellos">{sellos}</div>'
     return (f'<a class="ficha{clase}{" pend" if pendiente else ""}" href="pueblos/{e(p["slug"])}/index.html" data-buscar="{e(buscar)}">'
-            f'{cuerpo}{cinta}{sello}<div class="pie"><h4>{e(p["nombre"])}</h4>'
+            f'{cuerpo}{cinta}{sellos}<div class="pie"><h4>{e(p["nombre"])}</h4>'
             f'<p>{e(visita)}</p></div></a>')
 
 
@@ -945,6 +961,7 @@ def _pagina_pueblo(p: dict, anterior, siguiente, cfg) -> str:
               f'<div class="lugar">{e(lugar)}</div><h1>{e(p["nombre"])}</h1>'
               f'<div class="visitas">{e(txt_visitas)}</div>'
               f'{f"<div class=sello-bonito>{SELLO_BONITO} Uno de los Pueblos más Bonitos de España</div>" if p.get("bonito") else ""}'
+              f'{f"<div class=\"sello-bonito magico\">{SELLO_MAGICO} Pueblo Mágico de España</div>" if p.get("magico") else ""}'
               f'{"<span class=etiqueta-pend>Por visitar</span>" if p.get("estado") == "pendiente" else ""}'
               f'{X.tiempo_mini(p.get("lat"), p.get("lon")) if _DISENO["tiempo"] else ""}'
               f'</div>{credito_portada}</header>')

@@ -1,5 +1,5 @@
 {
-  "version": "1.9.1",
-  "notas": "«Fotos de internet» ahora también trae las del artículo de Wikipedia y las subcategorías de Commons, más Flickr, y las ordena por calidad (vistas del conjunto primero).",
+  "version": "1.9.2",
+  "notas": "Nuevo distintivo «Pueblo Mágico de España» (sello propio) en la web, el programa y el panel, con interruptor en el editor para marcarlos a mano. Un pueblo puede llevar Bonito y Mágico a la vez.",
   "archivo": "PUEBLOS.zip"
 }

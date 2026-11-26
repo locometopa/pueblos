@@ -90,7 +90,7 @@
     return {
       slug: '', nombre: nombre || '', provincia: '', comunidad: '', pais: 'España', lat: null, lon: null,
       fechas_visita: [], wiki: {}, texto_ia: '', notas: '', fotos: [], portada: '', publicar: true,
-      estado: 'visitado', bonito: false, revisado: false, wikidata: '', creado: ahora(), modificado: '',
+      estado: 'visitado', bonito: false, magico: false, revisado: false, wikidata: '', creado: ahora(), modificado: '',
     };
   }
 
@@ -772,6 +772,11 @@
     + '<circle cx="12" cy="9.5" r="7.2" fill="#e0b23e" stroke="#b27f22" stroke-width="1"/>'
     + '<circle cx="12" cy="9.5" r="5.2" fill="none" stroke="#f3e2a7" stroke-width=".8"/>'
     + '<path d="M12 5.2l1.35 2.73 3.01.44-2.18 2.12.51 3-2.69-1.42-2.69 1.42.51-3-2.18-2.12 3.01-.44z" fill="#fff8e6"/></svg>';
+  // Sello de «Pueblos Mágicos de España» (estrella propia; no es el logo oficial)
+  const SELLO_MAGICO_SVG = '<svg class="sello-ico magico-ico" viewBox="0 0 24 24" aria-hidden="true">'
+    + '<circle cx="12" cy="12" r="11" fill="#6c3fb3"/>'
+    + '<path d="M12 3.6l1.9 5.3 5.3 1.9-5.3 1.9L12 18l-1.9-5.3L4.8 10.8l5.3-1.9z" fill="#f4e9ff"/>'
+    + '<circle cx="18" cy="6" r="1.3" fill="#f4e9ff"/><circle cx="6.2" cy="17" r="1" fill="#f4e9ff"/></svg>';
 
   // ------------------------------------------------------------------ instalar en el móvil
   const INST = {
@@ -1303,8 +1308,11 @@
     const ultima = (p.fechas_visita || []).slice(-1)[0];
     const sub = pend ? (p.provincia || 'Por visitar')
       : [p.provincia || p.comunidad, ultima ? fechaCorta(ultima) : '', p.fotos.some((f) => !f.credito) ? '' : 'sin fotos tuyas'].filter(Boolean).join(' · ');
-    const sello = p.bonito ? `<span class="sello-mini" title="Pueblo más Bonito de España">${SELLO_SVG}</span>` : '';
-    return `<button class="ficha${pend ? ' pend' : ''}" data-slug="${esc(p.slug)}"><div class="foto">${foto}${sello}</div>
+    let sellos = '';
+    if (p.bonito) sellos += `<span class="sello-mini" title="Pueblo más Bonito de España">${SELLO_SVG}</span>`;
+    if (p.magico) sellos += `<span class="sello-mini magico" title="Pueblo Mágico de España">${SELLO_MAGICO_SVG}</span>`;
+    if (sellos) sellos = `<div class="sellos">${sellos}</div>`;
+    return `<button class="ficha${pend ? ' pend' : ''}" data-slug="${esc(p.slug)}"><div class="foto">${foto}${sellos}</div>
       <div class="txt"><b>${esc(p.nombre)}</b><small>${esc(sub)}</small></div></button>`;
   }
 
@@ -1379,7 +1387,7 @@
 
   function diferencias() {
     const { orig, ed } = E.editor;
-    const claves = ['nombre', 'provincia', 'comunidad', 'pais', 'lat', 'lon', 'fechas_visita', 'wiki', 'texto_ia', 'notas', 'publicar', 'bonito', 'revisado', 'estado', 'portada'];
+    const claves = ['nombre', 'provincia', 'comunidad', 'pais', 'lat', 'lon', 'fechas_visita', 'wiki', 'texto_ia', 'notas', 'publicar', 'bonito', 'magico', 'revisado', 'estado', 'portada'];
     const cambiadas = claves.filter((k) => !igual(orig[k], ed[k]));
     const enOrig = new Set(orig.fotos.map((f) => f.archivo)), enEd = new Set(ed.fotos.map((f) => f.archivo));
     const quitadas = [...enOrig].filter((a) => !enEd.has(a));
@@ -1418,6 +1426,7 @@
     ed.lon = num(v('f-lon'), ed.lon);
     if ($('#f-publicar')) ed.publicar = $('#f-publicar').checked;
     if ($('#f-bonito')) ed.bonito = $('#f-bonito').checked;
+    if ($('#f-magico')) ed.magico = $('#f-magico').checked;
     if ($('#f-revisado')) ed.revisado = $('#f-revisado').checked;
     ed.notas = v('f-notas');
     if ($('#f-texto-ia')) ed.texto_ia = v('f-texto-ia');
@@ -1480,6 +1489,7 @@
           <div class="fila"><button class="btn peq sec" id="ubicar">${ico('lupa', 'i-azul')} Buscar ubicación</button></div>
           <label class="interruptor"><input type="checkbox" id="f-publicar" ${ed.publicar !== false ? 'checked' : ''}> Publicar en la web</label>
           <label class="interruptor"><input type="checkbox" id="f-bonito" ${ed.bonito ? 'checked' : ''}> 🏅 Pueblo más Bonito de España</label>
+          <label class="interruptor"><input type="checkbox" id="f-magico" ${ed.magico ? 'checked' : ''}> ✨ Pueblo Mágico de España</label>
           <label class="interruptor"><input type="checkbox" id="f-revisado" ${ed.revisado ? 'checked' : ''}> ✓ Dado por revisado (fuera de «Revisar»)</label>
         </section>
 
