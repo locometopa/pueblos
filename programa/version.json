@@ -1,5 +1,5 @@
 {
-  "version": "1.9.10",
-  "notas": "El acceso a las rutas publicadas en la web ahora es una banda limpia y legible debajo de la cabecera (antes se veía mal encima del dibujo).",
+  "version": "1.9.11",
+  "notas": "Las rutas míticas se pueden administrar también desde el programa de escritorio (menú lateral → «Rutas»): crear, editar, ordenar paradas y elegir cuáles se publican.",
   "archivo": "PUEBLOS.zip"
 }
