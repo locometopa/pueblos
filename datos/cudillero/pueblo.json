@@ -87,13 +87,79 @@
   },
   "texto_ia": "Llegar al concejo de Cudillero es adentrarse en la profunda esencia marinera de Asturias. Desde que su puerto comenzara a tomar forma en el siglo XIII, esta villa capital —reconocida como uno de los pueblos más bonitos de España desde 2021— ha mantenido un vínculo indestructible con el mar y con sus propios vecinos, quienes en el siglo XVI costearon la iglesia gótica de San Pedro. Pasear por su conjunto histórico permite sentir el peso de una tradición pesquera que hoy en día se transforma en un gran atractivo turístico durante los meses de verano.\n\nAunque su término municipal no tuvo vida autónoma hasta el siglo XIX, separándose de Pravia, el pasado del concejo guarda raíces aún más lejanas que se remontan a la época castreña con yacimientos prerromanos como La Garita, La Cavona o Gurión. Por aquí discurre además el Camino de Santiago, que entra tras cruzar el río Aguilar y ofrece hermosos itinerarios por El Pitu, Soto de Luiña o las acogedoras paradas del Camín Real en Novellana, Santa Marina y Ballota.\n\nEl recorrido por sus tierras se completa con tesoros patrimoniales como la antigua capilla del Humilladero, la iglesia de San Martín de Luiña o la lujosa Quinta de Selgas, un palacio del siglo XIX flanqueado por amplios jardines que alberga obras de Goya. Cudillero es, en definitiva, una parada imprescindible donde convergen la huella jacobea, el legado marinero y la elegancia arquitectónica.",
   "notas": "",
-  "fotos": [],
-  "portada": "",
+  "fotos": [
+    {
+      "archivo": "wmwwyyiak000.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "https://commons.wikimedia.org/wiki/File:Vistas_de_Cudillero_(Asturias)_04.jpg",
+      "credito": {
+        "autor": "Axel Cotón Gutiérrez",
+        "licencia": "CC BY-SA 4.0",
+        "url_licencia": "https://creativecommons.org/licenses/by-sa/4.0",
+        "fuente": "https://commons.wikimedia.org/wiki/File:Vistas_de_Cudillero_(Asturias)_04.jpg",
+        "origen": "Wikimedia Commons"
+      }
+    },
+    {
+      "archivo": "wmwwyyiua001.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "https://commons.wikimedia.org/wiki/File:Asturias_Cudillero_Ayuntamiento_lou.jpg",
+      "credito": {
+        "autor": "Lourdes Cardenal",
+        "licencia": "CC BY-SA 3.0",
+        "url_licencia": "https://creativecommons.org/licenses/by-sa/3.0",
+        "fuente": "https://commons.wikimedia.org/wiki/File:Asturias_Cudillero_Ayuntamiento_lou.jpg",
+        "origen": "Wikimedia Commons"
+      }
+    },
+    {
+      "archivo": "wmwwyyje0002.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "https://commons.wikimedia.org/wiki/File:San_Mart%C3%ADn_de_Lui%C3%B1a_(Cudillero,_Asturias).jpg",
+      "credito": {
+        "autor": "Carmenmoran",
+        "licencia": "CC BY 4.0",
+        "url_licencia": "https://creativecommons.org/licenses/by/4.0",
+        "fuente": "https://commons.wikimedia.org/wiki/File:San_Mart%C3%ADn_de_Lui%C3%B1a_(Cudillero,_Asturias).jpg",
+        "origen": "Wikimedia Commons"
+      }
+    },
+    {
+      "archivo": "wmwwyyjzw003.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "https://commons.wikimedia.org/wiki/File:Paseo_por_Cudillero_(Asturias)_14.jpg",
+      "credito": {
+        "autor": "Axel Cotón Gutiérrez",
+        "licencia": "CC BY-SA 4.0",
+        "url_licencia": "https://creativecommons.org/licenses/by-sa/4.0",
+        "fuente": "https://commons.wikimedia.org/wiki/File:Paseo_por_Cudillero_(Asturias)_14.jpg",
+        "origen": "Wikimedia Commons"
+      }
+    },
+    {
+      "archivo": "wmwwyyk38004.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "https://commons.wikimedia.org/wiki/File:Asturias_Cudillero_rincon_popular_ni.jpg",
+      "credito": {
+        "autor": "Nicolás Pérez",
+        "licencia": "CC BY-SA 3.0",
+        "url_licencia": "https://creativecommons.org/licenses/by-sa/3.0",
+        "fuente": "https://commons.wikimedia.org/wiki/File:Asturias_Cudillero_rincon_popular_ni.jpg",
+        "origen": "Wikimedia Commons"
+      }
+    }
+  ],
+  "portada": "wmwwyyiak000.jpg",
   "publicar": true,
   "estado": "visitado",
   "bonito": false,
   "revisado": false,
   "wikidata": "",
   "creado": "2026-11-26 03:49",
-  "modificado": "2026-11-26 04:03"
+  "modificado": "2026-11-26 04:04"
 }
