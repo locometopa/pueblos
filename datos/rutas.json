@@ -1,0 +1,146 @@
+{
+  "_nota": "Rutas míticas de España. Contenido editorial del cuaderno; las coordenadas de cada hito sirven también para el mapa. Los pueblos visitados se enlazan solos buscando por nombre y provincia.",
+  "rutas": [
+    {
+      "slug": "via-de-la-plata",
+      "nombre": "La Ruta de la Plata",
+      "subtitulo": "De Sevilla a Gijón por la vieja calzada romana",
+      "resumen": "Casi 800 kilómetros de norte a sur por el oeste peninsular, sobre el trazado de una de las grandes calzadas del Imperio.",
+      "sentido": "De sur a norte",
+      "comunidades": [
+        "Andalucía",
+        "Extremadura",
+        "Castilla y León",
+        "Asturias"
+      ],
+      "provincias": [
+        "Sevilla",
+        "Badajoz",
+        "Cáceres",
+        "Salamanca",
+        "Zamora",
+        "León",
+        "Asturias"
+      ],
+      "historia": "Los romanos empezaron a empedrar este corredor del oeste peninsular en el siglo I a. C. para unir las dos capitales que acababan de fundar: Emerita Augusta (Mérida) y Asturica Augusta (Astorga). Sobre aquella calzada se movieron legiones, comerciantes y el oro que salía de las minas del noroeste, y durante siglos fue el eje que vertebró la Hispania occidental.\n\nEl nombre, curiosamente, no viene de la plata. Lo más aceptado es que procede del árabe «balât» (camino empedrado o enlosado), que el romance acabó convirtiendo en «plata». En la Edad Media el mismo trazado sirvió de cañada para los rebaños de la Mesta y de camino para los peregrinos que subían a Santiago desde el sur, el llamado Camino Mozárabe o Vía de la Plata jacobea.\n\nHoy la «Ruta de la Plata» turística estira aquel corredor de punta a punta de la Península: arranca en Sevilla, cruza Extremadura entera, sube por el oeste de Castilla y León y termina asomándose al Cantábrico en Gijón. Es, en esencia, la Ruta 66 española: un viaje por ciudades romanas, dehesas, embalses y montañas que concentra una parte enorme del patrimonio del país.",
+      "hitos": [
+        {
+          "nombre": "Sevilla",
+          "provincia": "Sevilla",
+          "lat": 37.3886,
+          "lon": -5.9823,
+          "nota": "Arranque de la ruta, la antigua Hispalis a orillas del Guadalquivir."
+        },
+        {
+          "nombre": "Santiponce",
+          "provincia": "Sevilla",
+          "lat": 37.4378,
+          "lon": -6.045,
+          "nota": "Itálica, la primera ciudad romana de Hispania y cuna de los emperadores Trajano y Adriano.",
+          "alias": [
+            "Itálica"
+          ]
+        },
+        {
+          "nombre": "Zafra",
+          "provincia": "Badajoz",
+          "lat": 38.4256,
+          "lon": -6.4175,
+          "nota": "«Sevilla la chica», con su plaza porticada y el alcázar de los Suárez de Figueroa."
+        },
+        {
+          "nombre": "Almendralejo",
+          "provincia": "Badajoz",
+          "lat": 38.6833,
+          "lon": -6.4072,
+          "nota": "Capital de Tierra de Barros, tierra de vino y de la poeta Carolina Coronado."
+        },
+        {
+          "nombre": "Mérida",
+          "provincia": "Badajoz",
+          "lat": 38.9165,
+          "lon": -6.3436,
+          "nota": "Emerita Augusta, capital de Lusitania. Su teatro, anfiteatro y acueducto son Patrimonio de la Humanidad."
+        },
+        {
+          "nombre": "Cáceres",
+          "provincia": "Cáceres",
+          "lat": 39.4752,
+          "lon": -6.3724,
+          "nota": "Ciudad monumental de murallas y palacios casi intacta desde el Renacimiento."
+        },
+        {
+          "nombre": "Plasencia",
+          "provincia": "Cáceres",
+          "lat": 40.03,
+          "lon": -6.0892,
+          "nota": "Puerta del valle del Jerte, con su doble catedral y las murallas sobre el río."
+        },
+        {
+          "nombre": "Béjar",
+          "provincia": "Salamanca",
+          "lat": 40.3869,
+          "lon": -5.7622,
+          "nota": "Al pie de la sierra, famosa por su industria textil y El Bosque, jardín renacentista."
+        },
+        {
+          "nombre": "Salamanca",
+          "provincia": "Salamanca",
+          "lat": 40.9701,
+          "lon": -5.6635,
+          "nota": "La ciudad dorada de la universidad más antigua de España y la Plaza Mayor barroca."
+        },
+        {
+          "nombre": "Zamora",
+          "provincia": "Zamora",
+          "lat": 41.5033,
+          "lon": -5.7446,
+          "nota": "La ciudad del románico, con más iglesias de este estilo que ninguna otra de Europa."
+        },
+        {
+          "nombre": "Benavente",
+          "provincia": "Zamora",
+          "lat": 42.0024,
+          "lon": -5.678,
+          "nota": "Cruce de caminos del norte, con el Torreón del Caracol sobre el valle."
+        },
+        {
+          "nombre": "Astorga",
+          "provincia": "León",
+          "lat": 42.455,
+          "lon": -6.053,
+          "nota": "Asturica Augusta, final de la calzada romana original y del Palacio de Gaudí."
+        },
+        {
+          "nombre": "León",
+          "provincia": "León",
+          "lat": 42.5987,
+          "lon": -5.5671,
+          "nota": "Nació como campamento de la Legio VII; hoy brilla su catedral gótica de vidrieras."
+        },
+        {
+          "nombre": "Pola de Lena",
+          "provincia": "Asturias",
+          "lat": 43.1573,
+          "lon": -5.829,
+          "nota": "Ya en Asturias, junto a Santa Cristina de Lena, joya del prerrománico asturiano."
+        },
+        {
+          "nombre": "Oviedo",
+          "provincia": "Asturias",
+          "lat": 43.3614,
+          "lon": -5.8494,
+          "nota": "Capital del Principado, con la Cámara Santa y los monumentos del Naranco."
+        },
+        {
+          "nombre": "Gijón",
+          "provincia": "Asturias",
+          "lat": 43.5322,
+          "lon": -5.6611,
+          "nota": "Fin del viaje frente al Cantábrico, la antigua Gigia romana."
+        }
+      ],
+      "publicar": false
+    }
+  ]
+}

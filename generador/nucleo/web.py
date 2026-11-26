@@ -1170,10 +1170,19 @@ SELLO_RUTA = ('<svg class="sello-ico ruta-ico" viewBox="0 0 24 24" aria-hidden="
               '</svg>')
 
 
-def cargar_rutas() -> list:
-    """Lee la semilla de rutas míticas (nucleo/rutas.json). Devuelve [] si no hay."""
-    archivo = Path(__file__).with_name("rutas.json")
-    if not archivo.exists():
+def cargar_rutas(carpeta_datos=None) -> list:
+    """Lee las rutas míticas. Primero las editables del usuario (datos/rutas.json, que gestiona
+    el panel); si no las hay, la semilla que viene con el programa (nucleo/rutas.json)."""
+    archivo = None
+    if carpeta_datos:
+        c = Path(carpeta_datos) / "rutas.json"
+        if c.exists():
+            archivo = c
+    if archivo is None:
+        b = Path(__file__).with_name("rutas.json")
+        if b.exists():
+            archivo = b
+    if archivo is None:
         return []
     try:
         datos = json.loads(archivo.read_text(encoding="utf-8"))
@@ -1369,7 +1378,8 @@ def generar(almacen: Almacen, cfg, destino: Path, avisar=print) -> int:
     (destino / "sw.js").write_text(X.service_worker(_VERSION_RECURSOS) if _DISENO["instalable"] else X.SW_APAGADO,
                                    encoding="utf-8")
     (destino / ".nojekyll").write_text("", encoding="utf-8")
-    rutas = _preparar_rutas(cargar_rutas(), visitados)
+    # solo se publican en la web las rutas marcadas como «publicar»; el resto se gestionan en el panel
+    rutas = _preparar_rutas([r for r in cargar_rutas(almacen.carpeta) if r.get("publicar")], visitados)
     (destino / "index.html").write_text(_indice(visitados, cfg, pendientes, rutas), encoding="utf-8")
 
     carpeta_pueblos = destino / "pueblos"
