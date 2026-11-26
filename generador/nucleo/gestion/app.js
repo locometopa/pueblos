@@ -761,6 +761,11 @@
     return res;
   }
 
+  // ------------------------------------------------------------------ ¿móvil con GPS útil o PC?
+  //  En el PC la ubicación es imprecisa (por IP), así que allí ocultamos «Capturar» y «Estoy aquí».
+  const GPS_OK = (() => { try { return matchMedia('(pointer: coarse)').matches || navigator.maxTouchPoints > 0; } catch (e) { return true; } })();
+  try { document.documentElement.dataset.disp = GPS_OK ? 'movil' : 'pc'; } catch (e) { /* nada */ }
+
   // ------------------------------------------------------------------ instalar en el móvil
   const INST = {
     ev: null,
@@ -939,14 +944,14 @@
       </main>
       <nav class="acciones">
         <button class="btn sec" id="nuevo"><b>${ico('mas', 'i-mostaza')}</b><span>Pueblo</span></button>
-        <button class="btn capturar" id="capturar" title="Guarda el pueblo por el que pasas, para verlo luego"><b>${ico('chincheta', 'i-verde')}</b><span>Capturar</span>${colaCapturas().length ? `<i class="cola">${colaCapturas().length}</i>` : ''}</button>
-        <button class="btn aqui" id="aqui"><b>${ico('lugar', 'i-teja')}</b><span>Estoy aquí</span></button>
+        ${GPS_OK ? `<button class="btn capturar" id="capturar" title="Guarda el pueblo por el que pasas, para verlo luego"><b>${ico('chincheta', 'i-verde')}</b><span>Capturar</span>${colaCapturas().length ? `<i class="cola">${colaCapturas().length}</i>` : ''}</button>
+        <button class="btn aqui" id="aqui"><b>${ico('lugar', 'i-teja')}</b><span>Estoy aquí</span></button>` : ''}
         <button class="btn sec" id="subir"><b>${ico('camara', 'i-azul')}</b><span>Fotos</span></button>
       </nav>`;
     $$('.pestanas button').forEach((b) => (b.onclick = () => { E.vista = b.dataset.v; pantallaLista(); }));
     $$('.rev-chip').forEach((b) => (b.onclick = () => abrirEditor(b.dataset.slug)));
-    $('#aqui').onclick = estoyAqui;
-    $('#capturar').onclick = capturar;
+    if ($('#aqui')) $('#aqui').onclick = estoyAqui;
+    if ($('#capturar')) $('#capturar').onclick = capturar;
     $$('[data-cap]').forEach((b) => (b.onclick = () => accionCaptura(b.dataset.cap, b.dataset.que)));
     if ($('#buscar')) $('#buscar').oninput = (ev) => {
       E.filtro = ev.target.value;

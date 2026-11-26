@@ -1,5 +1,5 @@
 {
-  "version": "1.8.6",
-  "notas": "La cabecera es ahora un pueblo del norte de España: prados verdes, montañas al fondo, árboles frondosos y casonas blancas con tejado rojo.",
+  "version": "1.8.7",
+  "notas": "El panel del móvil estrena el estilo de la web y se adapta a móvil o PC: en el ordenador oculta los botones de GPS (Capturar y Estoy aquí) y pone las acciones en línea.",
   "archivo": "PUEBLOS.zip"
 }

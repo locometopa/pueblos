@@ -1,24 +1,24 @@
 :root{
-  --papel:#f3ead6; --papel-2:#e9dcc0; --tinta:#2b2a35; --tinta-2:#6b6456;
-  --acento:#b3402a; --acento-h:#97341f; --pendiente:#2e6a5f; --peligro:#9c2f2f;
-  --linea:#d6c6a3; --tarjeta:#fffdf6; --lateral:#2e4a62; --lateral-t:#f5efe0;
-  --renglon:rgba(46,74,98,.13); --marco:#fffdf6; --celo-1:rgba(179,64,42,.35); --celo-2:rgba(46,106,95,.35);
-  --i-teja:#c2512f; --i-verde:#2e8a77; --i-mostaza:#d39a1c; --i-azul:#3c78b4;
-  --sombra:0 2px 6px rgba(60,40,10,.16);
-  --f-titulo:"Caveat","Fraunces",cursive; --f-texto:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --papel:#f5efe3; --papel-2:#ece3d2; --tinta:#2a2621; --tinta-2:#6b6257;
+  --acento:#a8472a; --acento-h:#8f3a22; --pendiente:#2e6a5f; --peligro:#9c2f2f;
+  --linea:#d8ccb6; --tarjeta:#fffaf0; --lateral:#2a2621; --lateral-t:#f5efe0;
+  --renglon:rgba(168,71,42,.09); --marco:#fffaf0; --celo-1:rgba(168,71,42,.32); --celo-2:rgba(124,106,59,.30);
+  --i-teja:#b8532f; --i-verde:#5d7a3a; --i-mostaza:#c99a2c; --i-azul:#5f7e9c;
+  --sombra:0 1px 2px rgba(60,40,20,.08),0 6px 18px rgba(60,40,20,.08);
+  --f-titulo:"Fraunces",Georgia,"Times New Roman",serif; --f-texto:"Source Sans 3","Segoe UI",system-ui,sans-serif;
   --seguro-abajo:env(safe-area-inset-bottom,0px);
   color-scheme:light;
 }
-@media (prefers-color-scheme:dark){:root:not([data-tema="claro"]){--papel:#171d29;--papel-2:#222a39;--tinta:#ece4d2;--tinta-2:#a8afbd;--acento:#e2734f;--acento-h:#cc6040;
-    --pendiente:#5cc0ac;--peligro:#ee8a8a;--linea:#343e52;--tarjeta:#202838;--lateral:#0f141d;--lateral-t:#ece4d2;
-    --renglon:rgba(160,190,230,.07);--marco:#2a3345;--celo-1:rgba(226,115,79,.45);--celo-2:rgba(92,192,172,.4);
-    --i-teja:#ef7d56;--i-verde:#4fc7ae;--i-mostaza:#f2bf3f;--i-azul:#6eaef0;
-    --sombra:0 2px 8px rgba(0,0,0,.45);color-scheme:dark}}
-:root[data-tema="oscuro"]{--papel:#171d29;--papel-2:#222a39;--tinta:#ece4d2;--tinta-2:#a8afbd;--acento:#e2734f;--acento-h:#cc6040;
-    --pendiente:#5cc0ac;--peligro:#ee8a8a;--linea:#343e52;--tarjeta:#202838;--lateral:#0f141d;--lateral-t:#ece4d2;
-    --renglon:rgba(160,190,230,.07);--marco:#2a3345;--celo-1:rgba(226,115,79,.45);--celo-2:rgba(92,192,172,.4);
-    --i-teja:#ef7d56;--i-verde:#4fc7ae;--i-mostaza:#f2bf3f;--i-azul:#6eaef0;
-    --sombra:0 2px 8px rgba(0,0,0,.45);color-scheme:dark}
+@media (prefers-color-scheme:dark){:root:not([data-tema="claro"]){--papel:#1c1a17;--papel-2:#26231f;--tinta:#efe7d8;--tinta-2:#b3a893;--acento:#e0835f;--acento-h:#cf7049;
+    --pendiente:#5cc0ac;--peligro:#ee8a8a;--linea:#3a352e;--tarjeta:#24211d;--lateral:#141210;--lateral-t:#efe7d8;
+    --renglon:rgba(224,131,95,.08);--marco:#2a2621;--celo-1:rgba(224,131,95,.40);--celo-2:rgba(201,178,122,.34);
+    --i-teja:#ef7d56;--i-verde:#8ab06a;--i-mostaza:#f2bf3f;--i-azul:#8bb0d6;
+    --sombra:0 2px 8px rgba(0,0,0,.42);color-scheme:dark}}
+:root[data-tema="oscuro"]{--papel:#1c1a17;--papel-2:#26231f;--tinta:#efe7d8;--tinta-2:#b3a893;--acento:#e0835f;--acento-h:#cf7049;
+    --pendiente:#5cc0ac;--peligro:#ee8a8a;--linea:#3a352e;--tarjeta:#24211d;--lateral:#141210;--lateral-t:#efe7d8;
+    --renglon:rgba(224,131,95,.08);--marco:#2a2621;--celo-1:rgba(224,131,95,.40);--celo-2:rgba(201,178,122,.34);
+    --i-teja:#ef7d56;--i-verde:#8ab06a;--i-mostaza:#f2bf3f;--i-azul:#8bb0d6;
+    --sombra:0 2px 8px rgba(0,0,0,.42);color-scheme:dark}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html{-webkit-text-size-adjust:100%}
@@ -249,3 +249,11 @@ body{background-color:var(--papel);background-image:repeating-linear-gradient(tr
 .mapita{border-radius:8px;overflow:hidden;border:1px solid var(--linea);margin:0 0 10px;aspect-ratio:16/9;background:var(--papel-2)}
 .mapita iframe{width:100%;height:100%;border:0;display:block}
 :root[data-tema="oscuro"] .mapita iframe{filter:brightness(.85) contrast(1.05)}
+
+/* ---------- adaptación a PC (ratón, sin GPS útil) ---------- */
+:root[data-disp="pc"] .acciones{position:static;background:none;padding:6px 16px 24px;justify-content:flex-start;max-width:980px;margin:0 auto}
+:root[data-disp="pc"] .acciones .btn{flex:0 0 auto;max-width:none;flex-direction:row;gap:8px;font-size:15px;min-height:44px;padding:9px 18px}
+:root[data-disp="pc"] .acciones .btn b .ico{width:20px;height:20px}
+:root[data-disp="pc"] .cont{padding-bottom:16px}
+:root[data-disp="pc"] .rejilla{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
+@media (min-width:900px){:root[data-disp="pc"] .rejilla{grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}}
