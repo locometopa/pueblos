@@ -277,6 +277,14 @@ a{color:var(--acento)}
 .ficha.nofoto h4{color:var(--tinta);text-shadow:none}
 .ficha.nofoto .pie p{color:var(--tinta-2)}
 .ficha.nofoto .cinta{color:var(--acento-2);background:color-mix(in srgb,var(--acento-2) 15%,var(--tarjeta));backdrop-filter:none}
+.sello-ico{width:1.1em;height:1.25em;flex:none;vertical-align:-.28em}
+.ficha .sello-mini{position:absolute;top:10px;right:10px;z-index:2;width:30px;height:30px;display:grid;place-items:center;
+  background:rgba(18,12,6,.42);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);border-radius:50%}
+.ficha .sello-mini .sello-ico{width:19px;height:21px;vertical-align:0}
+.ficha.nofoto .sello-mini{background:color-mix(in srgb,#e0b23e 22%,var(--tarjeta))}
+.sello-bonito{display:inline-flex;align-items:center;gap:7px;margin-top:14px;font:600 13px/1.1 var(--f-texto);
+  color:#fff;background:rgba(0,0,0,.32);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);padding:7px 13px 7px 9px;border-radius:999px}
+.heroe.sin-foto .sello-bonito{color:var(--tinta);background:color-mix(in srgb,#e0b23e 20%,var(--tarjeta))}
 .vacio{padding:60px 0;text-align:center;color:var(--tinta-2)}
 
 /* ---- página de pueblo ---- */
@@ -694,6 +702,15 @@ def _pie(cfg) -> str:
             f'{X.BOTON_INSTALAR if _DISENO["instalable"] else ""}</div></footer>')
 
 
+# sello de «Los Pueblos más Bonitos de España» (medalla con estrella y cintas; no es el logo oficial)
+SELLO_BONITO = ('<svg class="sello-ico" viewBox="0 0 24 24" aria-hidden="true">'
+                '<path d="M8.6 13l-2.2 6 3-1.3 1.6 2.3 1.8-5zM15.4 13l2.2 6-3-1.3-1.6 2.3-1.8-5z" fill="#c0442a"/>'
+                '<circle cx="12" cy="9.5" r="7.2" fill="#e0b23e" stroke="#b27f22" stroke-width="1"/>'
+                '<circle cx="12" cy="9.5" r="5.2" fill="none" stroke="#f3e2a7" stroke-width=".8"/>'
+                '<path d="M12 5.2l1.35 2.73 3.01.44-2.18 2.12.51 3-2.69-1.42-2.69 1.42.51-3-2.18-2.12 3.01-.44z" fill="#fff8e6"/>'
+                '</svg>')
+
+
 # ---------------------------------------------------------------------------- índice
 def _ficha(p: dict) -> str:
     buscar = normalizar(f"{p['nombre']} {p['provincia']} {p['comunidad']}")
@@ -712,8 +729,9 @@ def _ficha(p: dict) -> str:
     else:
         visita = "Visitado"
     cinta = f'<span class="cinta">{e(lugar)}</span>' if lugar else ""
+    sello = f'<span class="sello-mini" title="Uno de los Pueblos más Bonitos de España">{SELLO_BONITO}</span>' if p.get("bonito") else ""
     return (f'<a class="ficha{clase}{" pend" if pendiente else ""}" href="pueblos/{e(p["slug"])}/index.html" data-buscar="{e(buscar)}">'
-            f'{cuerpo}{cinta}<div class="pie"><h4>{e(p["nombre"])}</h4>'
+            f'{cuerpo}{cinta}{sello}<div class="pie"><h4>{e(p["nombre"])}</h4>'
             f'<p>{e(visita)}</p></div></a>')
 
 
@@ -926,6 +944,7 @@ def _pagina_pueblo(p: dict, anterior, siguiente, cfg) -> str:
     heroe += (f'<a class="volver" href="{volver}">← Todos los pueblos</a><div class="envoltorio">'
               f'<div class="lugar">{e(lugar)}</div><h1>{e(p["nombre"])}</h1>'
               f'<div class="visitas">{e(txt_visitas)}</div>'
+              f'{f"<div class=sello-bonito>{SELLO_BONITO} Uno de los Pueblos más Bonitos de España</div>" if p.get("bonito") else ""}'
               f'{"<span class=etiqueta-pend>Por visitar</span>" if p.get("estado") == "pendiente" else ""}'
               f'{X.tiempo_mini(p.get("lat"), p.get("lon")) if _DISENO["tiempo"] else ""}'
               f'</div>{credito_portada}</header>')

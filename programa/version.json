@@ -1,5 +1,5 @@
 {
-  "version": "1.8.8",
-  "notas": "Nuevo catálogo de «Los Pueblos más Bonitos de España» por provincia (en + Añadir): marca los que ya has visitado y se añaden a «Visitados» para rellenarlos luego con fotos e IA.",
+  "version": "1.8.9",
+  "notas": "Los Pueblos más Bonitos de España lucen un sello en la web, el programa y el panel. Se pone solo desde el catálogo y también puedes marcarlo a mano en el editor.",
   "archivo": "PUEBLOS.zip"
 }
