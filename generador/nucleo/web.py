@@ -489,13 +489,19 @@ CSS_RUTAS_M = r"""
 .hito .h-tengo{display:inline-block;margin-top:7px;font-size:14px;font-weight:600;color:var(--acento);text-decoration:none}
 .hito .h-tengo:hover{text-decoration:underline}
 /* acceso a las rutas desde la portada */
-.rutas-portada{margin-top:14px}
-.rutas-portada a{display:inline-flex;align-items:center;gap:9px;padding:11px 18px;border:1px solid var(--linea);border-radius:999px;
-  background:var(--tarjeta);color:var(--tinta);text-decoration:none;font-weight:600;transition:border-color .15s,transform .15s}
-.rutas-portada a:hover{border-color:color-mix(in srgb,var(--acento) 45%,var(--linea));transform:translateY(-1px)}
-.rutas-portada a .sello-ico{width:20px;height:20px;color:var(--acento)}
-.rutas-portada a span{font-weight:500;color:var(--tinta-2)}
-@media (max-width:560px){.ruta-tarjeta{padding:16px}.ruta-tarjeta .r-flecha{display:none}.rutas-portada a span{display:none}}
+.rutas-acceso{margin:22px 0 4px}
+.rutas-acceso a{display:flex;align-items:center;gap:14px;padding:15px 18px;border:1px solid var(--linea);border-radius:16px;
+  background:var(--tarjeta);color:var(--tinta);text-decoration:none;box-shadow:var(--sombra);transition:border-color .15s,transform .15s,box-shadow .15s}
+.rutas-acceso a:hover{border-color:color-mix(in srgb,var(--acento) 45%,var(--linea));transform:translateY(-1px);box-shadow:0 10px 26px rgba(40,25,10,.12)}
+.rutas-acceso .ra-ico{flex:none;width:44px;height:44px;display:grid;place-items:center;border-radius:50%;
+  background:color-mix(in srgb,var(--acento) 12%,var(--papel));color:var(--acento)}
+.rutas-acceso .ra-ico .sello-ico{width:24px;height:24px}
+.rutas-acceso .ra-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.rutas-acceso .ra-txt b{font:600 18px/1.2 var(--f-titulo,var(--f-texto))}
+.rutas-acceso .ra-txt small{color:var(--tinta-2);font-size:14px}
+.rutas-acceso .ra-flecha{flex:none;font-size:20px;color:var(--tinta-2);transition:transform .15s}
+.rutas-acceso a:hover .ra-flecha{transform:translateX(3px);color:var(--acento)}
+@media (max-width:560px){.ruta-tarjeta{padding:16px}.ruta-tarjeta .r-flecha{display:none}}
 """
 
 JS_INDICE = r"""
@@ -899,8 +905,7 @@ def _indice(pueblos: list, cfg, pendientes=(), rutas=()) -> str:
     <div>{len(prov_visitadas)}<span>de {total_prov} provincias</span></div>
     <div>{len(por_com)}<span>{'comunidad' if len(por_com) == 1 else 'comunidades'}</span></div>
     {f'<div>{len(pendientes)}<span>por visitar</span></div>' if pendientes else ''}
-  </div>
-  {f'<div class="rutas-portada"><a href="rutas/index.html">{SELLO_RUTA} Rutas míticas de España <span>· grandes caminos del país</span></a></div>' if rutas else ''}"""
+  </div>"""
     con_foto = [p for p in sorted(pueblos, key=lambda x: (x.get("fechas_visita") or [""])[-1], reverse=True) if p.get("portada")]
     estilo = _DISENO["cabecera"]
     if estilo in ("foto", "collage") and not con_foto:
@@ -984,8 +989,14 @@ def _indice(pueblos: list, cfg, pendientes=(), rutas=()) -> str:
         medio = [seccion_mapa, ultima, lista_pueblos] + cola   # el mapa, de protagonista justo tras la cabecera
     else:
         medio = [ultima, lista_pueblos, seccion_mapa] + cola
+    acceso_rutas = (f'<aside class="rutas-acceso"><div class="envoltorio"><a href="rutas/index.html">'
+                    f'<span class="ra-ico">{SELLO_RUTA}</span>'
+                    f'<span class="ra-txt"><b>Rutas míticas de España</b>'
+                    f'<small>grandes caminos del país, parada a parada</small></span>'
+                    f'<span class="ra-flecha" aria-hidden="true">→</span></a></div></aside>') if rutas else ""
     cuerpo = f"""
 {cabecera}
+{acceso_rutas}
 {''.join(medio)}
 {_pie(cfg)}"""
     desc = cfg.get("subtitulo_web") or ""

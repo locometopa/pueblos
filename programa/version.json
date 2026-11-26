@@ -1,5 +1,5 @@
 {
-  "version": "1.9.9",
-  "notas": "Las rutas míticas se gestionan ahora desde el panel (Ajustes → Administrar rutas): crear, editar, ordenar paradas y elegir cuáles se publican. En la web solo salen las rutas publicadas.",
+  "version": "1.9.10",
+  "notas": "El acceso a las rutas publicadas en la web ahora es una banda limpia y legible debajo de la cabecera (antes se veía mal encima del dibujo).",
   "archivo": "PUEBLOS.zip"
 }
