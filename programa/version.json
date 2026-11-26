@@ -1,5 +1,5 @@
 {
-  "version": "1.8.1",
-  "notas": "Vuelve el dibujo de la cabecera que cambia con la hora como portada por defecto, con el mapa de España que se destapa justo debajo, de protagonista. La cabecera «solo mapa» sigue en Diseño.",
+  "version": "1.8.2",
+  "notas": "Portada con más vida: los pueblos se ven como postales (foto a toda tarjeta con el nombre encima) y juntos en una misma rejilla que llena la página.",
   "archivo": "PUEBLOS.zip"
 }

@@ -230,17 +230,33 @@ a{color:var(--acento)}
 .provincia h3{font:600 13px/1 var(--f-texto);letter-spacing:.14em;text-transform:uppercase;color:var(--acento-2);
   margin:22px 0 14px;display:flex;align-items:center;gap:10px}
 .provincia h3::after{content:"";flex:1;height:1px;background:var(--linea)}
-.rejilla{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:20px}
-.ficha{display:block;text-decoration:none;color:inherit;background:var(--tarjeta);border-radius:var(--radio);
-  overflow:hidden;box-shadow:var(--sombra);transition:transform .2s,box-shadow .2s}
-.ficha:hover{transform:translateY(-3px)}
-.ficha .foto{aspect-ratio:4/3;background:var(--papel-2);overflow:hidden}
-.ficha .foto img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
-.ficha:hover .foto img{transform:scale(1.04)}
-.ficha .sinfoto{width:100%;height:100%;display:grid;place-items:center;font:600 44px var(--f-titulo);color:var(--linea)}
-.ficha .texto{padding:12px 14px 14px}
-.ficha h4{font:600 20px/1.2 var(--f-titulo);margin:0}
-.ficha p{margin:4px 0 0;font-size:14px;color:var(--tinta-2)}
+.rejilla{display:grid;grid-template-columns:repeat(auto-fit,minmax(228px,1fr));gap:18px}
+.ficha{position:relative;display:block;text-decoration:none;color:#fff;border-radius:14px;overflow:hidden;
+  aspect-ratio:4/5;max-height:380px;background:var(--papel-2);box-shadow:var(--sombra);
+  transition:transform .22s,box-shadow .22s}
+.ficha:hover{transform:translateY(-4px);box-shadow:0 2px 6px rgba(60,40,20,.14),0 16px 34px rgba(60,40,20,.22)}
+.ficha img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.ficha:hover img{transform:scale(1.06)}
+.ficha::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(177deg,rgba(18,12,6,.12) 0%,rgba(18,12,6,0) 32%,rgba(18,12,6,.74) 100%)}
+.ficha .cinta{position:absolute;top:12px;left:12px;z-index:2;font:600 11px/1 var(--f-texto);
+  letter-spacing:.08em;text-transform:uppercase;color:#fff;background:rgba(18,12,6,.40);
+  -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);padding:6px 11px;border-radius:999px}
+.ficha .pie{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:16px 16px 15px}
+.ficha h4{font:600 23px/1.08 var(--f-titulo);margin:0;color:#fff;text-shadow:0 1px 12px rgba(0,0,0,.45)}
+.ficha .pie p{margin:6px 0 0;font-size:13.5px;color:rgba(255,255,255,.9);display:flex;align-items:center;gap:7px}
+.ficha .pie p::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--acento);flex:none;
+  box-shadow:0 0 0 3px rgba(255,255,255,.18)}
+.ficha.pend::after{background:linear-gradient(177deg,rgba(18,12,6,.10),rgba(18,12,6,.55))}
+.ficha.pend .cinta{background:color-mix(in srgb,var(--acento) 86%,#000)}
+.ficha.pend img{filter:grayscale(.45)}
+.ficha.nofoto{color:var(--tinta);background:
+  repeating-linear-gradient(135deg,var(--tarjeta),var(--tarjeta) 12px,var(--papel-2) 12px,var(--papel-2) 13px)}
+.ficha.nofoto::after{display:none}
+.ficha.nofoto .inicial{position:absolute;top:10px;right:16px;z-index:1;font:600 76px/1 var(--f-titulo);color:var(--linea)}
+.ficha.nofoto h4{color:var(--tinta);text-shadow:none}
+.ficha.nofoto .pie p{color:var(--tinta-2)}
+.ficha.nofoto .cinta{color:var(--acento-2);background:color-mix(in srgb,var(--acento-2) 15%,var(--tarjeta));backdrop-filter:none}
 .vacio{padding:60px 0;text-align:center;color:var(--tinta-2)}
 
 /* ---- página de pueblo ---- */
@@ -380,8 +396,6 @@ a{color:var(--acento)}
 .pendientes{padding-top:44px}
 .pendientes>h2{font:600 34px/1.1 var(--f-titulo);margin:0 0 4px}
 .pendientes>p{color:var(--tinta-2);margin:0 0 18px}
-.ficha.pend{background:transparent;border:2px dashed var(--linea);box-shadow:none}
-.ficha.pend .foto img{filter:grayscale(.6) opacity(.85)}
 footer{border-top:1px solid var(--linea);margin-top:40px;padding:26px 0 40px;color:var(--tinta-2);font-size:14px}
 """
 
@@ -392,11 +406,8 @@ JS_INDICE = r"""
     var t=(q.value||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
     document.querySelectorAll('.comunidad').forEach(function(sec){
       var okc=!actual||sec.dataset.comunidad===actual, vis=0;
-      sec.querySelectorAll('.provincia').forEach(function(pr){
-        var n=0;
-        pr.querySelectorAll('.ficha').forEach(function(f){
-          var ok=okc&&(!t||f.dataset.buscar.indexOf(t)>-1); f.hidden=!ok; if(ok)n++;});
-        pr.hidden=!n; vis+=n;});
+      sec.querySelectorAll('.ficha').forEach(function(f){
+        var ok=okc&&(!t||f.dataset.buscar.indexOf(t)>-1); f.hidden=!ok; if(ok)vis++;});
       sec.hidden=!vis;});
     var nada=document.getElementById('nada'); if(nada) nada.hidden=!!document.querySelector('.ficha:not([hidden])');
   }
@@ -663,16 +674,23 @@ def _pie(cfg) -> str:
 def _ficha(p: dict) -> str:
     buscar = normalizar(f"{p['nombre']} {p['provincia']} {p['comunidad']}")
     pendiente = p.get("estado") == "pendiente"
+    lugar = p["provincia"] or p["comunidad"]
     if p.get("portada"):
-        foto = f'<img src="pueblos/{e(p["slug"])}/mini/{e(p["portada"])}" alt="" loading="lazy">'
+        cuerpo = f'<img src="pueblos/{e(p["slug"])}/mini/{e(p["portada"])}" alt="" loading="lazy">'
+        clase = ""
     else:
-        foto = f'<div class="sinfoto">{e(p["nombre"][:1])}</div>'
-    visita = fecha_corta(p["fechas_visita"][-1]) if p.get("fechas_visita") else "Visitado"
+        cuerpo = f'<span class="inicial">{e(p["nombre"][:1])}</span>'
+        clase = " nofoto"
     if pendiente:
-        visita = p["provincia"] or "Por visitar"
-    return (f'<a class="ficha{" pend" if pendiente else ""}" href="pueblos/{e(p["slug"])}/index.html" data-buscar="{e(buscar)}">'
-            f'<div class="foto">{foto}</div><div class="texto"><small class="f-prov">{e(p["provincia"] or p["comunidad"])}</small><h4>{e(p["nombre"])}</h4>'
-            f'<p>{e(visita) or "&nbsp;"}</p></div></a>')
+        visita = "Por visitar"
+    elif p.get("fechas_visita"):
+        visita = fecha_corta(p["fechas_visita"][-1])
+    else:
+        visita = "Visitado"
+    cinta = f'<span class="cinta">{e(lugar)}</span>' if lugar else ""
+    return (f'<a class="ficha{clase}{" pend" if pendiente else ""}" href="pueblos/{e(p["slug"])}/index.html" data-buscar="{e(buscar)}">'
+            f'{cuerpo}{cinta}<div class="pie"><h4>{e(p["nombre"])}</h4>'
+            f'<p>{e(visita)}</p></div></a>')
 
 
 def _datos_mapa(visitados: list, pendientes: list) -> dict:
@@ -712,16 +730,13 @@ def _indice(pueblos: list, cfg, pendientes=()) -> str:
     for c in comunidades:
         provs = por_com[c]
         total = sum(len(v) for v in provs.values())
-        bloques = []
-        for prov in sorted(provs, key=normalizar):
-            fichas = "".join(_ficha(p) for p in sorted(provs[prov], key=lambda x: normalizar(x["nombre"])))
-            redundante = len(provs) == 1 and normalizar(prov) in normalizar(c)
-            titulo = "" if redundante else f"<h3>{e(prov)}</h3>"
-            bloques.append(f'<div class="provincia">{titulo}<div class="rejilla">{fichas}</div></div>')
+        todos = [p for prov in sorted(provs, key=normalizar)
+                 for p in sorted(provs[prov], key=lambda x: normalizar(x["nombre"]))]
+        fichas = "".join(_ficha(p) for p in todos)
         secciones.append(
             f'<section class="comunidad" id="{slugify(c)}" data-comunidad="{e(c)}">'
             f'<h2>{e(c)} <small>{total} {"pueblo" if total == 1 else "pueblos"}</small></h2>'
-            f'{"".join(bloques)}</section>')
+            f'<div class="rejilla">{fichas}</div></section>')
 
     porcentaje = round(100 * len(prov_visitadas) / total_prov) if total_prov else 0
     datos = json.dumps(_datos_mapa(pueblos, pendientes), ensure_ascii=False).replace("</", "<\\/")
