@@ -74,11 +74,27 @@
         "fuente": "https://commons.wikimedia.org/wiki/File:Parque_Regional_del_Guadarrama_Sevilla_la_Nueva.jpg",
         "origen": "Wikimedia Commons"
       }
+    },
+    {
+      "archivo": "wmwx5ynnx001.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "https://commons.wikimedia.org/wiki/File:Iglesia_en_Sevilla_la_Nueva.jpg",
+      "credito": {
+        "autor": "Dirección General de Turismo. Consejería de Economía e Innovación Tecnológica. Comunidad de Madrid.",
+        "licencia": "CC BY 3.0 es",
+        "url_licencia": "https://creativecommons.org/licenses/by/3.0/es/deed.en",
+        "fuente": "https://commons.wikimedia.org/wiki/File:Iglesia_en_Sevilla_la_Nueva.jpg",
+        "origen": "Wikimedia Commons"
+      }
     }
   ],
   "portada": "wmwwy7pj6000.jpg",
   "publicar": true,
   "estado": "visitado",
+  "bonito": false,
+  "revisado": false,
+  "wikidata": "",
   "creado": "2026-11-26 03:36",
-  "modificado": "2026-11-26 03:43"
+  "modificado": "2026-11-26 07:20"
 }
