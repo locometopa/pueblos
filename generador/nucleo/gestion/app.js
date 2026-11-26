@@ -1636,13 +1636,30 @@
   function iaProv() { const c = iaCfg(); return IA_PROV[c.prov] ? c.prov : 'gemini'; }
   function iaConfigurada() { return !!(iaCfg().clave || '').trim(); }
 
+  const IA_TRANSITORIOS = [429, 500, 502, 503, 504, 529];   // saturación o fallo pasajero: se reintenta
   async function iaError(r, prov) {
-    if (r.status === 401 || r.status === 403) return new Error(`${IA_PROV[prov].nombre}: la clave no es válida o no tiene permiso.`);
-    if (r.status === 429) return new Error(`${IA_PROV[prov].nombre}: has llegado al límite de uso o no tienes saldo.`);
-    let m = ''; try { const j = await r.json(); m = (j.error && (j.error.message || j.error)) || ''; } catch (e) { /* nada */ }
-    return new Error(`${IA_PROV[prov].nombre} (${r.status}): ${String(m).slice(0, 200)}`);
+    let e;
+    if (r.status === 401 || r.status === 403) e = new Error(`${IA_PROV[prov].nombre}: la clave no es válida o no tiene permiso.`);
+    else if (r.status === 429) e = new Error(`${IA_PROV[prov].nombre}: has llegado al límite de uso o no tienes saldo.`);
+    else {
+      let m = ''; try { const j = await r.json(); m = (j.error && (j.error.message || j.error)) || ''; } catch (x) { /* nada */ }
+      e = new Error(`${IA_PROV[prov].nombre} (${r.status}): ${String(m).slice(0, 200)}`);
+    }
+    e.transitorio = IA_TRANSITORIOS.includes(r.status);
+    return e;
   }
   async function iaPreguntar(prompt) {
+    // reintenta solo si el error es pasajero (saturación 503, 429…); un bloqueo CORS o una clave mala no se reintenta
+    const esperas = [0, 2000, 5000, 10000];
+    let ultimo;
+    for (let i = 0; i < esperas.length; i++) {
+      if (esperas[i]) await new Promise((r) => setTimeout(r, esperas[i]));
+      try { return await iaUna(prompt); }
+      catch (e) { ultimo = e; if (e.transitorio && i < esperas.length - 1) continue; throw e; }
+    }
+    throw ultimo;
+  }
+  async function iaUna(prompt) {
     const c = iaCfg(), prov = iaProv(), clave = (c.clave || '').trim(), modelo = (c.modelo || '').trim() || IA_PROV[prov].modelo;
     if (!clave) throw new Error('Falta la clave de la IA (Ajustes).');
     let texto = '';

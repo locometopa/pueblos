@@ -1,5 +1,5 @@
 {
-  "version": "1.7.3",
-  "notas": "En el panel del móvil ya se puede escribir el texto de un pueblo con IA (Gemini, Claude, DeepSeek…).",
+  "version": "1.7.4",
+  "notas": "La IA reintenta sola si está saturada (error 503) o falla un momento, en el programa y en el panel.",
   "archivo": "PUEBLOS.zip"
 }
