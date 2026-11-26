@@ -137,6 +137,18 @@ a{color:var(--acento)}
 .paisaje .tejado2{fill:var(--tejado2)}.paisaje .tejado3{fill:var(--tejado3)}.paisaje .ventana,.paisaje .campana,.paisaje .puerta{fill:var(--ventana)}
 .paisaje .arbol{fill:var(--arbol)}.paisaje .camino{stroke:var(--camino);stroke-width:10;fill:none;stroke-linecap:round;opacity:.8}
 .paisaje .suelo{fill:var(--papel)}
+.paisaje .chimenea{fill:var(--tejado3)}
+.paisaje .humo circle{fill:#efe9dc;opacity:0;filter:blur(1px);transform-box:fill-box;transform-origin:center bottom;
+  animation:humito 7s ease-out infinite}
+.paisaje .humo circle:nth-child(2){animation-delay:2.3s}
+.paisaje .humo circle:nth-child(3){animation-delay:4.6s}
+@keyframes humito{
+  0%{opacity:0;transform:translate(0,0) scale(.35)}
+  12%{opacity:.5}
+  60%{opacity:.3}
+  100%{opacity:0;transform:translate(9px,-48px) scale(1.7)}
+}
+@media (prefers-reduced-motion:reduce){.paisaje .humo circle{animation:none;opacity:.3;transform:translate(3px,-14px) scale(1.1)}}
 @media (prefers-color-scheme:dark){
   :root{--cielo-1:#0f1830;--cielo-2:#1d2236;--astro:#f1e6c8;--nube:#3a3f55;--colina1:#2c2e3b;--colina2:#24252f;--colina3:#1d1d24;
     --pared:#585060;--pared2:#4b4452;--tejado:#6b3a35;--tejado2:#73403a;--tejado3:#7a4840;--ventana:#ffcf6b;--arbol:#1f2b22;--camino:#3b3a44}
@@ -346,10 +358,14 @@ a{color:var(--acento)}
 .mapa-cab{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:14px}
 .mapa-cab h2{font:600 34px/1.1 var(--f-titulo);margin:0}
 .mapa-cab p{margin:4px 0 0;color:var(--tinta-2)}
-.progreso{width:min(320px,100%)}
-.progreso .barra{height:8px;border-radius:99px;background:var(--papel-2);overflow:hidden}
-.progreso .barra i{display:block;height:100%;width:0;background:var(--acento);border-radius:99px;transition:width 1.6s cubic-bezier(.2,.8,.2,1)}
-.progreso small{display:block;margin-top:6px;color:var(--tinta-2);font-size:14px;text-align:right}
+.progreso{width:min(340px,100%)}
+.progreso .barra{height:11px;border-radius:99px;background:color-mix(in srgb,var(--tinta) 14%,transparent);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--tinta) 22%,transparent);overflow:hidden}
+.progreso .barra i{display:block;height:100%;min-width:16px;width:0;border-radius:99px;
+  background:linear-gradient(90deg,color-mix(in srgb,var(--acento) 80%,#000),var(--acento));
+  box-shadow:0 0 10px color-mix(in srgb,var(--acento) 50%,transparent);
+  transition:width 1.6s cubic-bezier(.2,.8,.2,1)}
+.progreso small{display:block;margin-top:7px;color:var(--tinta-2);font-size:14px;text-align:right}
 .mapa-marco{position:relative;background:var(--tarjeta);border-radius:16px;box-shadow:var(--sombra);overflow:hidden}
 .mapa-marco svg{display:block;width:100%;height:auto;max-height:min(76vh,700px);margin:0 auto;touch-action:manipulation;
   background:var(--mar)}
@@ -817,6 +833,8 @@ def _indice(pueblos: list, cfg, pendientes=()) -> str:
       <rect class="pared" x="120" y="20" width="34" height="110"/><path class="tejado" d="M114 22 L137 -14 L160 22Z"/>
       <rect class="campana" x="131" y="34" width="12" height="16" rx="6"/>
       <rect class="pared2" x="154" y="70" width="90" height="60"/><path class="tejado" d="M150 72 L199 40 L248 72Z"/>
+      <rect class="chimenea" x="169" y="34" width="12" height="24" rx="1.5"/><rect class="chimenea" x="166" y="31" width="18" height="6" rx="2"/>
+      <g class="humo"><circle cx="175" cy="29" r="5.5"/><circle cx="175" cy="29" r="6.5"/><circle cx="175" cy="29" r="5"/></g>
       <rect class="puerta" x="190" y="96" width="16" height="34" rx="8"/>
       <rect class="pared" x="0" y="80" width="70" height="50"/><path class="tejado2" d="M-6 82 L35 52 L76 82Z"/>
       <rect class="ventana" x="12" y="96" width="12" height="14"/><rect class="ventana" x="44" y="96" width="12" height="14"/>
