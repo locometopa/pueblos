@@ -76,8 +76,87 @@
   },
   "texto_ia": "",
   "notas": "",
-  "fotos": [],
-  "portada": "",
+  "fotos": [
+    {
+      "archivo": "wmwxe9fvl003.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "https://commons.wikimedia.org/wiki/File:Castillo_de_Escalona_003.jpg",
+      "credito": {
+        "autor": "Américo Toledano",
+        "licencia": "CC BY-SA 4.0",
+        "url_licencia": "https://creativecommons.org/licenses/by-sa/4.0",
+        "fuente": "https://commons.wikimedia.org/wiki/File:Castillo_de_Escalona_003.jpg",
+        "origen": "Wikimedia Commons"
+      }
+    },
+    {
+      "archivo": "wmwxe9g34004.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "https://commons.wikimedia.org/wiki/File:Castillo_de_Escalona_001.jpg",
+      "credito": {
+        "autor": "Américo Toledano",
+        "licencia": "CC BY-SA 4.0",
+        "url_licencia": "https://creativecommons.org/licenses/by-sa/4.0",
+        "fuente": "https://commons.wikimedia.org/wiki/File:Castillo_de_Escalona_001.jpg",
+        "origen": "Wikimedia Commons"
+      }
+    },
+    {
+      "archivo": "wmwxe9gos005.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "https://commons.wikimedia.org/wiki/File:Toledo_(provincia)_2003_18.jpg",
+      "credito": {
+        "autor": "LBM1948",
+        "licencia": "CC BY-SA 4.0",
+        "url_licencia": "https://creativecommons.org/licenses/by-sa/4.0",
+        "fuente": "https://commons.wikimedia.org/wiki/File:Toledo_(provincia)_2003_18.jpg",
+        "origen": "Wikimedia Commons"
+      }
+    },
+    {
+      "archivo": "wmwxe9hd0006.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "https://commons.wikimedia.org/wiki/File:KM16EscalonaSanMiguel.jpg",
+      "credito": {
+        "autor": "Ziegler175",
+        "licencia": "CC BY-SA 3.0",
+        "url_licencia": "https://creativecommons.org/licenses/by-sa/3.0",
+        "fuente": "https://commons.wikimedia.org/wiki/File:KM16EscalonaSanMiguel.jpg",
+        "origen": "Wikimedia Commons"
+      }
+    },
+    {
+      "archivo": "wmwxe9ine007.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "https://commons.wikimedia.org/wiki/File:Escalona20120108123503P1140471.jpg",
+      "credito": {
+        "autor": "Rowanwindwhistler",
+        "licencia": "CC BY-SA 3.0",
+        "url_licencia": "https://creativecommons.org/licenses/by-sa/3.0",
+        "fuente": "https://commons.wikimedia.org/wiki/File:Escalona20120108123503P1140471.jpg",
+        "origen": "Wikimedia Commons"
+      }
+    },
+    {
+      "archivo": "wmwxe9jim008.jpg",
+      "fecha": "",
+      "pie": "",
+      "original": "https://commons.wikimedia.org/wiki/File:KM16Escalona2.jpg",
+      "credito": {
+        "autor": "Ziegler175",
+        "licencia": "CC BY-SA 3.0",
+        "url_licencia": "https://creativecommons.org/licenses/by-sa/3.0",
+        "fuente": "https://commons.wikimedia.org/wiki/File:KM16Escalona2.jpg",
+        "origen": "Wikimedia Commons"
+      }
+    }
+  ],
+  "portada": "wmwxe9fvl003.jpg",
   "publicar": true,
   "estado": "visitado",
   "bonito": false,
@@ -85,5 +164,5 @@
   "revisado": false,
   "wikidata": "",
   "creado": "2026-11-26 11:12",
-  "modificado": "2026-11-26 11:12"
+  "modificado": "2026-11-26 11:13"
 }
