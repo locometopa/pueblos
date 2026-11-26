@@ -99,6 +99,50 @@ class Almacen:
         destino = papelera / f"{slug}-{time.strftime('%Y%m%d-%H%M%S')}"
         shutil.move(str(origen), str(destino))
 
+    def papelera(self) -> list:
+        """Pueblos borrados que siguen en datos/_papelera, el más reciente primero."""
+        pap = self.carpeta / "_papelera"
+        res = []
+        if not pap.exists():
+            return res
+        for c in sorted(pap.iterdir(), reverse=True):
+            if not c.is_dir() or not (c / "pueblo.json").exists():
+                continue
+            try:
+                d = json.loads((c / "pueblo.json").read_text(encoding="utf-8"))
+            except (OSError, ValueError):
+                d = {}
+            partes = c.name.rsplit("-", 2)
+            cuando = c.name
+            if len(partes) == 3 and len(partes[1]) == 8 and len(partes[2]) == 6:
+                f, h = partes[1], partes[2]
+                cuando = f"{f[6:8]}/{f[4:6]}/{f[0:4]} {h[0:2]}:{h[2:4]}"
+            res.append({"carpeta": c.name, "nombre": d.get("nombre") or partes[0], "provincia": d.get("provincia", ""),
+                        "estado": d.get("estado", "visitado"), "cuando": cuando})
+        return res
+
+    def restaurar(self, carpeta: str) -> str:
+        """Saca un pueblo de la papelera y lo devuelve a tus pueblos. Devuelve su slug."""
+        origen = self.carpeta / "_papelera" / carpeta
+        if not origen.exists():
+            return ""
+        try:
+            d = json.loads((origen / "pueblo.json").read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            d = {}
+        slug = self.slug_libre(d.get("nombre") or carpeta.rsplit("-", 2)[0], d.get("provincia", ""))
+        destino = self.carpeta / slug
+        shutil.move(str(origen), str(destino))
+        if d and d.get("slug") != slug:
+            d["slug"] = slug
+            (destino / "pueblo.json").write_text(json.dumps(d, ensure_ascii=False, indent=2), encoding="utf-8")
+        return slug
+
+    def borrar_definitivo(self, carpeta: str):
+        c = self.carpeta / "_papelera" / carpeta
+        if c.exists() and c.parent.name == "_papelera":
+            shutil.rmtree(c, ignore_errors=True)
+
     # --- utilidades ---
     def slug_libre(self, nombre: str, provincia: str = "") -> str:
         base = slugify(nombre)
