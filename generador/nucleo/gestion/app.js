@@ -1624,10 +1624,11 @@
           <h2>Texto del pueblo</h2>
           <p class="ayuda" style="margin:0 0 8px">El texto que sale en la web. Escríbelo tú o pídeselo a la IA (parte de los datos de Wikipedia de arriba).</p>
           <label class="campo"><textarea id="f-texto-ia" placeholder="Un par de párrafos sobre el pueblo…">${esc(ed.texto_ia || '')}</textarea></label>
-          <div class="fila" style="flex-wrap:wrap">
+          <div class="fila" style="flex-wrap:wrap;align-items:center">
             <button class="btn peq sec" id="escribir-ia">✍ Escribir con IA</button>
             <button class="btn peq sec" id="pulir-ia">✨ Pulir</button>
             <button class="btn peq sec" id="acortar-ia">✂ Acortar</button>
+            ${iaConfigurados().length >= 2 ? `<select class="ia-rapida" id="ia-rapida" title="IA en uso">${iaConfigurados().map((k) => `<option value="${k}" ${k === iaProv() ? 'selected' : ''}>${esc(IA_PROV[k].nombre.split(' (')[0])}</option>`).join('')}</select>` : ''}
           </div>
         </section>
 
@@ -1692,6 +1693,7 @@
     $('#escribir-ia').onclick = escribirIA;
     $('#pulir-ia').onclick = () => mejorarIA('pulir');
     $('#acortar-ia').onclick = () => mejorarIA('acortar');
+    if ($('#ia-rapida')) $('#ia-rapida').onchange = (ev) => { iaGuardarActiva(ev.target.value); aviso(`IA en uso: ${IA_PROV[iaProv()].nombre.split(' (')[0]}.`); };
     $('#guardar').onclick = () => { leerFormulario(); guardarEditor(); };
     $('#eliminar').onclick = eliminarPueblo;
   }
@@ -1781,7 +1783,21 @@
   const IA_BASE = { chatgpt: 'https://api.openai.com/v1', deepseek: 'https://api.deepseek.com/v1' };
   function iaCfg() { try { return JSON.parse(local.get('pueblos-ia') || '{}'); } catch (e) { return {}; } }
   function iaProv() { const c = iaCfg(); return IA_PROV[c.prov] ? c.prov : 'gemini'; }
-  function iaConfigurada() { return !!(iaCfg().clave || '').trim(); }
+  function iaClave(prov) {
+    const c = iaCfg();
+    const k = (c.claves && c.claves[prov]) || '';
+    if (k) return String(k).trim();
+    if ((c.prov || 'gemini') === prov && c.clave) return String(c.clave).trim();   // config antigua: una sola clave
+    return '';
+  }
+  function iaModelo(prov) {
+    const c = iaCfg();
+    const m = (c.modelos && c.modelos[prov]) || ((c.prov || 'gemini') === prov ? c.modelo : '') || '';
+    return String(m || '').trim() || IA_PROV[prov].modelo;
+  }
+  function iaConfigurada() { return !!iaClave(iaProv()); }
+  function iaConfigurados() { return Object.keys(IA_PROV).filter((p) => iaClave(p)); }
+  function iaGuardarActiva(prov) { const c = iaCfg(); c.prov = prov; try { local.set('pueblos-ia', JSON.stringify(c)); } catch (e) { /* nada */ } }
 
   const IA_TRANSITORIOS = [429, 500, 502, 503, 504, 529];   // saturación o fallo pasajero: se reintenta
   async function iaError(r, prov) {
@@ -1807,7 +1823,7 @@
     throw ultimo;
   }
   async function iaUna(prompt) {
-    const c = iaCfg(), prov = iaProv(), clave = (c.clave || '').trim(), modelo = (c.modelo || '').trim() || IA_PROV[prov].modelo;
+    const prov = iaProv(), clave = iaClave(prov), modelo = iaModelo(prov);
     if (!clave) throw new Error('Falta la clave de la IA (Ajustes).');
     let texto = '';
     try {
@@ -1896,30 +1912,48 @@
     } catch (e) { finEspera(); aviso(e.message, true); }
   }
   function dialogoIA() {
-    const c = iaCfg(), prov = iaProv();
+    const prov0 = iaProv();
     const d = dialogo(`<h2>Inteligencia artificial</h2>
-      <p class="sub">Para escribir el texto de un pueblo con IA. Opcional; las fuentes gratuitas van siempre primero.</p>
+      <p class="sub">Para escribir el texto de un pueblo con IA. Opcional; las fuentes gratuitas van siempre primero. Puedes guardar varias y cambiar entre ellas al vuelo (p. ej. si Gemini está saturada, saltar a DeepSeek).</p>
       <label class="campo"><span>Usar</span><select id="ia-prov">${Object.keys(IA_PROV).map((k) =>
-        `<option value="${k}" ${k === prov ? 'selected' : ''}>${esc(IA_PROV[k].nombre)}</option>`).join('')}</select></label>
+        `<option value="${k}" ${k === prov0 ? 'selected' : ''}>${esc(IA_PROV[k].nombre)}${iaClave(k) ? ' ✓' : ''}</option>`).join('')}</select></label>
       <label class="campo"><span>Clave</span><input id="ia-clave" type="password" autocomplete="off"
-        value="${esc(c.clave || '')}" placeholder="pega aquí tu clave"></label>
-      <label class="campo"><span>Modelo</span><input id="ia-modelo" autocomplete="off" value="${esc(c.modelo || IA_PROV[prov].modelo)}"></label>
+        value="${esc(iaClave(prov0))}" placeholder="pega aquí tu clave"></label>
+      <label class="campo"><span>Modelo</span><input id="ia-modelo" autocomplete="off" value="${esc(iaModelo(prov0))}"></label>
       <p class="sub" id="ia-nota"></p>
       <div class="fila fin"><button class="btn sec" id="ia-no">Cancelar</button><button class="btn capturar-ok" id="ia-si">Guardar</button></div>`);
-    const prv = $('#ia-prov', d), mod = $('#ia-modelo', d), nota = $('#ia-nota', d);
-    const modelos = Object.values(IA_PROV).map((p) => p.modelo);
+    const prv = $('#ia-prov', d), cla = $('#ia-clave', d), mod = $('#ia-modelo', d), nota = $('#ia-nota', d);
+    const borrador = {};
+    let visible = prov0;
     function pinta() {
       const k = prv.value;
-      if (!mod.value.trim() || modelos.includes(mod.value.trim())) mod.value = IA_PROV[k].modelo;
+      const b = borrador[k] || {};
+      cla.value = b.clave != null ? b.clave : iaClave(k);
+      mod.value = b.modelo != null ? b.modelo : iaModelo(k);
+      visible = k;
       nota.innerHTML = (IA_PROV[k].nav
         ? '✓ Funciona desde el móvil. '
         : '⚠ Puede que el navegador lo bloquee en el móvil; si falla, úsalo desde el PC. ')
         + `<a href="${IA_PROV[k].clave}" target="_blank" rel="noopener">Conseguir la clave</a>.`;
     }
-    prv.onchange = pinta; pinta();
+    prv.onchange = () => { borrador[visible] = { clave: cla.value, modelo: mod.value }; pinta(); };
+    pinta();
     $('#ia-no', d).onclick = () => d.remove();
     $('#ia-si', d).onclick = () => {
-      local.set('pueblos-ia', JSON.stringify({ prov: prv.value, clave: $('#ia-clave', d).value.trim(), modelo: mod.value.trim() }));
+      borrador[visible] = { clave: cla.value, modelo: mod.value };     // guarda el proveedor que se ve
+      const c = iaCfg();
+      c.claves = c.claves || {}; c.modelos = c.modelos || {};
+      if (c.clave && !c.claves[c.prov || 'gemini']) {                  // migra la clave antigua, por si acaso
+        c.claves[c.prov || 'gemini'] = c.clave; if (c.modelo) c.modelos[c.prov || 'gemini'] = c.modelo;
+      }
+      for (const [k, b] of Object.entries(borrador)) {
+        const clave = (b.clave || '').trim(), modelo = (b.modelo || '').trim();
+        if (clave) c.claves[k] = clave; else delete c.claves[k];
+        if (modelo) c.modelos[k] = modelo; else delete c.modelos[k];
+      }
+      c.prov = prv.value;
+      delete c.clave; delete c.modelo;
+      try { local.set('pueblos-ia', JSON.stringify(c)); } catch (e) { /* nada */ }
       d.remove();
       if (E.editor) pintarEditor(); else pantallaAjustes();
       aviso('IA guardada.');

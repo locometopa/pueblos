@@ -1,5 +1,5 @@
 {
-  "version": "1.9.4",
-  "notas": "Panel del móvil: «Pueblos más Bonitos cerca de mí» (por GPS) — los muestra por distancia, marca los que ya tienes y permite añadirlos a «Por visitar».",
+  "version": "1.9.5",
+  "notas": "Guarda varias IAs (Gemini, DeepSeek…) y cambia entre ellas al vuelo donde escribes el texto, sin tocar Ajustes. Útil si Gemini está saturada.",
   "archivo": "PUEBLOS.zip"
 }
