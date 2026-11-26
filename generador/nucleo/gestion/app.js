@@ -90,7 +90,7 @@
     return {
       slug: '', nombre: nombre || '', provincia: '', comunidad: '', pais: 'España', lat: null, lon: null,
       fechas_visita: [], wiki: {}, texto_ia: '', notas: '', fotos: [], portada: '', publicar: true,
-      estado: 'visitado', bonito: false, wikidata: '', creado: ahora(), modificado: '',
+      estado: 'visitado', bonito: false, revisado: false, wikidata: '', creado: ahora(), modificado: '',
     };
   }
 
@@ -984,7 +984,7 @@
   ];
   function revisiones(todos) {
     const grupos = REVISIONES.map(([clave, texto, quien, falta]) => ({ clave, texto,
-      lista: todos.filter((p) => (quien === 'todos' || (p.estado || 'visitado') === quien) && falta(p)) }));
+      lista: todos.filter((p) => !p.revisado && (quien === 'todos' || (p.estado || 'visitado') === quien) && falta(p)) }));
     return { grupos, total: grupos.filter((g) => g.clave !== 'notas').reduce((n, g) => n + g.lista.length, 0) };
   }
   function pintarRevisar(todos) {
@@ -1379,7 +1379,7 @@
 
   function diferencias() {
     const { orig, ed } = E.editor;
-    const claves = ['nombre', 'provincia', 'comunidad', 'pais', 'lat', 'lon', 'fechas_visita', 'wiki', 'texto_ia', 'notas', 'publicar', 'bonito', 'estado', 'portada'];
+    const claves = ['nombre', 'provincia', 'comunidad', 'pais', 'lat', 'lon', 'fechas_visita', 'wiki', 'texto_ia', 'notas', 'publicar', 'bonito', 'revisado', 'estado', 'portada'];
     const cambiadas = claves.filter((k) => !igual(orig[k], ed[k]));
     const enOrig = new Set(orig.fotos.map((f) => f.archivo)), enEd = new Set(ed.fotos.map((f) => f.archivo));
     const quitadas = [...enOrig].filter((a) => !enEd.has(a));
@@ -1418,6 +1418,7 @@
     ed.lon = num(v('f-lon'), ed.lon);
     if ($('#f-publicar')) ed.publicar = $('#f-publicar').checked;
     if ($('#f-bonito')) ed.bonito = $('#f-bonito').checked;
+    if ($('#f-revisado')) ed.revisado = $('#f-revisado').checked;
     ed.notas = v('f-notas');
     if ($('#f-texto-ia')) ed.texto_ia = v('f-texto-ia');
     const extracto = v('f-wiki');
@@ -1479,6 +1480,7 @@
           <div class="fila"><button class="btn peq sec" id="ubicar">${ico('lupa', 'i-azul')} Buscar ubicación</button></div>
           <label class="interruptor"><input type="checkbox" id="f-publicar" ${ed.publicar !== false ? 'checked' : ''}> Publicar en la web</label>
           <label class="interruptor"><input type="checkbox" id="f-bonito" ${ed.bonito ? 'checked' : ''}> 🏅 Pueblo más Bonito de España</label>
+          <label class="interruptor"><input type="checkbox" id="f-revisado" ${ed.revisado ? 'checked' : ''}> ✓ Dado por revisado (fuera de «Revisar»)</label>
         </section>
 
         <section class="tarjeta">

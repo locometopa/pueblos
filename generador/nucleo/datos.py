@@ -36,6 +36,7 @@ def pueblo_vacio(nombre: str = "") -> dict:
         "publicar": True,
         "estado": "visitado",     # "visitado" o "pendiente" (por visitar)
         "bonito": False,          # miembro de «Los Pueblos más Bonitos de España»
+        "revisado": False,        # lo doy por bueno: no aparece en «Revisar»
         "wikidata": "",           # id de Wikidata, si se conoce
         "creado": time.strftime("%Y-%m-%d %H:%M"),
         "modificado": "",

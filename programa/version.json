@@ -1,5 +1,5 @@
 {
-  "version": "1.8.9",
-  "notas": "Los Pueblos más Bonitos de España lucen un sello en la web, el programa y el panel. Se pone solo desde el catálogo y también puedes marcarlo a mano en el editor.",
+  "version": "1.9.0",
+  "notas": "Nuevo interruptor «Dado por revisado» en el editor (programa y móvil): saca de «Revisar» los pueblos que ya das por completos.",
   "archivo": "PUEBLOS.zip"
 }
