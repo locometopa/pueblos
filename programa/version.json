@@ -1,5 +1,5 @@
 {
-  "version": "1.9.0",
-  "notas": "Nuevo interruptor «Dado por revisado» en el editor (programa y móvil): saca de «Revisar» los pueblos que ya das por completos.",
+  "version": "1.9.1",
+  "notas": "«Fotos de internet» ahora también trae las del artículo de Wikipedia y las subcategorías de Commons, más Flickr, y las ordena por calidad (vistas del conjunto primero).",
   "archivo": "PUEBLOS.zip"
 }
