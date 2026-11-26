@@ -51,6 +51,7 @@
   };
   const ico = (n, c) => `<svg class="ico${c ? ' ' + c : ''}" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="${ICONOS[n]}"/></svg>`;
   const RUTA_CAPTURAS = 'capturas.json';
+  const RUTA_RUTAS = 'datos/rutas.json';
   const COMUNIDADES = ['Andalucía', 'Aragón', 'Asturias', 'Islas Baleares', 'Canarias', 'Cantabria',
     'Castilla-La Mancha', 'Castilla y León', 'Cataluña', 'Comunidad Valenciana', 'Extremadura', 'Galicia',
     'Comunidad de Madrid', 'Región de Murcia', 'Navarra', 'País Vasco', 'La Rioja', 'Ceuta', 'Melilla', 'Fuera de España'];
@@ -242,7 +243,7 @@
   // ------------------------------------------------------------------ estado
   const E = {
     gh: null, repo: '', rama: 'main', cabeza: null, pueblos: {}, archivos: {}, locales: {},
-    vista: 'visitados', filtro: '', editor: null, shaFotos: null, acceso: null,
+    vista: 'visitados', filtro: '', editor: null, shaFotos: null, acceso: null, rutas: [], rutaEd: null,
   };
 
   async function cargarTodo() {
@@ -257,6 +258,9 @@
       E.capturas = [];
       const cap = lista.find((it) => it.path === RUTA_CAPTURAS && it.type === 'blob');
       if (cap) { try { E.capturas = JSON.parse(await E.gh.blobTexto(cap.sha)) || []; } catch (e) { console.warn(e); } }
+      E.rutas = [];
+      const fr = lista.find((it) => it.path === RUTA_RUTAS && it.type === 'blob');
+      if (fr) { try { E.rutas = (JSON.parse(await E.gh.blobTexto(fr.sha)) || {}).rutas || []; } catch (e) { console.warn(e); } }
       for (const it of lista) {
         const m = /^datos\/([^/]+)\/(.+)$/.exec(it.path);
         if (!m || m[1].startsWith('_') || it.type !== 'blob') continue;
@@ -1473,12 +1477,19 @@
           <div class="fila" style="margin-top:10px"><button class="btn sec" id="config-ia">${ico('lapiz', 'i-mostaza')} ${iaConfigurada() ? 'Cambiar IA' : 'Configurar IA'}</button></div>
         </div>
         <div class="tarjeta">
+          <h2>Rutas míticas</h2>
+          <p class="ayuda">Grandes caminos de España (por ejemplo la Ruta de la Plata), con su historia y sus paradas.
+            Prepáralas aquí; en tu web solo salen las que marques como publicadas.</p>
+          <div class="fila" style="margin-top:10px"><button class="btn sec" id="admin-rutas">${ico('mapa', 'i-azul')} Administrar rutas${E.rutas.length ? ` <small>(${E.rutas.length})</small>` : ''}</button></div>
+        </div>
+        <div class="tarjeta">
           <h2>Fotos</h2>
           <p class="ayuda">Las fotos se reducen y se les quita la ubicación GPS en tu móvil antes de subirlas.
             Las de internet son de Wikimedia Commons y en la web se cita su autor y licencia.</p>
         </div>
       </main>`;
     $('#volver').onclick = pantallaLista;
+    $('#admin-rutas').onclick = pantallaRutas;
     $$('.aspecto button').forEach((b) => (b.onclick = () => { ponerTemaPanel(b.dataset.tema); pantallaAjustes(); }));
     $('#recargar').onclick = async () => { await cargarTodo(); pantallaLista(); };
     $('#clave').onclick = () => dialogoContrasena(false);
@@ -1488,6 +1499,175 @@
       if (!confirm('¿Olvidar el token en este navegador?')) return;
       local.del('pueblos-token'); E.gh = null; pantallaAcceso();
     };
+  }
+
+  // ------------------------------------------------------------------ rutas míticas (administración)
+  function rutaVacia() {
+    return { slug: '', nombre: '', subtitulo: '', resumen: '', sentido: 'De sur a norte',
+      historia: '', comunidades: [], provincias: [], hitos: [], publicar: false };
+  }
+  function listaDe(txt) { return (txt || '').split(',').map((s) => s.trim()).filter(Boolean); }
+  function slugUnicoRuta(nombre, idx) {
+    let base = slugify(nombre) || 'ruta';
+    const otros = E.rutas.filter((_, i) => i !== idx).map((r) => r.slug);
+    let s = base, n = 2;
+    while (otros.includes(s)) s = `${base}-${n++}`;
+    return s;
+  }
+  async function guardarRutas(mensaje) {
+    await guardar([], [], [], mensaje, [{ ruta: RUTA_RUTAS, contenido: JSON.stringify({ rutas: E.rutas }, null, 2) + '\n' }]);
+  }
+
+  function pantallaRutas() {
+    E.editor = null; E.rutaEd = null;
+    const rutas = E.rutas || [];
+    app().innerHTML = `
+      ${cabecera('Rutas míticas', 'grandes caminos de España', `<button class="icono" id="volver" aria-label="Volver">${ico('atras')}</button>`)}
+      <main class="cont">
+        <p class="ayuda">En tu web solo salen las rutas marcadas como <b>publicadas</b>; el resto quedan en borrador mientras las preparas. Las paradas que coincidan con un pueblo tuyo se enlazan solas.</p>
+        <div class="rejilla-rutas">
+          ${rutas.length ? rutas.map((r, i) => `
+            <section class="tarjeta ruta-admin">
+              <div class="ra-cab"><h2>${esc(r.nombre || 'Ruta sin nombre')}</h2>
+                <span class="ra-estado ${r.publicar ? 'pub' : ''}">${r.publicar ? 'Publicada' : 'Borrador'}</span></div>
+              <p class="ra-sub">${esc(r.subtitulo || '')}</p>
+              <p class="ra-meta">${(r.hitos || []).length} paradas · ${(r.provincias || []).length} provincias</p>
+              <div class="fila">
+                <button class="btn sec" data-editar="${i}">${ico('lapiz', 'i-mostaza')} Editar</button>
+                <button class="btn sec" data-pub="${i}">${r.publicar ? `${ico('luna', 'i-azul')} Pasar a borrador` : `${ico('estrella', 'i-mostaza')} Publicar`}</button>
+              </div>
+            </section>`).join('') : '<p class="vacio">Aún no hay rutas. Crea la primera con «Nueva ruta».</p>'}
+        </div>
+      </main>
+      <nav class="acciones">
+        <button class="btn sec" id="nueva-ruta"><b>${ico('mas', 'i-mostaza')}</b><span>Nueva ruta</span></button>
+      </nav>`;
+    $('#volver').onclick = pantallaAjustes;
+    $('#nueva-ruta').onclick = () => editorRuta(-1);
+    $$('[data-editar]').forEach((b) => (b.onclick = () => editorRuta(+b.dataset.editar)));
+    $$('[data-pub]').forEach((b) => (b.onclick = () => alternarPublicarRuta(+b.dataset.pub)));
+  }
+
+  async function alternarPublicarRuta(i) {
+    const r = E.rutas[i];
+    if (!r) return;
+    if (!r.publicar && !(r.hitos || []).length) { aviso('Añade alguna parada antes de publicarla.', true); return; }
+    r.publicar = !r.publicar;
+    try {
+      await guardarRutas(r.publicar ? `Publicar ruta: ${r.nombre}` : `Ruta a borrador: ${r.nombre}`);
+      aviso(r.publicar ? 'Ruta publicada. Tu web se actualiza en 1–2 minutos.' : 'Ruta pasada a borrador.');
+    } catch (e) { r.publicar = !r.publicar; aviso(e.message, true); }
+    pantallaRutas();
+  }
+
+  function editorRuta(idx) {
+    const base = idx >= 0 ? clonar(E.rutas[idx]) : rutaVacia();
+    if (!base.hitos) base.hitos = [];
+    E.rutaEd = { idx, orig: JSON.stringify(base) };
+    E.rutaEd.ruta = base;
+    pintarEditorRuta();
+  }
+
+  function paradaFila(h, i, total) {
+    return `<div class="parada" data-i="${i}">
+      <div class="parada-cab"><b>${i + 1}</b>
+        <span class="parada-mov">
+          <button type="button" data-sube="${i}" ${i === 0 ? 'disabled' : ''} aria-label="Subir">▲</button>
+          <button type="button" data-baja="${i}" ${i === total - 1 ? 'disabled' : ''} aria-label="Bajar">▼</button>
+          <button type="button" class="quita" data-quita="${i}" aria-label="Quitar parada">${ico('cerrar')}</button>
+        </span></div>
+      <input class="p-nombre" value="${esc(h.nombre || '')}" placeholder="Pueblo o ciudad">
+      <div class="fila p-fila">
+        <input class="p-prov" value="${esc(h.provincia || '')}" placeholder="Provincia">
+        <input class="p-lat" value="${h.lat != null ? h.lat : ''}" placeholder="lat" inputmode="decimal">
+        <input class="p-lon" value="${h.lon != null ? h.lon : ''}" placeholder="lon" inputmode="decimal">
+      </div>
+      <textarea class="p-nota" rows="2" placeholder="Una nota de esta parada (opcional)…">${esc(h.nota || '')}</textarea>
+    </div>`;
+  }
+
+  function pintarEditorRuta() {
+    const { idx, ruta } = E.rutaEd;
+    const nuevo = idx < 0;
+    app().innerHTML = `
+      ${cabecera(nuevo ? 'Nueva ruta' : 'Editar ruta', '', `<button class="icono" id="volver" aria-label="Volver">${ico('atras')}</button>`)}
+      <main class="cont">
+        <label class="campo"><span>Nombre</span><input id="r-nombre" value="${esc(ruta.nombre)}" placeholder="La Ruta de la Plata"></label>
+        <label class="campo"><span>Subtítulo</span><input id="r-sub" value="${esc(ruta.subtitulo || '')}" placeholder="De Sevilla a Gijón por la calzada romana"></label>
+        <label class="campo"><span>Sentido</span><input id="r-sentido" value="${esc(ruta.sentido || '')}" placeholder="De sur a norte"></label>
+        <label class="campo"><span>Comunidades <small>(separadas por comas)</small></span><input id="r-com" value="${esc((ruta.comunidades || []).join(', '))}" placeholder="Andalucía, Extremadura…"></label>
+        <label class="campo"><span>Provincias <small>(separadas por comas)</small></span><input id="r-prov" value="${esc((ruta.provincias || []).join(', '))}" placeholder="Sevilla, Badajoz…"></label>
+        <label class="campo"><span>Historia</span><textarea id="r-historia" rows="9" placeholder="Separa los párrafos con una línea en blanco.">${esc(ruta.historia || '')}</textarea></label>
+        <label class="campo"><span>Resumen <small>(una línea, para compartir)</small></span><input id="r-resumen" value="${esc(ruta.resumen || '')}"></label>
+        <label class="interruptor"><input type="checkbox" id="r-publicar" ${ruta.publicar ? 'checked' : ''}> <span>Publicada en la web</span></label>
+
+        <h2 class="r-sec">Paradas <small>${ruta.hitos.length}</small></h2>
+        <p class="ayuda">En orden, a lo largo de la ruta. Lat/lon son opcionales (servirán para el mapa). Si el nombre coincide con un pueblo tuyo, en la web se enlaza solo.</p>
+        <div id="r-paradas">${ruta.hitos.map((h, i) => paradaFila(h, i, ruta.hitos.length)).join('')}</div>
+        <button class="btn sec ancho" id="r-add-parada">${ico('mas', 'i-mostaza')} Añadir parada</button>
+      </main>
+      <nav class="acciones">
+        ${nuevo ? '' : `<button class="btn peligro" id="r-borrar">${ico('cerrar')} Borrar</button>`}
+        <button class="btn" id="r-guardar">${ico('guardar')} Guardar</button>
+      </nav>`;
+    $('#volver').onclick = () => { leerEditorRuta(); if (JSON.stringify(E.rutaEd.ruta) === E.rutaEd.orig || confirm('Hay cambios sin guardar. ¿Salir igualmente?')) pantallaRutas(); };
+    $('#r-add-parada').onclick = () => { leerEditorRuta(); E.rutaEd.ruta.hitos.push({ nombre: '', provincia: '', nota: '' }); pintarEditorRuta(); };
+    $('#r-guardar').onclick = guardarEditorRuta;
+    if ($('#r-borrar')) $('#r-borrar').onclick = borrarRuta;
+    $$('[data-sube]').forEach((b) => (b.onclick = () => moverParada(+b.dataset.sube, -1)));
+    $$('[data-baja]').forEach((b) => (b.onclick = () => moverParada(+b.dataset.baja, 1)));
+    $$('[data-quita]').forEach((b) => (b.onclick = () => { leerEditorRuta(); E.rutaEd.ruta.hitos.splice(+b.dataset.quita, 1); pintarEditorRuta(); }));
+  }
+
+  function moverParada(i, dir) {
+    leerEditorRuta();
+    const h = E.rutaEd.ruta.hitos, j = i + dir;
+    if (j < 0 || j >= h.length) return;
+    [h[i], h[j]] = [h[j], h[i]];
+    pintarEditorRuta();
+  }
+
+  function leerEditorRuta() {
+    const r = E.rutaEd.ruta;
+    const g = (id) => { const el = $('#' + id); return el ? el.value.trim() : ''; };
+    r.nombre = g('r-nombre'); r.subtitulo = g('r-sub'); r.sentido = g('r-sentido');
+    r.resumen = g('r-resumen');
+    r.historia = ($('#r-historia') ? $('#r-historia').value : '').replace(/\r/g, '').trim();
+    r.comunidades = listaDe(g('r-com')); r.provincias = listaDe(g('r-prov'));
+    r.publicar = !!($('#r-publicar') && $('#r-publicar').checked);
+    const paradas = [];
+    $$('#r-paradas .parada').forEach((d) => {
+      const nombre = ($('.p-nombre', d).value || '').trim();
+      const h = { nombre, provincia: ($('.p-prov', d).value || '').trim(), nota: ($('.p-nota', d).value || '').trim() };
+      const lat = parseFloat(($('.p-lat', d).value || '').replace(',', '.'));
+      const lon = parseFloat(($('.p-lon', d).value || '').replace(',', '.'));
+      if (isFinite(lat)) h.lat = lat;
+      if (isFinite(lon)) h.lon = lon;
+      paradas.push(h);
+    });
+    r.hitos = paradas;
+  }
+
+  async function guardarEditorRuta() {
+    leerEditorRuta();
+    const r = E.rutaEd.ruta;
+    r.hitos = r.hitos.filter((h) => h.nombre);   // quita paradas vacías
+    if (!r.nombre) { aviso('Ponle un nombre a la ruta.', true); return; }
+    if (!r.hitos.length) { aviso('Añade al menos una parada con nombre.', true); return; }
+    if (!r.slug) r.slug = slugUnicoRuta(r.nombre, E.rutaEd.idx);
+    if (E.rutaEd.idx >= 0) E.rutas[E.rutaEd.idx] = r; else E.rutas.push(r);
+    try { await guardarRutas(`Ruta: ${r.nombre}`); aviso(r.publicar ? 'Ruta guardada y publicada.' : 'Ruta guardada (en borrador).'); pantallaRutas(); }
+    catch (e) { aviso(e.message, true); }
+  }
+
+  async function borrarRuta() {
+    const idx = E.rutaEd.idx;
+    if (idx < 0) return;
+    const r = E.rutas[idx];
+    if (!confirm(`¿Borrar la ruta «${r.nombre}»? No se puede deshacer.`)) return;
+    E.rutas.splice(idx, 1);
+    try { await guardarRutas(`Borrar ruta: ${r.nombre}`); aviso('Ruta borrada.'); pantallaRutas(); }
+    catch (e) { E.rutas.splice(idx, 0, r); aviso(e.message, true); }
   }
 
   // ------------------------------------------------------------------ editor
@@ -2390,6 +2570,6 @@
     E.gh = new GitHub(token, E.repo, E.rama);
     await iniciar();
   }
-  window.PUEBLOS_PANEL = { E, normalizar, slugify, fechaBonita };
+  window.PUEBLOS_PANEL = { E, normalizar, slugify, fechaBonita, pantallaRutas, editorRuta, leerEditorRuta, pintarEditorRuta };
   arrancar();
 })();

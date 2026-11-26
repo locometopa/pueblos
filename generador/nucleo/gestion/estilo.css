@@ -284,3 +284,28 @@ body{background-color:var(--papel);background-image:repeating-linear-gradient(tr
 :root[data-disp="pc"] .cont{padding-bottom:16px}
 :root[data-disp="pc"] .rejilla{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
 @media (min-width:900px){:root[data-disp="pc"] .rejilla{grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}}
+
+/* administración de rutas míticas */
+.rejilla-rutas{display:grid;gap:12px;margin-top:8px}
+@media (min-width:700px){.rejilla-rutas{grid-template-columns:1fr 1fr}}
+.ruta-admin .ra-cab{display:flex;align-items:center;gap:10px;justify-content:space-between}
+.ruta-admin h2{margin:0;font-size:19px}
+.ra-estado{flex:none;font-size:12px;font-weight:600;padding:3px 10px;border-radius:999px;background:var(--linea);color:var(--tinta-2)}
+.ra-estado.pub{background:color-mix(in srgb,var(--acento) 18%,var(--papel));color:var(--acento)}
+.ra-sub{margin:6px 0 0;color:var(--tinta-2);font-size:14px}
+.ra-meta{margin:4px 0 10px;color:var(--tinta-2);font-size:13px}
+.ruta-admin .fila{display:flex;gap:8px;flex-wrap:wrap}
+.r-sec{margin:22px 0 2px;font-size:18px}
+.r-sec small{color:var(--tinta-2);font-weight:500}
+.parada{border:1px solid var(--linea);border-radius:12px;padding:10px 12px;margin-bottom:10px;background:var(--papel)}
+.parada-cab{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.parada-cab>b{width:26px;height:26px;display:grid;place-items:center;border-radius:50%;background:var(--acento);color:#fff;font-size:13px}
+.parada-mov{display:flex;gap:4px}
+.parada-mov button{width:30px;height:30px;border:1px solid var(--linea);border-radius:8px;background:var(--tarjeta);color:var(--tinta);cursor:pointer;font-size:13px;display:grid;place-items:center}
+.parada-mov button:disabled{opacity:.35;cursor:default}
+.parada-mov .quita{color:var(--peligro)}
+.parada input,.parada textarea{width:100%;padding:8px 10px;border:1px solid var(--linea);border-radius:9px;background:var(--papel);margin-bottom:6px}
+.parada .p-fila{display:flex;gap:6px;margin-bottom:0}
+.parada .p-prov{flex:2}
+.parada .p-lat,.parada .p-lon{flex:1;min-width:0}
+.parada textarea{min-height:0;resize:vertical;line-height:1.4}
