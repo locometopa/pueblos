@@ -1,0 +1,96 @@
+{
+  "slug": "cudillero",
+  "nombre": "Cudillero",
+  "provincia": "Asturias",
+  "comunidad": "Asturias",
+  "pais": "España",
+  "lat": 43.543357,
+  "lon": -6.193631,
+  "fechas_visita": [],
+  "wiki": {
+    "titulo": "Cudillero",
+    "url": "https://es.wikipedia.org/wiki/Cudillero",
+    "extracto": "Cudillero​​ (en asturiano: Cuideiru)​ es un concejo, parroquia y localidad de la comunidad autónoma del Principado de Asturias, en España. Limita al oeste con Valdés, al sur con Salas y Pravia y al este con Muros del Nalón y Pravia de nuevo. El concejo tiene una población de 4922 habitantes (INE 2020), sus núcleos principales son: la villa de Cudillero (Cuideiru en asturiano), que es su capital, Villademar (Villamar), La Atalaya (La Telaya) y Aroncés.\nRelevante puerto pesquero, durante los meses de verano es un importante atractivo turístico. Entre su patrimonio histórico se encuentra la Quinta de Selgas, lujoso palacio del siglo XIX con amplios jardines y obras de Goya. \nEstá catalogado como Uno de Los Pueblos Más Bonitos de España desde el año 2021 y pertenece desde entonces a la asociación homónima.",
+    "desambiguacion": false,
+    "wikidata": "Q818372",
+    "poblacion": 4867,
+    "poblacion_anio": "2025",
+    "superficie": 101.5,
+    "escudo": "https://commons.wikimedia.org/wiki/Special:FilePath/Escudo_de_Cudillero_(Asturias).svg?width=160",
+    "web": "http://www.ayuntamientodecudillero.com",
+    "secciones": [
+      {
+        "clave": "historia",
+        "titulo": "Historia",
+        "texto": "▸ Prehistoria y Edad Antigua\nLa vida de este concejo estuvo unida al de Pravia hasta el siglo XVIII; por ello, es muy difícil encontrar unos datos que se refieran solo el actual concejo de Cudillero, ya que su término municipal no tiene vida autónoma hasta el siglo XIX.\nNo existen restos humanos prehistóricos en lo que entendemos por tierras actuales de este concejo; no obstante, sí los encontramos en los concejos limítrofes.\nEs en la época castreña donde aparecen los primeros restos de este concejo, encontrándose dos castros que son: los castros de La Garita y La Cavona. Hace relativamente poco se descubrió otro yacimiento, el de Gurión. Todos estos emplazamientos parecen de tipo prerromano, mientras que los restos de la época romana en esta zona están muy difuminados.\n\n▸ Edades Media y Moderna\nLa fundación del puerto de Cudillero y su primitivo núcleo de población se remonta al siglo XIII. El documento más antiguo en que se menciona a la actual villa es una escritura de 1285 por la que Arias González de Valdés donaba al monasterio tinetense de Obona «un suelo en el puerto de Cudillero, donde pudieran vender pan, y una cabaña con salida al mar sin que ningún señor se lo estorbase». También en el siglo XIII se fundó la puebla de Pravia, que en seguida se convertiría en capital de un extenso concejo que comprendía el actual territorio cudillerense. …"
+      },
+      {
+        "clave": "cultura",
+        "titulo": "Cultura",
+        "texto": "▸ Camino de Santiago\nEl Camino de Santiago penetra en Cudillero tras atravesar el río Aguilar y, por El Pitu y la Concha de Artedo, se dirige hacia Soto de Luiña, parada histórica del Camino, donde se encuentra el albergue de peregrinos del concejo, y desde donde -por la Sierra de Las Palancas- se introduce en el Concejo de Valdés, tras bordear el Picu Paradiella. Este es el Camino Oficial (el reconocido como tal por el Gobierno de Principado), si bien la mayoría de peregrinos opta por utilizar el Camín Real, al atravesar éstos núcleos de población como Novellana, Santa Marina y Ballota que cuentan con servicios de restauración y alojamiento. Ambos recorridos son de gran belleza.\n\n▸ Patrimonio\n\nLas principales obras arquitectónicas del concejo de Cudillero son:\n\nLa capilla del Humilladero: es gótica pero muy reformada. Su estructura es de planta cuadrada con contrafuertes y bóveda de ojivas. Tiene un retablo de los siglos XVI o XVII.\nLa iglesia de San Pedro: es gótica pero del siglo XVI, está costeada por las personas del pueblo. Su estructura es de nave única con bóveda de crucería y ábside semicircular. Durante la Guerra Civil fue incendiada y vuelta a construir. En fechas recientes ha sido sometida a un proceso de restauración.\nLa iglesia de San Martín de Luiña: del siglo XVIII], es de planta de cruz latina con tres naves. Los muros son de mampostería revocados y sillar que queda a la vista en cornisas, arquerías y pilares. Todo se cubre con bóveda menos el crucero con cúpula. Tiene pórticos laterales que se abre en tres arcos de medio punto sobre pilares. …"
+      }
+    ],
+    "que_ver": [
+      {
+        "nombre": "iglesia de San Martín de Luiña",
+        "url": "https://es.wikipedia.org/wiki/Iglesia_de_San_Mart%C3%ADn_de_Lui%C3%B1a",
+        "imagen": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c4/Iglesia_de_San_Mart%C3%ADn_de_Lui%C3%B1a_013.jpg/500px-Iglesia_de_San_Mart%C3%ADn_de_Lui%C3%B1a_013.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "credito": {
+          "autor": "SITOMON",
+          "licencia": "CC BY-SA 3.0",
+          "url_licencia": "https://creativecommons.org/licenses/by-sa/3.0",
+          "fuente": "https://commons.wikimedia.org/wiki/File:Iglesia_de_San_Mart%C3%ADn_de_Lui%C3%B1a_013.jpg"
+        }
+      },
+      {
+        "nombre": "Casa Rectoral de Soto de Luiña",
+        "url": "https://es.wikipedia.org/wiki/Casa_Rectoral_de_Soto_de_Lui%C3%B1a",
+        "imagen": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/60/Casa_rectoral_de_Soto_de_Lui%C3%B1a_003.jpg/500px-Casa_rectoral_de_Soto_de_Lui%C3%B1a_003.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "credito": {
+          "autor": "Ramón",
+          "licencia": "CC BY-SA 3.0",
+          "url_licencia": "https://creativecommons.org/licenses/by-sa/3.0",
+          "fuente": "https://commons.wikimedia.org/wiki/File:Casa_rectoral_de_Soto_de_Lui%C3%B1a_003.jpg"
+        }
+      },
+      {
+        "nombre": "iglesia de Santa María (Soto de Luiña)",
+        "url": "https://es.wikipedia.org/wiki/Iglesia_de_Santa_Mar%C3%ADa_(Soto_de_Lui%C3%B1a)",
+        "imagen": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bd/Iglesia_de_Santa_Mar%C3%ADa_%28Soto_de_Lui%C3%B1a%29_023.jpg/500px-Iglesia_de_Santa_Mar%C3%ADa_%28Soto_de_Lui%C3%B1a%29_023.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "credito": {
+          "autor": "Ramón",
+          "licencia": "CC BY-SA 3.0",
+          "url_licencia": "https://creativecommons.org/licenses/by-sa/3.0",
+          "fuente": "https://commons.wikimedia.org/wiki/File:Iglesia_de_Santa_Mar%C3%ADa_(Soto_de_Lui%C3%B1a)_023.jpg"
+        }
+      },
+      {
+        "nombre": "Conjunto Histórico de Cudillero",
+        "url": "https://www.wikidata.org/wiki/Q43172202",
+        "imagen": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/01/Asturias_Cudillero_casas_escalonadas_ni.jpg/500px-Asturias_Cudillero_casas_escalonadas_ni.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "credito": {
+          "autor": "Nicolás Pérez",
+          "licencia": "CC BY-SA 3.0",
+          "url_licencia": "https://creativecommons.org/licenses/by-sa/3.0",
+          "fuente": "https://commons.wikimedia.org/wiki/File:Asturias_Cudillero_casas_escalonadas_ni.jpg"
+        }
+      },
+      {
+        "nombre": "Turbera de Las Dueñas",
+        "url": "https://es.wikipedia.org/wiki/Turbera_de_Las_Due%C3%B1as"
+      },
+      {
+        "nombre": "Casa rectoral de Soto de Luiña",
+        "url": "https://www.wikidata.org/wiki/Q107050242"
+      }
+    ]
+  },
+  "texto_ia": "",
+  "notas": "",
+  "fotos": [],
+  "portada": "",
+  "publicar": true,
+  "estado": "visitado",
+  "creado": "2026-11-26 03:49",
+  "modificado": "2026-11-26 03:50"
+}
