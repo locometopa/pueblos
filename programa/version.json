@@ -1,5 +1,5 @@
 {
-  "version": "1.9.7",
-  "notas": "Nueva sección «Rutas míticas de España» en la web: la Ruta de la Plata (Sevilla–Gijón), con su historia, las provincias y las paradas una a una. Los pueblos que ya tienes aparecen enlazados y marcados. Se entra desde la portada.",
+  "version": "1.9.8",
+  "notas": "IA: en la ficha, si hay texto de IA, el extracto de Wikipedia se pliega para no repetirlo; y el cuadro de «Generar texto con IA» muestra y deja elegir qué IA lo escribe.",
   "archivo": "PUEBLOS.zip"
 }

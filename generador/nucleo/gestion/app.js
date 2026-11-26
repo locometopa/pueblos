@@ -1888,10 +1888,17 @@
     leerFormulario();
     if (!iaConfigurada()) { dialogoIA(); return; }
     if ((ed.texto_ia || '').trim() && !confirm('Ya hay un texto escrito. ¿Lo sustituyo?')) return;
+    const confs = iaConfigurados();
+    const selIA = confs.length >= 2
+      ? `<label class="campo"><span>La escribe</span><select id="ia-a-prov">${confs.map((k) =>
+          `<option value="${k}" ${k === iaProv() ? 'selected' : ''}>${esc(IA_PROV[k].nombre.split(' (')[0])}</option>`).join('')}</select></label>`
+      : `<p class="sub">La escribirá <b>${esc(IA_PROV[iaProv()].nombre.split(' (')[0])}</b>.</p>`;
     const d = dialogo(`<h2>✨ Escribir con IA</h2>
+      ${selIA}
       <p class="sub">¿Quieres añadir algo tuyo para que lo incluya y lo amplíe? (opcional) — por ejemplo «fuimos con mi mujer en primavera».</p>
       <label class="campo"><textarea id="ia-aporta" placeholder="Algo tuyo que quieras que aparezca en el texto…"></textarea></label>
       <div class="fila fin"><button class="btn sec" id="ia-a-no">Cancelar</button><button class="btn" id="ia-a-si">✨ Generar</button></div>`);
+    if ($('#ia-a-prov', d)) $('#ia-a-prov', d).onchange = (ev) => { iaGuardarActiva(ev.target.value); if ($('#ia-rapida')) $('#ia-rapida').value = ev.target.value; };
     $('#ia-a-no', d).onclick = () => d.remove();
     $('#ia-a-si', d).onclick = async () => {
       const ap = $('#ia-aporta', d).value;

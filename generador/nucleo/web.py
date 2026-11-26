@@ -313,6 +313,11 @@ a{color:var(--acento)}
 .nota-ia{font-size:13px;color:var(--tinta-2)}
 .wiki{color:var(--tinta-2)}
 .wiki .fuente,.cuerpo .fuente{font-size:14px;color:var(--tinta-2)}
+.wiki>details>summary{cursor:pointer;font:600 15px var(--f-texto);color:var(--acento);padding:4px 0;list-style:none}
+.wiki>details>summary::-webkit-details-marker{display:none}
+.wiki>details>summary::before{content:"›";display:inline-block;margin-right:7px;transition:transform .15s}
+.wiki>details[open]>summary::before{transform:rotate(90deg)}
+.wiki>details>p:first-of-type{margin-top:8px}
 .lugares{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;margin-bottom:8px}
 .lugares .lugar{display:flex;flex-direction:column;background:var(--tarjeta);border-radius:10px;overflow:hidden;box-shadow:var(--sombra);
   text-decoration:none;color:var(--tinta);transition:transform .2s}
@@ -1029,11 +1034,18 @@ def _pagina_pueblo(p: dict, anterior, siguiente, cfg) -> str:
     principal = []
     if p.get("notas", "").strip():
         principal.append(X.bloque_notas(p, cfg.get("autor") or "", txt_visitas, _DISENO["notas_a_mano"]))
-    if p.get("texto_ia", "").strip():
+    hay_ia = bool(p.get("texto_ia", "").strip())
+    if hay_ia:
         principal.append(f'<section><h2>Sobre {e(p["nombre"])}</h2>{parrafos(p["texto_ia"])}'
                          f'<p class="nota-ia">Texto redactado con ayuda de IA a partir de Wikipedia.</p></section>')
     if w.get("extracto"):
-        principal.append(f'<section class="wiki">{parrafos(w["extracto"])}</section>')
+        # si ya hay texto de IA (que se escribe a partir de Wikipedia), el extracto se pliega
+        # para no repetir lo mismo dos veces; si no hay texto de IA, se muestra abierto.
+        if hay_ia:
+            principal.append(f'<section class="wiki"><details><summary>Lo que cuenta Wikipedia</summary>'
+                             f'{parrafos(w["extracto"])}</details></section>')
+        else:
+            principal.append(f'<section class="wiki">{parrafos(w["extracto"])}</section>')
     otra = w.get("extracto_otro") or {}
     if otra.get("texto"):
         traducido = bool(otra.get("texto_es"))
