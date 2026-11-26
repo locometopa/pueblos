@@ -113,21 +113,21 @@ a{color:var(--acento)}
 .cabecera.con-dibujo{position:relative;overflow:hidden;padding-bottom:0;border-bottom:0;
   background:linear-gradient(180deg,var(--cielo-1),var(--cielo-2) 55%,var(--papel))}
 .con-dibujo .envoltorio{position:relative;z-index:2}
-.cabecera.con-dibujo{padding-top:30px}
+.cabecera.con-dibujo{padding-top:22px}
 .con-dibujo h1{font-size:clamp(34px,5.4vw,58px);margin:8px 0 6px}
 .con-dibujo p{font-size:17px}
-.con-dibujo .cifras{margin-top:14px;gap:24px}
+.con-dibujo .cifras{margin-top:12px;gap:24px}
 .con-dibujo .cifras div{font-size:24px}
 .con-dibujo .cifras span{font-size:11.5px;margin-top:4px}
-.paisaje{position:relative;overflow:hidden;margin-top:-34px;pointer-events:none}
+.paisaje{position:relative;overflow:hidden;margin-top:-66px;pointer-events:none}
 .paisaje svg{display:block;width:100%;height:auto}
 @media (max-width:700px){
   .cabecera.con-dibujo{padding-top:22px}
   .con-dibujo .cifras{display:grid;grid-template-columns:repeat(4,auto);justify-content:start;gap:14px}
   .con-dibujo .cifras div{font-size:20px}
   .con-dibujo .cifras span{font-size:10px;letter-spacing:.05em}
-  .paisaje{margin-top:-8px}
-  .paisaje svg{width:210%;margin-left:-55%}
+  .paisaje{margin-top:10px}
+  .paisaje svg{width:185%;margin-left:-43%}
 }
 :root{--cielo-1:#f7d9a8;--cielo-2:#f8ead2;--astro:#f3a65f;--nube:#fffaf0;--colina1:#d9b48a;--colina2:#b98a5e;--colina3:#8f6a45;
   --pared:#f2e6cf;--pared2:#e9d9bd;--tejado:#a8472a;--tejado2:#b8532f;--tejado3:#c2633a;--ventana:#6b4630;--arbol:#4f6b3a;--camino:#e8d3ae}
@@ -177,7 +177,7 @@ a{color:var(--acento)}
   --colina2:#24252f;--colina3:#1d1d24;--pared:#585060;--pared2:#4b4452;--tejado:#6b3a35;--tejado2:#73403a;--tejado3:#7a4840;
   --ventana:#ffcf6b;--arbol:#1f2b22;--camino:#3b3a44;--tinta:#f1eadc;--tinta-2:#c3b9a9}
 .cabecera.con-dibujo[data-momento="noche"] .paisaje .astro{transform-box:fill-box;transform-origin:center;
-  transform:translate(-384px,-20px) scale(.66);filter:drop-shadow(0 0 7px rgba(255,246,222,.55))}
+  transform:translate(-415px,-14px) scale(.55);filter:drop-shadow(0 0 7px rgba(255,246,222,.55))}
 .cabecera.con-dibujo[data-momento="noche"] .paisaje .estrellas{opacity:.85}.cabecera.con-dibujo[data-momento="noche"] .paisaje .nubes{opacity:.35}
 .cabecera.con-dibujo[data-momento="noche"] .paisaje .campana,.cabecera.con-dibujo[data-momento="noche"] .paisaje .puerta{fill:#2a2230}
 .cabecera.con-dibujo[data-momento="noche"] .sello{color:#f0a37f}
@@ -192,8 +192,8 @@ a{color:var(--acento)}
 .boton-tema:focus-visible{outline:2px solid var(--acento);outline-offset:2px}
 @media print{.boton-tema{display:none}}
 @media (prefers-reduced-motion:no-preference){
-  .paisaje .nubes{animation:nubes 60s linear infinite alternate}
-  @keyframes nubes{to{transform:translateX(60px)}}
+  .paisaje .nubes{animation:nubes 42s linear infinite alternate}
+  @keyframes nubes{to{transform:translateX(110px)}}
   .cabecera.con-dibujo[data-momento="noche"] .paisaje .estrellas circle{animation:titila 4.6s ease-in-out infinite}
   .cabecera.con-dibujo[data-momento="noche"] .paisaje .estrellas circle:nth-child(3n){animation-duration:6s;animation-delay:1.4s}
   .cabecera.con-dibujo[data-momento="noche"] .paisaje .estrellas circle:nth-child(3n+2){animation-duration:5.2s;animation-delay:2.6s}
@@ -827,7 +827,7 @@ def _indice(pueblos: list, cfg, pendientes=()) -> str:
     else:
         cabecera = f"""<header class="cabecera con-dibujo"><div class="envoltorio">{textos}
 </div>
-  <div class="paisaje" aria-hidden="true"><svg viewBox="0 88 1440 212" preserveAspectRatio="xMidYMax meet">
+  <div class="paisaje" aria-hidden="true"><svg viewBox="0 96 1440 204" preserveAspectRatio="xMidYMax meet">
     <g class="estrellas"><circle cx="140" cy="100" r="1.6"/><circle cx="260" cy="130" r="1.2"/><circle cx="420" cy="96" r="1.4"/><circle cx="610" cy="112" r="1.1"/>
       <circle cx="760" cy="98" r="1.6"/><circle cx="930" cy="126" r="1.2"/><circle cx="1010" cy="100" r="1.4"/><circle cx="1290" cy="104" r="1.6"/><circle cx="1380" cy="130" r="1.1"/></g>
     <circle class="astro" cx="1150" cy="138" r="38"/>
@@ -838,13 +838,13 @@ def _indice(pueblos: list, cfg, pendientes=()) -> str:
       <rect class="pared" x="120" y="20" width="34" height="110"/><path class="tejado" d="M114 22 L137 -14 L160 22Z"/>
       <rect class="campana" x="131" y="34" width="12" height="16" rx="6"/>
       <rect class="pared2" x="154" y="70" width="90" height="60"/><path class="tejado" d="M150 72 L199 40 L248 72Z"/>
-      <rect class="chimenea" x="169" y="34" width="12" height="24" rx="1.5"/><rect class="chimenea" x="166" y="31" width="18" height="6" rx="2"/>
-      <g class="humo"><circle cx="175" cy="29" r="5.5"/><circle cx="175" cy="29" r="6.5"/><circle cx="175" cy="29" r="5"/></g>
       <rect class="puerta" x="190" y="96" width="16" height="34" rx="8"/>
       <rect class="pared" x="0" y="80" width="70" height="50"/><path class="tejado2" d="M-6 82 L35 52 L76 82Z"/>
       <rect class="ventana" x="12" y="96" width="12" height="14"/><rect class="ventana" x="44" y="96" width="12" height="14"/>
       <rect class="pared2" x="62" y="96" width="58" height="34"/><path class="tejado3" d="M58 98 L91 74 L124 98Z"/>
       <rect class="pared" x="250" y="88" width="64" height="42"/><path class="tejado2" d="M244 90 L282 64 L320 90Z"/>
+      <rect class="chimenea" x="298" y="54" width="10" height="20" rx="1.3"/><rect class="chimenea" x="295" y="51" width="16" height="5" rx="2"/>
+      <g class="humo"><circle cx="303" cy="49" r="5.5"/><circle cx="303" cy="49" r="6.5"/><circle cx="303" cy="49" r="5"/></g>
       <rect class="ventana" x="264" y="102" width="11" height="13"/><rect class="ventana" x="290" y="102" width="11" height="13"/>
       <rect class="pared2" x="318" y="100" width="48" height="30"/><path class="tejado3" d="M314 102 L342 82 L370 102Z"/>
       <rect class="ventana" x="336" y="110" width="10" height="11"/>
