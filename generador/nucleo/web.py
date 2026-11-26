@@ -434,6 +434,65 @@ a{color:var(--acento)}
 footer{border-top:1px solid var(--linea);margin-top:40px;padding:26px 0 40px;color:var(--tinta-2);font-size:14px}
 """
 
+# estilos de las rutas míticas (índice y ficha de ruta)
+CSS_RUTAS_M = r"""
+.ruta-ico{color:var(--acento)}
+.ruta-cab{padding:40px 0 30px;border-bottom:1px solid var(--linea)}
+.ruta-cab .volver{display:inline-block;margin-bottom:16px;color:var(--acento);text-decoration:none;font-size:15px}
+.ruta-cab .volver:hover{text-decoration:underline}
+.ruta-cab .sello{display:inline-flex;align-items:center;gap:7px;font:600 12px/1 var(--f-texto);letter-spacing:.16em;text-transform:uppercase;color:var(--acento)}
+.ruta-cab .sello .sello-ico{width:17px;height:17px}
+.ruta-cab h1{margin:12px 0 6px;font:600 clamp(30px,5vw,46px)/1.05 var(--f-titulo,var(--f-texto));text-wrap:balance}
+.ruta-cab>.envoltorio>p{margin:0;color:var(--tinta-2);font-size:19px;max-width:48ch}
+.ruta-cab .cifras{display:flex;gap:30px;flex-wrap:wrap;margin-top:22px;font:600 30px/1 var(--f-titulo,var(--f-texto))}
+.ruta-cab .cifras span{display:block;font:500 13px/1.4 var(--f-texto);color:var(--tinta-2);text-transform:uppercase;letter-spacing:.08em;margin-top:6px}
+/* índice de rutas */
+.ruta-lista{padding:34px 0 10px;display:grid;gap:16px}
+.ruta-tarjeta{display:flex;align-items:center;gap:18px;padding:20px 22px;border:1px solid var(--linea);border-radius:16px;
+  background:var(--tarjeta);text-decoration:none;color:inherit;transition:transform .15s,box-shadow .15s,border-color .15s}
+.ruta-tarjeta:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(40,25,10,.12);border-color:color-mix(in srgb,var(--acento) 40%,var(--linea))}
+.ruta-tarjeta .r-marca{flex:none;width:52px;height:52px;display:grid;place-items:center;border-radius:50%;
+  background:color-mix(in srgb,var(--acento) 12%,var(--papel));color:var(--acento)}
+.ruta-tarjeta .r-marca .sello-ico{width:28px;height:28px}
+.ruta-tarjeta .r-cuerpo{flex:1;min-width:0}
+.ruta-tarjeta h3{margin:0;font:600 22px/1.15 var(--f-titulo,var(--f-texto))}
+.ruta-tarjeta .r-sub{margin:3px 0 0;color:var(--tinta-2);font-size:16px}
+.ruta-tarjeta .r-meta{margin:8px 0 0;font-size:13.5px;color:var(--tinta-2);letter-spacing:.02em}
+.ruta-tarjeta .r-tengo{display:inline-block;margin-top:9px;padding:3px 10px;border-radius:999px;font-size:12.5px;font-weight:600;
+  background:color-mix(in srgb,var(--acento) 16%,var(--papel));color:var(--acento)}
+.ruta-tarjeta .r-flecha{flex:none;font-size:22px;color:var(--tinta-2);transition:transform .15s}
+.ruta-tarjeta:hover .r-flecha{transform:translateX(3px);color:var(--acento)}
+/* ficha de una ruta */
+.ruta-detalle{padding:34px 0 10px;display:grid;gap:40px;max-width:760px}
+.r-historia p{margin:0 0 16px;font-size:18px}
+.r-historia p:first-child::first-letter{font-size:3.1em;float:left;line-height:.78;margin:4px 10px 0 0;color:var(--acento);font-family:var(--f-titulo,var(--f-texto));font-weight:700}
+.r-provincias h2,.r-itinerario h2{margin:0 0 16px;font:600 24px/1.1 var(--f-titulo,var(--f-texto))}
+.r-provincias h2 small,.r-provincias h2 small{font-weight:500;color:var(--tinta-2);font-size:15px}
+.r-chips{display:flex;flex-wrap:wrap;gap:8px}
+.r-chip{padding:5px 13px;border:1px solid var(--linea);border-radius:999px;background:var(--tarjeta);font-size:14px;color:var(--tinta-2)}
+.hitos{list-style:none;margin:0;padding:0}
+.hito{position:relative;display:flex;gap:18px;padding:0 0 26px}
+.hito::before{content:"";position:absolute;left:17px;top:6px;bottom:-6px;width:2px;background:var(--linea)}
+.hito:last-child::before{display:none}
+.hito .h-punto{flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;z-index:1;
+  background:var(--papel);border:2px solid var(--linea);font:600 14px/1 var(--f-texto);color:var(--tinta-2)}
+.hito.tengo .h-punto{background:var(--acento);border-color:var(--acento);color:#fff}
+.hito .h-cuerpo{padding-top:3px}
+.hito .h-cuerpo h3{margin:0;font:600 19px/1.2 var(--f-titulo,var(--f-texto))}
+.hito .h-cuerpo h3 small{font-weight:500;color:var(--tinta-2);font-size:14px;margin-left:6px}
+.hito .h-nota{margin:4px 0 0;color:var(--tinta-2);font-size:15.5px}
+.hito .h-tengo{display:inline-block;margin-top:7px;font-size:14px;font-weight:600;color:var(--acento);text-decoration:none}
+.hito .h-tengo:hover{text-decoration:underline}
+/* acceso a las rutas desde la portada */
+.rutas-portada{margin-top:14px}
+.rutas-portada a{display:inline-flex;align-items:center;gap:9px;padding:11px 18px;border:1px solid var(--linea);border-radius:999px;
+  background:var(--tarjeta);color:var(--tinta);text-decoration:none;font-weight:600;transition:border-color .15s,transform .15s}
+.rutas-portada a:hover{border-color:color-mix(in srgb,var(--acento) 45%,var(--linea));transform:translateY(-1px)}
+.rutas-portada a .sello-ico{width:20px;height:20px;color:var(--acento)}
+.rutas-portada a span{font-weight:500;color:var(--tinta-2)}
+@media (max-width:560px){.ruta-tarjeta{padding:16px}.ruta-tarjeta .r-flecha{display:none}.rutas-portada a span{display:none}}
+"""
+
 JS_INDICE = r"""
 (function(){
   var q=document.getElementById('buscar'), chips=document.querySelectorAll('.chips button'), actual='';
@@ -771,7 +830,7 @@ def _datos_mapa(visitados: list, pendientes: list) -> dict:
     return {"prov": prov, "pend": pend, "pueblos": lista}
 
 
-def _indice(pueblos: list, cfg, pendientes=()) -> str:
+def _indice(pueblos: list, cfg, pendientes=(), rutas=()) -> str:
     pendientes = list(pendientes)
     por_com = {}
     for p in pueblos:
@@ -835,7 +894,8 @@ def _indice(pueblos: list, cfg, pendientes=()) -> str:
     <div>{len(prov_visitadas)}<span>de {total_prov} provincias</span></div>
     <div>{len(por_com)}<span>{'comunidad' if len(por_com) == 1 else 'comunidades'}</span></div>
     {f'<div>{len(pendientes)}<span>por visitar</span></div>' if pendientes else ''}
-  </div>"""
+  </div>
+  {f'<div class="rutas-portada"><a href="rutas/index.html">{SELLO_RUTA} Rutas míticas de España <span>· grandes caminos del país</span></a></div>' if rutas else ''}"""
     con_foto = [p for p in sorted(pueblos, key=lambda x: (x.get("fechas_visita") or [""])[-1], reverse=True) if p.get("portada")]
     estilo = _DISENO["cabecera"]
     if estilo in ("foto", "collage") and not con_foto:
@@ -1090,6 +1150,130 @@ def _pagina_pueblo(p: dict, anterior, siguiente, cfg) -> str:
                    ruta=f'pueblos/{p["slug"]}/', imagen=imagen)
 
 
+# ---------------------------------------------------------------------------- rutas míticas
+# brújula/estrella de los caminos; marca del cuaderno para las rutas (dibujo propio)
+SELLO_RUTA = ('<svg class="sello-ico ruta-ico" viewBox="0 0 24 24" aria-hidden="true">'
+              '<circle cx="12" cy="12" r="10.5" fill="none" stroke="currentColor" stroke-width="1.3"/>'
+              '<path d="M12 3.5l1.9 6.6 6.6 1.9-6.6 1.9L12 20.5l-1.9-6.6L3.5 12l6.6-1.9z" fill="currentColor"/>'
+              '</svg>')
+
+
+def cargar_rutas() -> list:
+    """Lee la semilla de rutas míticas (nucleo/rutas.json). Devuelve [] si no hay."""
+    archivo = Path(__file__).with_name("rutas.json")
+    if not archivo.exists():
+        return []
+    try:
+        datos = json.loads(archivo.read_text(encoding="utf-8"))
+        return [r for r in datos.get("rutas", []) if r.get("slug") and r.get("hitos")]
+    except Exception:
+        return []
+
+
+def _emparejar_hito(hito: dict, por_nombre: dict) -> dict:
+    """Busca entre los pueblos visitados uno que coincida con el hito (por nombre y, si se puede, provincia)."""
+    nombres = [hito.get("nombre", "")] + list(hito.get("alias", []))
+    for nombre in nombres:
+        for cand in por_nombre.get(normalizar(nombre), []):
+            prov_h = normalizar(hito.get("provincia", ""))
+            prov_c = normalizar(cand.get("provincia", ""))
+            if not prov_h or not prov_c or prov_h == prov_c:
+                return cand
+    return None
+
+
+def _ruta_marca(ruta: list) -> dict:
+    """Cuenta cuántos hitos de la ruta ya están visitados."""
+    return {"total": len(ruta["hitos"]),
+            "tengo": sum(1 for h in ruta["hitos"] if h.get("_pueblo"))}
+
+
+def _preparar_rutas(rutas: list, visitados: list) -> list:
+    """Enlaza cada hito con el pueblo visitado que le corresponda (si lo hay)."""
+    por_nombre = {}
+    for p in visitados:
+        por_nombre.setdefault(normalizar(p["nombre"]), []).append(p)
+    for ruta in rutas:
+        for h in ruta["hitos"]:
+            h["_pueblo"] = _emparejar_hito(h, por_nombre)
+    return rutas
+
+
+def _tarjeta_ruta(ruta: dict) -> str:
+    m = _ruta_marca(ruta)
+    coms = ", ".join(ruta.get("comunidades", []))
+    extra = f'<span class="r-tengo">{m["tengo"]} ya en mi cuaderno</span>' if m["tengo"] else ""
+    return (f'<a class="ruta-tarjeta" href="{e(ruta["slug"])}/index.html">'
+            f'<div class="r-marca">{SELLO_RUTA}</div>'
+            f'<div class="r-cuerpo"><h3>{e(ruta["nombre"])}</h3>'
+            f'<p class="r-sub">{e(ruta.get("subtitulo",""))}</p>'
+            f'<p class="r-meta">{len(ruta["hitos"])} paradas · {len(ruta.get("provincias", []))} provincias · {e(coms)}</p>'
+            f'{extra}</div><span class="r-flecha" aria-hidden="true">→</span></a>')
+
+
+def _pagina_rutas(rutas: list, cfg) -> str:
+    tarjetas = "".join(_tarjeta_ruta(r) for r in rutas)
+    cuerpo = f"""
+<header class="ruta-cab banda"><div class="envoltorio">
+  <a class="volver" href="../index.html">← Inicio</a>
+  <div class="marca"><div class="sello">{SELLO_RUTA} Rutas míticas</div></div>
+  <h1>Rutas míticas de España</h1>
+  <p>Grandes caminos que cruzan el país. Sigo su trazado y voy marcando los pueblos que ya tengo en el cuaderno.</p>
+</div></header>
+<main class="envoltorio ruta-lista">
+{tarjetas}
+</main>
+{_pie(cfg)}"""
+    return _pagina(f'Rutas míticas · {cfg.get("titulo_web")}', cuerpo, "../",
+                   "Grandes rutas históricas de España y los pueblos que he visitado en ellas.",
+                   ruta="rutas/")
+
+
+def _pagina_ruta(ruta: dict, cfg) -> str:
+    m = _ruta_marca(ruta)
+    chips = "".join(f'<span class="r-chip">{e(c)}</span>' for c in ruta.get("provincias", []))
+    paradas = []
+    for i, h in enumerate(ruta["hitos"], 1):
+        p = h.get("_pueblo")
+        if p:
+            enlace = f'../../pueblos/{e(p["slug"])}/index.html'
+            marca = f'<a class="h-tengo" href="{enlace}">En mi cuaderno →</a>'
+            clase = " tengo"
+        else:
+            marca = ""
+            clase = ""
+        nota = f'<p class="h-nota">{e(h.get("nota",""))}</p>' if h.get("nota") else ""
+        paradas.append(
+            f'<li class="hito{clase}"><div class="h-punto"><span>{i}</span></div>'
+            f'<div class="h-cuerpo"><h3>{e(h["nombre"])} <small>{e(h.get("provincia",""))}</small></h3>'
+            f'{nota}{marca}</div></li>')
+    tengo = f'<div>{m["tengo"]}<span>en mi cuaderno</span></div>' if m["tengo"] else ""
+    cuerpo = f"""
+<header class="ruta-cab banda detalle"><div class="envoltorio">
+  <a class="volver" href="../index.html">← Rutas míticas</a>
+  <div class="marca"><div class="sello">{SELLO_RUTA} Ruta mítica</div></div>
+  <h1>{e(ruta["nombre"])}</h1>
+  <p>{e(ruta.get("subtitulo",""))}</p>
+  <div class="cifras">
+    <div>{len(ruta["hitos"])}<span>paradas</span></div>
+    <div>{len(ruta.get("provincias", []))}<span>provincias</span></div>
+    <div>{len(ruta.get("comunidades", []))}<span>comunidades</span></div>
+    {tengo}
+  </div>
+</div></header>
+<main class="envoltorio ruta-detalle">
+  <section class="r-historia">{parrafos(ruta.get("historia",""))}</section>
+  <section class="r-provincias"><h2>Por dónde pasa <small>{e(ruta.get("sentido",""))}</small></h2>
+    <div class="r-chips">{chips}</div></section>
+  <section class="r-itinerario"><h2>El camino, parada a parada</h2>
+    <ol class="hitos">{"".join(paradas)}</ol></section>
+</main>
+{_pie(cfg)}"""
+    desc = (ruta.get("resumen") or ruta.get("subtitulo") or "")[:160]
+    return _pagina(f'{ruta["nombre"]} · {cfg.get("titulo_web")}', cuerpo, "../../", desc,
+                   ruta=f'rutas/{ruta["slug"]}/')
+
+
 # ---------------------------------------------------------------------------- generar
 def _copiar_si_cambia(origen: Path, destino: Path):
     if destino.exists() and destino.stat().st_size == origen.stat().st_size \
@@ -1138,7 +1322,7 @@ def generar(almacen: Almacen, cfg, destino: Path, avisar=print) -> int:
         _copiar_si_cambia(Path(logo), destino / "logo.png")
     elif (destino / "logo.png").exists():
         (destino / "logo.png").unlink()
-    estilo = D.css_final(CSS.strip() + X.CSS + X.CSS_FICHA + X.CSS_FIESTAS + X.CSS_NOTAS + X.CSS_MINI + X.CSS_FUENTES + X.CSS_ULTIMA + X.CSS_RUTAS + MQ.CSS, _DISENO)
+    estilo = D.css_final(CSS.strip() + X.CSS + X.CSS_FICHA + X.CSS_FIESTAS + X.CSS_NOTAS + X.CSS_MINI + X.CSS_FUENTES + X.CSS_ULTIMA + X.CSS_RUTAS + CSS_RUTAS_M + MQ.CSS, _DISENO)
     for p in pueblos:
         p["_cerca"] = X.cercanos(p, pueblos)
     # web instalable: iconos, manifiesto y service worker (o uno que se borra si la opción está apagada)
@@ -1173,7 +1357,8 @@ def generar(almacen: Almacen, cfg, destino: Path, avisar=print) -> int:
     (destino / "sw.js").write_text(X.service_worker(_VERSION_RECURSOS) if _DISENO["instalable"] else X.SW_APAGADO,
                                    encoding="utf-8")
     (destino / ".nojekyll").write_text("", encoding="utf-8")
-    (destino / "index.html").write_text(_indice(visitados, cfg, pendientes), encoding="utf-8")
+    rutas = _preparar_rutas(cargar_rutas(), visitados)
+    (destino / "index.html").write_text(_indice(visitados, cfg, pendientes, rutas), encoding="utf-8")
 
     carpeta_pueblos = destino / "pueblos"
     carpeta_pueblos.mkdir(exist_ok=True)
@@ -1198,6 +1383,22 @@ def generar(almacen: Almacen, cfg, destino: Path, avisar=print) -> int:
         siguiente = mismos[j + 1] if j + 1 < len(mismos) else None
         cp.mkdir(parents=True, exist_ok=True)
         (cp / "index.html").write_text(_pagina_pueblo(p, anterior, siguiente, cfg), encoding="utf-8")
+
+    # rutas míticas (si hay semilla): índice /rutas/ y una ficha por ruta
+    carpeta_rutas = destino / "rutas"
+    if rutas:
+        carpeta_rutas.mkdir(exist_ok=True)
+        (carpeta_rutas / "index.html").write_text(_pagina_rutas(rutas, cfg), encoding="utf-8")
+        slugs_ruta = {r["slug"] for r in rutas}
+        for r in rutas:
+            cr = carpeta_rutas / r["slug"]
+            cr.mkdir(parents=True, exist_ok=True)
+            (cr / "index.html").write_text(_pagina_ruta(r, cfg), encoding="utf-8")
+        for c in carpeta_rutas.iterdir():   # rutas quitadas de la semilla
+            if c.is_dir() and c.name not in slugs_ruta and (c / "index.html").exists():
+                shutil.rmtree(c)
+    elif carpeta_rutas.exists():
+        shutil.rmtree(carpeta_rutas)
 
     if _PREVIA:   # avisa a la vista previa abierta de que hay cambios
         import time as _t
